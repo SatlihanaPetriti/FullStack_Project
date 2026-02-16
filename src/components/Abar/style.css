@@ -1,0 +1,61 @@
+/* Navbar */
+.announcement-navbar {
+    background-color: #214332;
+    overflow: hidden;
+}
+
+/* Container */
+.announcement-container {
+    height: 25px;
+    position: relative;
+
+}
+
+/* Scroll */
+.scroll-wrapper {
+    width: 100%;
+    overflow: hidden;
+}
+
+/* Pause on hover */
+.scroll-wrapper:hover .scroll-content {
+    animation-play-state: paused;
+}
+
+/* Scrolling content */
+.scroll-content {
+    display: flex;
+    width: max-content;
+    animation: marquee 20s linear infinite;
+}
+
+/* Text */
+.announcement-text {
+    font-size: 12px;
+    font-weight: 600;
+    margin: 0;
+    padding-right: 1.5rem;
+    color: white;
+    position: relative;
+}
+
+.announcement-text::after {
+    content: '';
+    display: inline-block;
+    width: 30px;
+    height: 0.5px;
+    background-color: white;
+    margin: 0 2rem;
+    vertical-align: middle;
+    opacity: 0.9;
+}
+
+@keyframes marquee {
+    from {
+        transform: translateX(-50%);
+    }
+
+    to {
+        transform: translateX(0);
+    }
+}

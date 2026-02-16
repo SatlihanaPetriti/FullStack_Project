@@ -1,0 +1,23 @@
+.img-circle {
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  background-color: #606060;
+  margin: 0 auto;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.img-circle img {
+  width: 100%;
+  height: auto;
+}
+
+
+.body-section{
+    background-color: #f5f5ec;
+    padding:40px 0;
+}
