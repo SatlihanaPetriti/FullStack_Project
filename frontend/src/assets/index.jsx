@@ -63,10 +63,12 @@ import slateorch from "../assets/images/IndoorPlants/yelloworchid/slateorch.png"
 
 
 const IndoorImages = {
+    
     ALOCASIA_MELO: {
         CLAY: alocasiaClay,
         SLATE: alocasiaSlate,
     },
+
     BAMBOO_PALM: {
         CLAY: bambooClay,
         STONE: bambooStone,
@@ -74,21 +76,24 @@ const IndoorImages = {
         INDIGO: bambooIndigo,
         SLATE: bambooSlate,
     },
+
     XANTHOSOMA_LINDENII: {
         CLAY: xanthClay,
         CHARCOAL: xanthCHARCOAL,
-
     },
+
     AIR_PLANT: {
         DEFAULT: airplants,
         CLAY: clayair,
         STONE: stoneair,
         SLATE: slateair,
     },
+
     DESERT_TRIO: {
         CHARCOAL: triochacoal,
         TAUPE: taupetrio
     },
+
     FIDDLE_FIG: {
         CLAY: clayfig,
         STONE: stonefig,
@@ -96,9 +101,11 @@ const IndoorImages = {
         INDIGO: indigofig,
         SLATE: slatefig,
     },
+
     HOYA_COMP: {
         CHARCOAL: charcoalhoya
     },
+
     HOYA_HEART: {
         CHARCOAL: charcoalheart,
         STONE: stoneheart
@@ -108,9 +115,11 @@ const IndoorImages = {
         CHARCOAL: charcoalred,
         SLATE: slatered,
     },
+
     NEON_PRAYER: {
         CHARCOAL: charcoal,
     },
+
     SANSEVIERIA_PLANT: {
         CLAY: claysans,
         STONE: stonesans,
@@ -118,9 +127,11 @@ const IndoorImages = {
         INDIGO: indigosans,
         SLATE: slatesans,
     },
+
     ZZ_CHAMELEON: {
         CHARCOAL: charcoalzz,
     },
+
     PHIL_BIRKIN: {
         CLAY: clayphilo,
         STONE: stonephilo,
@@ -128,6 +139,7 @@ const IndoorImages = {
         INDIGO: indigophilo,
         SLATE: slatephilo,
     },
+
     MONEY_TREE: {
         CLAY: claytree,
         STONE: stonetree,
@@ -135,6 +147,7 @@ const IndoorImages = {
         INDIGO: indigotree,
         SLATE: slatetree,
     },
+
     YELLOW_ORCHIDE: {
         CLAY: clayorch,
         STONE: stoneorch,
