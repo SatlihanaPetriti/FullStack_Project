@@ -301,6 +301,20 @@ const ProductForm = ({ show, onClose, product, onSave }) => {
                             <Button variant="success" onClick={addVariant}>Add</Button>
                         </Col>
                     </Row>
+                    {/* <Row>
+                        <Col md={12}>
+                            <Form.Group className="mb-3">
+                                <Form.Label>Image URL</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    name="image_url"
+                                    value={formData.image_url || ''}
+                                    onChange={handleChange}
+                                    placeholder="https://example.com/image.jpg"
+                                />
+                            </Form.Group>
+                        </Col>
+                    </Row> */}
 
                     {formData.variants.length > 0 && (
                         <Table striped bordered size="sm">

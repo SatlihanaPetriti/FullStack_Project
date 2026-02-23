@@ -67,6 +67,10 @@ export class CreateProductDto {
     @IsOptional()
     @IsDateString()
     date_added?: string;  
+    
+    // @IsOptional()
+    // @IsString()
+    // image_url?: string;
 
     @IsArray()
     @ValidateNested({ each: true }) //each field should not be empty

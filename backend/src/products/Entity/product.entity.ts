@@ -32,6 +32,12 @@ export class Product {
 
     @Column({ type: 'date', nullable: true })
     date_added: Date;
+
+    // @Column({ nullable: true })
+    // image_url: string;
+
+
+    
     //if add and update nje produkt with variants, will autosave. 
     // 'remove' not necessary cuz we have cascadian ne productvariant
     @OneToMany(() => ProductVariant, variant => variant.product, { //Product → has many → ProductVariant

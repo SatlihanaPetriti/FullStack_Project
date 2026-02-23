@@ -2,54 +2,54 @@ import React, { useState } from 'react';
 import { Card, Button } from 'react-bootstrap';
 import './indoor_plants.css';
 
-const PlantCard = ({ plant }) => {
-    const [selectedVariant, setSelectedVariant] = useState(plant.variants[0]);
+const PlantCard = ({ product }) => {
+    //tracks variant of pots user has selected
+    const [selectedVariant, setSelectedVariant] = useState(product.variants[0]);
+    //show/hide cart "add to cart"
     const [showCartButton, setShowCartButton] = useState(false);
 
+    //show original and sale price (if it has)
     const getPrice = () => {
-        // If salePrice exists
-        if (plant.salePrice) {
+        if (product.sale_price) {
             return (
                 <>
-                    <span className="old-price">${plant.price}</span>
-                    <span className="sale-price">${plant.salePrice}</span>
+                    <span className="old-price">${product.price}</span>
+                    <span className="sale-price">${product.sale_price}</span>
                 </>
             );
         }
 
-        // If salePercentage exists
-        if (plant.salePercentage) {
-            const calculatedSale = plant.price - (plant.price * plant.salePercentage / 100);
+        //calculate the discount (if no % show reguar price)
+        if (product.sale_percentage) {
+            const calculatedSale = product.price - (product.price * product.sale_percentage / 100);
             return (
                 <>
-                    <span className="old-price">${plant.price}</span>
+                    <span className="old-price">${product.price}</span>
                     <span className="sale-price">
                         ${calculatedSale.toFixed(2)}
                     </span>
                 </>
             );
         }
-        return <span>${plant.price}</span>;
+        return <span>${product.price}</span>;
     };
-
 
     const renderLabels = () => {
         const labels = [];
-
-        // Add NEW label
-        if (plant.label) {
+        // Add label from API
+        if (product.label) {
             labels.push(
-                <span key="new" className={`label ${plant.label.toLowerCase()}`}>
-                    {plant.label.replace('_', ' ')}
+                <span key="label" className={`label ${product.label.toLowerCase()}`}>
+                    {product.label.replace('_', ' ')}
                 </span>
             );
         }
 
-        // Add SALE label if salePercentage exists
-        if (plant.salePercentage) {
+        // Add SALE label if sale_percentage exists
+        if (product.sale_percentage) {
             labels.push(
                 <span key="sale" className="label sale">
-                    SALE {plant.salePercentage}% OFF
+                    SALE {product.sale_percentage}% OFF
                 </span>
             );
         }
@@ -57,37 +57,40 @@ const PlantCard = ({ plant }) => {
         return labels;
     };
 
+    // imageholder
+    const holderImage = () => {
+        return (
+            <div className="image-placeholder">
+                <span>{selectedVariant.type}</span>
+            </div>
+        );
+    };
+
     return (
         <Card className="plant-card">
             <div
                 className="image-wrapper"
                 onMouseEnter={() => setShowCartButton(true)}
-                onMouseLeave={() => setShowCartButton(false)}
-            >
+                onMouseLeave={() => setShowCartButton(false)}>
                 <div className="labels-container">
                     {renderLabels()}
                 </div>
-
-                <Card.Img src={selectedVariant.image} className="plant-image" />
-
+                {holderImage()}
                 <Button
                     variant="dark"
-                    className={`cart-btn ${showCartButton ? 'show' : ''}`}
-                >
+                    className={`cart-btn ${showCartButton ? 'show' : ''}`}>
                     Add to Cart
                 </Button>
             </div>
 
             <Card.Body className="details">
                 <div className="title-row">
-                    <Card.Title className="title">{plant.title}</Card.Title>
+                    <Card.Title className="title">{product.title}</Card.Title>
                     <div className="price">{getPrice()}</div>
                 </div>
-
                 <div className="info-row">
-                    {/* Color buttons */}
                     <div className="color-buttons">
-                        {plant.variants.map((variant) => (
+                        {product.variants.map((variant) => (
                             <button
                                 key={variant.id}
                                 onClick={() => setSelectedVariant(variant)}
@@ -96,12 +99,12 @@ const PlantCard = ({ plant }) => {
                                     color-${variant.type.toLowerCase()}
                                     ${selectedVariant.id === variant.id ? 'active' : ''}
                                 `}
-                                title={variant.type}
+                                title={variant.type} //show name on hover
                             />
                         ))}
                     </div>
 
-                    <span className="size-badge">{plant.size}</span>
+                    <span className="size-badge">{product.size}</span>
                 </div>
             </Card.Body>
         </Card>
