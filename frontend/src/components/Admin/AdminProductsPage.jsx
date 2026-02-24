@@ -3,7 +3,6 @@ import { Container, Button, Alert } from "react-bootstrap";
 import axios from "axios";
 import ProductTable from "./ProductTable";
 import ProductForm from "./ProductForm";
-
 const AdminProductsPage = () => {
     //products- holds product from backend
     const [products, setProducts] = useState([]);
@@ -69,7 +68,6 @@ const AdminProductsPage = () => {
             alert(`Failed to save product: ${message}`);
         }
     };
-
 
     return (
         <>

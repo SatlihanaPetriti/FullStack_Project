@@ -1,38 +1,59 @@
-// src/components/navadmin.jsx
-import { Navbar, Container, Nav, Form, Button } from 'react-bootstrap';
+import { Navbar, Nav, Container, NavDropdown } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 
-const NavAdmin = () => {
+const AdminNavbar = () => {
     return (
-        <Navbar expand="lg" className="bg-body-tertiary" bg="dark" data-bs-theme="dark">
+        <Navbar bg="dark" variant="dark" expand="lg" className="admin-navbar px-3">
             <Container fluid>
-                <Navbar.Brand href="#">
-                    <span className="fs-4">🌿 Plant Shop Admin</span>
+                <Navbar.Brand as={Link} to="/admin">
+                    PlantShop Admin Dashboard
                 </Navbar.Brand>
-                <Navbar.Toggle aria-controls="navbarScroll" />
-                <Navbar.Collapse id="navbarScroll">
-                    <Nav
-                        className="me-auto my-2 my-lg-0"
-                        style={{ maxHeight: '100px' }}
-                        navbarScroll
-                    >
-                        <Nav.Link href="#dashboard">Dashboard</Nav.Link>
-                        <Nav.Link href="#products">Products</Nav.Link>
-                        <Nav.Link href="#orders">Orders</Nav.Link>
-                        <Nav.Link href="#customers">Customers</Nav.Link>
+                <Navbar.Toggle aria-controls="admin-navbar-nav" />
+                <Navbar.Collapse id="admin-navbar-nav">
+                    <Nav className="me-auto">
+                        <NavDropdown title="Product Management" id="products-dropdown">
+                            <NavDropdown.Item as={Link} to="/admin/products">
+                                All Products
+                            </NavDropdown.Item>
+                            <NavDropdown.Item >
+                                Add Product
+                            </NavDropdown.Item>
+                            <NavDropdown.Item >
+                                Categories
+                            </NavDropdown.Item>
+                            <NavDropdown.Item >
+                                Labels
+                            </NavDropdown.Item>
+                        </NavDropdown>
+                        <NavDropdown title="Order Management" id="orders-dropdown">
+                            <NavDropdown.Item >
+                                All Orders
+                            </NavDropdown.Item>
+                            <NavDropdown.Item >
+                                Pending Orders
+                                <span className=" ms-2"></span>
+                            </NavDropdown.Item>
+                            <NavDropdown.Item >
+                                Processing
+                            </NavDropdown.Item>
+                            <NavDropdown.Item>
+                                Completed
+                            </NavDropdown.Item>
+                        </NavDropdown>
+                        <NavDropdown title="Inventory Management" id="inventory-dropdown">
+                            <NavDropdown.Item >
+                                Current Stock
+                            </NavDropdown.Item>
+
+                            <NavDropdown.Item >
+                                Restock List
+                            </NavDropdown.Item>
+                        </NavDropdown>
                     </Nav>
-                    <Form className="d-flex">
-                        <Form.Control
-                            type="search"
-                            placeholder="Search products..."
-                            className="me-2"
-                            aria-label="Search"
-                        />
-                        <Button variant="outline-light">Search</Button>
-                    </Form>
                 </Navbar.Collapse>
             </Container>
         </Navbar>
     );
 };
 
-export default NavAdmin;
+export default AdminNavbar;

@@ -12,7 +12,7 @@ export class ProductVariant {
     @Column('int')
     stock: number;
 
-    @ManyToOne(() => Product, product => product.variants, {// i belong to one parent
+    @ManyToOne(() => Product, product => product.variants, {//  belong to one parent
         onDelete: 'CASCADE',
     })
     @JoinColumn({ name: 'productId' })
