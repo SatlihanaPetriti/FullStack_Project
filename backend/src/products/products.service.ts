@@ -1,4 +1,3 @@
-// src/products/products.service.ts
 import { Injectable, HttpException, HttpStatus, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -18,18 +17,18 @@ export class ProductsService {
     ) { }
 
     // GET all products
-    async getAllProducts() {
+    public async getAllProducts() {
         try {
             const products = await this.productRepository.find({});
             return products;
         } catch (error) {
-            console.error('----Get products:', error);
+            // console.error('----Get products:', error);
             throw new HttpException('Could not fetch products', HttpStatus.INTERNAL_SERVER_ERROR,);
         }
     }
 
     // GET single product by ID
-    async getProductById(id: string) {
+    public async getProductById(id: string) {
         const product = await this.productRepository.findOne({ where: { id } });
         if (!product) {
             throw new NotFoundException(`Product with ID ${id} not found`);
@@ -38,7 +37,7 @@ export class ProductsService {
     }
 
     // CREATE a new product
-    async createProduct(createProductDto: CreateProductDto) {
+   public async createProduct(createProductDto: CreateProductDto) {
         try {
             // check-ojme nese id eshte e dublicate
             const existingProduct = await this.productRepository.findOne({
@@ -55,10 +54,10 @@ export class ProductsService {
     }
 
     // UPDATE a product
-    async updateProduct(id: string, updateProductDto: UpdateProductDto) {
+   public async updateProduct(id: string, updateProductDto: UpdateProductDto) {
         try {
             // Check if product exists with variants 
-            const product = await this.productRepository.findOne({ where: { id }, relations: ['variants'] });
+            const product = await this.productRepository.findOne({ where: { id } }); //, relations: ['variants'] mund te perdoret relations per me gjet variants por e kemi eager true dhe do te na kthej automatikisht variants me produktin
             if (!product) {
                 throw new NotFoundException(`Product with ID ${id} not found`);
             }
@@ -66,25 +65,16 @@ export class ProductsService {
             // Separate variants from product data
             const { variants, ...productData } = updateProductDto;
 
-            // Update product fields
-            if (Object.keys(productData).length > 0) {
-                // console.log('Updating product data:', productData);
-                await this.productRepository.update(id, productData);
-            }
-
-            // Handle variants if provided
+           // Handle variants if provided
             if (variants && variants.length > 0) {
                 // console.log('Updating variants:', variants);
-
                 // Delete existing variants
                 if (product.variants && product.variants.length > 0) {
                     await this.variantRepository.delete({ product: { id } });
                     // console.log('Deleted old variants');
                 }
-
                 // Create new variants
                 for (const v of variants) {
-                    // Just save the plain object - TypeORM handles it!
                     await this.variantRepository.save({
                         id: v.id,
                         type: v.type,
@@ -93,16 +83,13 @@ export class ProductsService {
                     });
                 }
             }
-
             // Return the updated product
             const updatedProduct = await this.productRepository.findOne({
                 where: { id },
                 relations: ['variants']
             });
-
             // console.log('Product updated successfully');
             return updatedProduct;
-
         } catch (error) {
             // console.error('Update product error:', error);
             if (error instanceof NotFoundException) {
@@ -116,7 +103,7 @@ export class ProductsService {
     }
 
     // DELETE a product
-    async deleteProduct(id: string) {
+    public async deleteProduct(id: string) {
         try {
             // Check nese ekziston id
             const product = await this.productRepository.findOne({ where: { id } });
@@ -129,13 +116,12 @@ export class ProductsService {
                 statusCode: 200,
                 message: `Product with ID ${id} deleted successfully`
             };
-        } catch (error) {
-            console.error('Delete product error:', error);
+        }catch (error) { 
             if (error instanceof NotFoundException) {
                 throw error;
             }
             throw new HttpException(
-                `Could not delete product with ID ${id}`,
+                `Could not delete product with ID ${id}: ${error.message}`,
                 HttpStatus.INTERNAL_SERVER_ERROR,
             );
         }

@@ -24,7 +24,6 @@ const ProductForm = ({ show, onClose, product, onSave }) => {
     // Add state for validation errors
     const [idError, setIdError] = useState("");
     const [titleError, setTitleError] = useState("");
-
     // Store all products to check for duplicates
     const [allProducts, setAllProducts] = useState([]);
 

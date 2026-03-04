@@ -44,7 +44,6 @@ const AdminNavbar = () => {
                             <NavDropdown.Item >
                                 Current Stock
                             </NavDropdown.Item>
-
                             <NavDropdown.Item >
                                 Restock List
                             </NavDropdown.Item>

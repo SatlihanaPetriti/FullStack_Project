@@ -31,18 +31,12 @@ export class Product {
     is_bundle: boolean;
 
     @Column({ type: 'date', nullable: true })
-    date_added: Date;
-
-    // @Column({ nullable: true })
-    // image_url: string;
-
-
-    
+    date_added: Date; 
     //if add and update nje produkt with variants, will autosave. 
     // 'remove' not necessary cuz we have cascadian ne productvariant
     @OneToMany(() => ProductVariant, variant => variant.product, { //Product → has many → ProductVariant
         cascade: ['insert', 'update'],
-        eager: true,// auto-load everytime happens a action(remove,delete,edit)(varaints)
+        eager: true,// auto-load everytime happens a action(remove,delete,edit)(variants)
     })
     variants: ProductVariant[];
 }

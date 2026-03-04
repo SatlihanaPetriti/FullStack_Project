@@ -20,6 +20,9 @@ export class ProductVariant {
 
     @Column({ name: 'productId' })
     productId: string;
+    
+    // @Column()
+    // image: string;
 }
 //JoinColumn its written always to one side to the owning side(ManyToOne)
 

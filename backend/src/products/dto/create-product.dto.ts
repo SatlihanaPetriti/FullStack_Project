@@ -1,8 +1,7 @@
 import {
     IsString, IsNotEmpty, IsOptional, IsNumber, IsBoolean,
     IsDateString, ValidateNested, IsArray, Min, IsPositive,
-    Max, ArrayNotEmpty
-} from 'class-validator';
+    Max, ArrayNotEmpty} from 'class-validator';
 import { Type } from 'class-transformer';
 
 // percakton strukturen dhe validation of creating nje produkt
@@ -68,10 +67,6 @@ export class CreateProductDto {
     @IsDateString()
     date_added?: string;  
     
-    // @IsOptional()
-    // @IsString()
-    // image_url?: string;
-
     @IsArray()
     @ValidateNested({ each: true }) //each field should not be empty
     @Type(() => VariantDto)// from js object converts in VariantDTO INSTANCE
