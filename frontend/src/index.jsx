@@ -1,14 +1,16 @@
+// App.jsx
 import { Routes, Route } from "react-router-dom";
 import HomePage from './Pages/Home/index.jsx';
 import IndoorPlants from './components/IndoorPlants/indoor_plants.jsx';
 import Header from './components/Header/index.jsx';
 import Announcement from './components/Abar/Announcement.jsx';
-import AdminPageController from "./Pages/Admin/index.jsx"; 
+import AdminRouter from "./Pages/Admin/index.jsx";
+import { ProductProvider } from './Context/Product';
 
 function App() {
-    return (
-    <>
-      <Routes>
+  return (
+    <ProductProvider>
+      <Routes> 
         <Route path="/" element={
           <>
             <Announcement />
@@ -25,10 +27,9 @@ function App() {
           </>
         } />
 
-        {/* Admin routes */}
-        <Route path="/admin/*" element={<AdminPageController />} />
+        <Route path="/admin/*" element={<AdminRouter />} />
       </Routes>
-    </>
+    </ProductProvider>
   );
 }
 

@@ -1,18 +1,18 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from 'react-router-dom';
+import AdminLayout from '../../components/Admin/AdminLayout';
+import OverviewPage from '../../components/Admin/OverviewPage';
 import AdminProductsPage from '../../components/Admin/AdminProductsPage';
-import ViewProducts from '../../components/Admin/ViewProducts';
-import AdminNavbar from "../../components/Admin/navadmin";
 
-const AdminPageController = () => {
+const AdminRouter = () => {
     return (
-         <>
-         <AdminNavbar />
-        <Routes>
-            <Route path="/" element={<ViewProducts />} />
-            <Route path="/products" element={<AdminProductsPage />} />
-        </Routes>
-        </>
+        <AdminLayout>
+            <Routes>
+                <Route index element={<Navigate to="overview" replace />} />
+                <Route path="overview" element={<OverviewPage />} />
+                <Route path="products" element={<AdminProductsPage />} />
+            </Routes>
+        </AdminLayout>
     );
 };
 
-export default AdminPageController;
+export default AdminRouter;

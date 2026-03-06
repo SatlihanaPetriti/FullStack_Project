@@ -1,10 +1,17 @@
+// plantcard.jsx
 import React, { useState } from 'react';
 import { Card, Button } from 'react-bootstrap';
 import './indoor_plants.css';
 
 const PlantCard = ({ product }) => {
-    //tracks variant of pots user has selected
-    const [selectedVariant, setSelectedVariant] = useState(product.variants[0]);
+    // Safety check: if no variants, don't try to select one
+    const hasVariants = product.variants && product.variants.length > 0;
+
+    //tracks variant of pots user has selected - with fallback
+    const [selectedVariant, setSelectedVariant] = useState(
+        hasVariants ? product.variants[0] : { type: 'Default', id: 'default' }
+    );
+
     //show/hide cart "add to cart"
     const [showCartButton, setShowCartButton] = useState(false);
 
@@ -19,7 +26,7 @@ const PlantCard = ({ product }) => {
             );
         }
 
-        //calculate the discount (if no % show reguar price)
+        //calculate the discount (if no % show regular price)
         if (product.sale_percentage) {
             const calculatedSale = product.price - (product.price * product.sale_percentage / 100);
             return (
@@ -57,15 +64,54 @@ const PlantCard = ({ product }) => {
         return labels;
     };
 
-    // imageholder
+    // imageholder - with safety check
     const holderImage = () => {
+        const displayText = selectedVariant?.type || 'Plant';
         return (
             <div className="image-placeholder">
-                <span>{selectedVariant.type}</span>
+                <span>{displayText}</span>
             </div>
         );
     };
 
+    // If no variants at all, show a simplified card
+    if (!hasVariants) {
+        return (
+            <Card className="plant-card">
+                <div
+                    className="image-wrapper"
+                    onMouseEnter={() => setShowCartButton(true)}
+                    onMouseLeave={() => setShowCartButton(false)}>
+                    <div className="labels-container">
+                        {renderLabels()}
+                    </div>
+                    <div className="image-placeholder">
+                        <span>{product.title}</span>
+                    </div>
+                    <Button
+                        variant="dark"
+                        className={`cart-btn ${showCartButton ? 'show' : ''}`}>
+                        Add to Cart
+                    </Button>
+                </div>
+
+                <Card.Body className="details">
+                    <div className="title-row">
+                        <Card.Title className="title">{product.title}</Card.Title>
+                        <div className="price">{getPrice()}</div>
+                    </div>
+                    <div className="info-row">
+                        <div className="color-buttons">
+                            <span className="text-muted small">No variants</span>
+                        </div>
+                        <span className="size-badge">{product.size}</span>
+                    </div>
+                </Card.Body>
+            </Card>
+        );
+    }
+
+    // Normal rendering with variants
     return (
         <Card className="plant-card">
             <div
@@ -96,8 +142,8 @@ const PlantCard = ({ product }) => {
                                 onClick={() => setSelectedVariant(variant)}
                                 className={`
                                     color-btn 
-                                    color-${variant.type.toLowerCase()}
-                                    ${selectedVariant.id === variant.id ? 'active' : ''}
+                                    color-${variant.type?.toLowerCase() || 'default'}
+                                    ${selectedVariant?.id === variant.id ? 'active' : ''}
                                 `}
                                 title={variant.type} //show name on hover
                             />

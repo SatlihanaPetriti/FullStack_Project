@@ -1,8 +1,9 @@
+// ProductForm.jsx
 import React, { useState, useEffect } from "react";
 import { Modal, Button, Form, Row, Col, Table } from "react-bootstrap";
-import axios from "axios";
 
-const ProductForm = ({ show, onClose, product, onSave }) => {
+// Add allProducts prop
+const ProductForm = ({ show, onClose, product, onSave, allProducts = [] }) => {
     //main form (default value)
     const [formData, setFormData] = useState({
         id: "",
@@ -24,24 +25,6 @@ const ProductForm = ({ show, onClose, product, onSave }) => {
     // Add state for validation errors
     const [idError, setIdError] = useState("");
     const [titleError, setTitleError] = useState("");
-    // Store all products to check for duplicates
-    const [allProducts, setAllProducts] = useState([]);
-
-    // Fetch all products when form opens
-    useEffect(() => {
-        const fetchProducts = async () => {
-            try {
-                const response = await axios.get('http://localhost:3000/products');
-                setAllProducts(response.data);
-            } catch (err) {
-                console.error("Error fetching products for validation:", err);
-            }
-        };
-
-        if (show) {
-            fetchProducts();
-        }
-    }, [show]);
 
     // EDIT fill the form ready for edit (add if exists, empty if not)
     useEffect(() => {
@@ -59,11 +42,10 @@ const ProductForm = ({ show, onClose, product, onSave }) => {
                 date_added: product.date_added?.split("T")[0] || new Date().toISOString().split("T")[0],
                 variants: product.variants || [],
             });
-            // Clear errors when editing
             setIdError("");
             setTitleError("");
         } else {
-            // CREATE-create form 
+            // CREATE - empty form
             setFormData({
                 id: "",
                 title: "",
@@ -80,13 +62,13 @@ const ProductForm = ({ show, onClose, product, onSave }) => {
             setIdError("");
             setTitleError("");
         }
-    }, [product]);
+    }, [product, show]); // Add show dependency to reset when modal opens/closes
 
     // Check if ID is unique
     const isIdUnique = (idToCheck) => {
-        if (!idToCheck) return true; // Empty ID will be caught by required field
+        if (!idToCheck) return true;
 
-        // If editing, exclude current product from check
+        // If editing, exclude current product
         if (product) {
             return !allProducts.some(p =>
                 p.id.toLowerCase() === idToCheck.toLowerCase() &&
@@ -102,9 +84,9 @@ const ProductForm = ({ show, onClose, product, onSave }) => {
 
     // Check if title is unique
     const isTitleUnique = (titleToCheck) => {
-        if (!titleToCheck) return true; // Empty title will be caught by required field
+        if (!titleToCheck) return true;
 
-        // If editing, exclude current product from check
+        // If editing, exclude current product
         if (product) {
             return !allProducts.some(p =>
                 p.title.toLowerCase() === titleToCheck.toLowerCase() &&
@@ -118,7 +100,7 @@ const ProductForm = ({ show, onClose, product, onSave }) => {
         );
     };
 
-    // function that runs everytime when the user types in an input, select an option or checks a checkbox
+    // function that runs everytime when the user types in an input
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
 
@@ -143,34 +125,28 @@ const ProductForm = ({ show, onClose, product, onSave }) => {
         setFormData({ ...formData, [name]: type === "checkbox" ? checked : value });
     };
 
-    //varian data (input fields before clicking ADD)
+    // Rest of your functions remain exactly the same...
     const handleVariantChange = (e) => {
         const { name, value } = e.target;
         setVariantInput({ ...variantInput, [name]: value });
     };
 
-    //add variant 
     const addVariant = () => {
-        //check if the filed are filled if not it stops
         if (!variantInput.id || !variantInput.type)
             return;
-        //if yes continue
         setFormData({
             ...formData,
             variants: [...formData.variants, { ...variantInput, stock: parseInt(variantInput.stock) || 0 }],
         });
-        //reset inputs for a new variant
         setVariantInput({ id: "", type: "", stock: "" });
     };
 
-    // Delete variant(index- variant to remove)
     const removeVariant = (index) => {
         const newVariants = [...formData.variants];
         newVariants.splice(index, 1);
         setFormData({ ...formData, variants: newVariants });
     };
 
-    // clean data
     const handleSubmit = (e) => {
         e.preventDefault();
         const cleanedData = {
@@ -180,23 +156,20 @@ const ProductForm = ({ show, onClose, product, onSave }) => {
             category: formData.category,
             size: formData.size,
             price: Number(formData.price),
-            //if empty -send null, if has a value-convert string to number
             sale_price: formData.sale_price === "" ? null : Number(formData.sale_price),
             sale_percentage: formData.sale_percentage === "" ? null : Number(formData.sale_percentage),
             is_bundle: formData.is_bundle,
             date_added: formData.date_added,
-            //It takes the array of variants from the form
-            // and creates a new array 
-            // with each variant's stock converted from a string to a number.
             variants: formData.variants.map(v => ({
                 id: v.id,
                 type: v.type,
-                stock: Number(v.stock),// e nevojshme nga dto e VarantDto must be a number
+                stock: Number(v.stock),
             }))
         };
         onSave(cleanedData);
     };
 
+    // The rest of your JSX remains exactly the same...
     return (
         <Modal show={show} onHide={onClose} size="lg" animation={false}>
             <Modal.Header closeButton>
@@ -214,10 +187,9 @@ const ProductForm = ({ show, onClose, product, onSave }) => {
                                     value={formData.id}
                                     onChange={handleChange}
                                     required
-                                    disabled={!!product} // Disabled in edit mode
-                                    isInvalid={!!idError && !product} // Show red border only in create mode
+                                    disabled={!!product}
+                                    isInvalid={!!idError && !product}
                                 />
-                                {/* Show error message if ID is duplicate (only in create mode) */}
                                 {!product && (
                                     <Form.Control.Feedback type="invalid">
                                         {idError}
@@ -239,9 +211,8 @@ const ProductForm = ({ show, onClose, product, onSave }) => {
                                     value={formData.title}
                                     onChange={handleChange}
                                     required
-                                    isInvalid={!!titleError} // red border when error
+                                    isInvalid={!!titleError}
                                 />
-                                {/* Show error message if title is duplicate */}
                                 <Form.Control.Feedback type="invalid">
                                     {titleError}
                                 </Form.Control.Feedback>
@@ -252,7 +223,7 @@ const ProductForm = ({ show, onClose, product, onSave }) => {
                         </Col>
                     </Row>
 
-                    {/* Rest of the form remains exactly the same */}
+                    {/* Rest of your form remains exactly the same */}
                     <Row>
                         <Col md={4}>
                             <Form.Group className="mb-3">

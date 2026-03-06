@@ -37,7 +37,7 @@ export class ProductsService {
     }
 
     // CREATE a new product
-   public async createProduct(createProductDto: CreateProductDto) {
+    public async createProduct(createProductDto: CreateProductDto) {
         try {
             // check-ojme nese id eshte e dublicate
             const existingProduct = await this.productRepository.findOne({
@@ -54,25 +54,50 @@ export class ProductsService {
     }
 
     // UPDATE a product
-   public async updateProduct(id: string, updateProductDto: UpdateProductDto) {
+    public async updateProduct(id: string, updateProductDto: UpdateProductDto) {
         try {
             // Check if product exists with variants 
-            const product = await this.productRepository.findOne({ where: { id } }); //, relations: ['variants'] mund te perdoret relations per me gjet variants por e kemi eager true dhe do te na kthej automatikisht variants me produktin
+            const product = await this.productRepository.findOne({
+                where: { id },
+                relations: ['variants']
+            });
+
             if (!product) {
                 throw new NotFoundException(`Product with ID ${id} not found`);
             }
+
             console.log('Found product:', product.id);
+            console.log('Product before update:', {
+                title: product.title,
+                price: product.price,
+                size: product.size
+            });
+
             // Separate variants from product data
             const { variants, ...productData } = updateProductDto;
 
-           // Handle variants if provided
+            // ✅ STEP 1: Update the product data (title, price, size, etc.)
+            if (Object.keys(productData).length > 0) {
+                console.log('Updating product data:', productData);
+
+                // Method 1: Using Object.assign
+                Object.assign(product, productData);
+                await this.productRepository.save(product);
+
+                // Method 2: Using update (alternative)
+                // await this.productRepository.update(id, productData);
+            }
+
+            // ✅ STEP 2: Handle variants if provided
             if (variants && variants.length > 0) {
-                // console.log('Updating variants:', variants);
+                console.log('Updating variants:', variants);
+
                 // Delete existing variants
                 if (product.variants && product.variants.length > 0) {
                     await this.variantRepository.delete({ product: { id } });
-                    // console.log('Deleted old variants');
+                    console.log('Deleted old variants');
                 }
+
                 // Create new variants
                 for (const v of variants) {
                     await this.variantRepository.save({
@@ -82,16 +107,17 @@ export class ProductsService {
                         product: { id }
                     });
                 }
+                console.log('Created new variants');
             }
-            // Return the updated product
+
+            // ✅ STEP 3: Return the fully updated product
             const updatedProduct = await this.productRepository.findOne({
                 where: { id },
                 relations: ['variants']
             });
-            // console.log('Product updated successfully');
             return updatedProduct;
         } catch (error) {
-            // console.error('Update product error:', error);
+            console.error('Update product error:', error);
             if (error instanceof NotFoundException) {
                 throw error;
             }
@@ -116,7 +142,7 @@ export class ProductsService {
                 statusCode: 200,
                 message: `Product with ID ${id} deleted successfully`
             };
-        }catch (error) { 
+        } catch (error) {
             if (error instanceof NotFoundException) {
                 throw error;
             }

@@ -1,32 +1,29 @@
-import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Form, Spinner, Alert } from 'react-bootstrap';
+import { useState, useEffect } from 'react';
+import { Container, Row, Col, Form, Spinner, Alert,Button } from 'react-bootstrap';
 import PlantCard from './plantcard';
 import FilterSidebar from './filtersidebar/';
-import axios from 'axios';
+import { useProductContext } from '../../Context/Product'; 
 import './indoor_plants.css';
 import '../../Pages/IndoorPlants/index.css';
 
 const IndoorPlants = () => {
-  const [products, setProducts] = useState([]);
-  const [error, setError] = useState(null);
+  
+  const { products, loading, error: contextError, getAllProducts } = useProductContext();
+
   const [sortOption, setSortOption] = useState('featured');
+  const [sortedProducts, setSortedProducts] = useState([]);
 
+  // Update sorted products when products from context change
   useEffect(() => {
-    const loadData = async () => {
-      try {
-        const response = await axios.get('http://localhost:3000/products');
-        console.log('Adding products:', response.data);
-        setProducts(response.data);
-        setError(null);
-      } catch (err) {
-        console.error('Error loading products:', err);
-        setError('Failed to load products.');
-      } 
-    };
-    loadData();
-  }, []);
+    if (products.length > 0) {
+      setSortedProducts([...products]);
+    } else {
+      setSortedProducts([]);
+    }
+  }, [products]);
 
-  //to get the actual price or final price the customer payes after all discounts
+  
+  // Calculate final price after all discounts
   const getActualPrice = (product) => {
     if (product.sale_price) {
       return product.sale_price;
@@ -42,29 +39,48 @@ const IndoorPlants = () => {
   const handleSortChange = (e) => {
     const value = e.target.value;
     setSortOption(value);
-    const sortedProducts = [...products];
+
+    const productsToSort = [...products]; // Use original products from context
+
     if (value === 'low') {
-      sortedProducts.sort((a, b) => getActualPrice(a) - getActualPrice(b));
+      productsToSort.sort((a, b) => getActualPrice(a) - getActualPrice(b));
     } else if (value === 'high') {
-      sortedProducts.sort((a, b) => getActualPrice(b) - getActualPrice(a));
+      productsToSort.sort((a, b) => getActualPrice(b) - getActualPrice(a));
     } else if (value === 'new') {
-      sortedProducts.sort((a, b) => {
+      productsToSort.sort((a, b) => {
         const dateA = new Date(a.date_added || 0);
         const dateB = new Date(b.date_added || 0);
-        return dateB - dateA; 
+        return dateB - dateA;
       });
+    } else {
+      // 'featured' - restore original order from context
+      setSortedProducts([...products]);
+      return;
     }
 
-    setProducts(sortedProducts);
+    setSortedProducts(productsToSort);
   };
 
+  // Show loading state
+  if (loading) {
+    return (
+      <Container className="mt-5 text-center">
+        <Spinner animation="border" variant="primary" />
+        <p className="mt-3">Loading beautiful plants...</p>
+      </Container>
+    );
+  }
+
   // Show error state
-  if (error) {
+  if (contextError) {
     return (
       <Container className="mt-5">
         <Alert variant="danger">
           <Alert.Heading>Connection Error</Alert.Heading>
-          <p>{error}</p>
+          <p>{contextError}</p>
+          <Button variant="outline-danger" onClick={() => getAllProducts()}>
+            Try Again
+          </Button>
         </Alert>
       </Container>
     );
@@ -104,19 +120,24 @@ const IndoorPlants = () => {
         </Row>
 
         <Row>
-
           <Col md={3}>
-            <FilterSidebar />
+            <FilterSidebar products={products} /> 
           </Col>
 
           <Col md={9}>
-            <Row xs={1} sm={2} lg={3} className="g-4">
-              {products.map((product) => (
-                <Col key={product.id}>
-                  <PlantCard product={product} />
-                </Col>
-              ))}
-            </Row>
+            {sortedProducts.length === 0 ? (
+              <Alert variant="warning">
+                No products match your criteria.
+              </Alert>
+            ) : (
+              <Row xs={1} sm={2} lg={3} className="g-4">
+                {sortedProducts.map((product) => (
+                  <Col key={product.id}>
+                    <PlantCard product={product} />
+                  </Col>
+                ))}
+              </Row>
+            )}
           </Col>
         </Row>
       </Container>

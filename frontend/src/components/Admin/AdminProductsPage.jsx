@@ -1,108 +1,141 @@
-import { useState, useEffect } from "react";
-import { Container, Button, Alert } from "react-bootstrap";
-import axios from "axios";
-import ProductTable from "./ProductTable";
-import ProductForm from "./ProductForm";
+import { useState } from 'react';
+import { Container, Button, Alert } from 'react-bootstrap';
+import { useProductContext } from '../../Context/Product';
+import ProductTable from './ProductTable';
+import ProductForm from './ProductForm';
+import ProductFilters from './ProductFilters';
+
 const AdminProductsPage = () => {
-    //products- holds product from backend
-    const [products, setProducts] = useState([]);
-    //edit product(when null-create, when has data-edit)
+    const {
+        products,
+        loading,
+        error,
+        createProduct,
+        updateProduct,
+        deleteProduct,
+        getAllProducts,
+    } = useProductContext();
+
     const [selectedProduct, setSelectedProduct] = useState(null);
-    //shows/close modal true/false
     const [showForm, setShowForm] = useState(false);
+    const [filteredProducts, setFilteredProducts] = useState([]); // NEW: for filtered products
 
-
-    // load all products
-    const loadData = async () => {
-        try {
-            const result = await axios.get("http://localhost:3000/products");
-            console.log("Products:", result.data);
-            setProducts(result.data);
-        } catch (err) {
-            console.error("Error loading products:", err);
-            alert("Cannot connect to backend");
-        }
-    };
-
-    useEffect(() => {
-        loadData();
-    }, []);
-
-
-    //kur klikohet edit
+    // Handlers 
     const handleEdit = (product) => {
-        console.log("Editing product:", product);
         setSelectedProduct(product);
         setShowForm(true);
     };
-    //kur klikohet add product
+
     const handleAdd = () => {
-        console.log("Adding new product");
-        setSelectedProduct(null); //create mode empty form
+        setSelectedProduct(null);
         setShowForm(true);
     };
-    //close form
+
     const handleCloseForm = () => {
-        console.log("Closing form");
         setShowForm(false);
         setSelectedProduct(null);
     };
-    //save the new product and the new changes
+
     const handleSave = async (productData) => {
         try {
-            let response;
             if (selectedProduct) {
-                response = await axios.put(`http://localhost:3000/products/${selectedProduct.id}`, productData);
-                alert("Product updated successfully!");
+                await updateProduct(selectedProduct.id, productData);
+                alert('Product updated successfully!');
             } else {
-                response = await axios.post("http://localhost:3000/products", productData);
-                alert("Product created successfully!");
+                await createProduct(productData);
+                alert('Product created successfully!');
             }
-            loadData();
             setShowForm(false);
             setSelectedProduct(null);
-
         } catch (err) {
-            console.error("Save error:", err);
-            const message = err.response?.data?.message || err.message;
-            alert(`Failed to save product: ${message}`);
+            console.error('Save error:', err);
+            alert(`Failed to save product: ${err.message}`);
         }
     };
 
+    // NEW: Handle filter changes from ProductFilters
+    const handleFilterChange = (filtered) => {
+        setFilteredProducts(filtered);
+    };
+
+    // Decide which products to display
+    const displayProducts = filteredProducts.length > 0 ? filteredProducts : products;
+
+    // Loading state
+    if (loading && products.length === 0) {
+        return (
+            <Container fluid className="p-4">
+                <h2 className="mb-4 fw-bold">Products</h2>
+                <Alert variant="info">Loading products...</Alert>
+            </Container>
+        );
+    }
+
+    // Error state 
+    if (error) {
+        return (
+            <Container fluid className="p-4">
+                <h2 className="mb-4 fw-bold">Products</h2>
+                <Alert variant="danger">
+                    Error: {error}
+                    <Button
+                        variant="outline-danger"
+                        size="sm"
+                        className="ms-3"
+                        onClick={getAllProducts}>
+                        Try Again
+                    </Button>
+                </Alert>
+            </Container>
+        );
+    }
+
     return (
-        <>
-            <Container fluid>
-                <h1 className=" mt-4">Admin Dashboard - Products</h1>
-                <Button
-                    className="mb-4 mt-4 "
-                    variant="primary"
-                    onClick={handleAdd}>
+        <Container fluid className="p-4">
+
+            {/*Page title + Add button*/}
+            <div className="d-flex justify-content-between align-items-center mb-4">
+                <h2 className="fw-bold mb-0">Products</h2>
+                <Button variant="success" onClick={handleAdd}>
                     + Add Product
                 </Button>
+            </div>
 
-                {products.length === 0 ? (
-                    <Alert variant="info">
-                        No products found. Click <strong>"Add Product"</strong> to create one.
-                    </Alert>
-                ) : (
-                    <ProductTable
-                        //component with props 
-                        products={products}//Parent-child prop1(prop name left, prop value right) what to display
-                        onEdit={handleEdit}//child-parent prop2(what to do when editing)
-                        loadData={loadData}// child-parent prp3(how to reload the data)
+            {/* Table or empty state */}
+            {products.length === 0 ? (
+                <Alert variant="info">
+                    No products found. Click <strong>"Add Product"</strong> to create one.
+                </Alert>
+            ) : (
+                <>
+                    {/* NEW: Add ProductFilters here */}
+                    <ProductFilters
+                        products={products}
+                        onFilterChange={handleFilterChange}
                     />
-                )}
 
-                {showForm && ( //show and hide form 
-                    <ProductForm
-                        show={showForm}
-                        product={selectedProduct}
-                        onClose={handleCloseForm}
-                        onSave={handleSave}
-                    />
-                )}
-            </Container>
-        </>
+                    <div className="table-responsive">
+                        <ProductTable
+                            products={displayProducts} 
+                            onEdit={handleEdit}
+                            onDelete={deleteProduct}
+                        />
+                    </div>
+                </>
+            )}
+
+            {/* Add / Edit modal */}
+            {showForm && (
+                <ProductForm
+                    show={showForm}
+                    product={selectedProduct}
+                    onClose={handleCloseForm}
+                    onSave={handleSave}
+                    allProducts={products}
+                />
+            )}
+
+        </Container>
     );
 };
 

@@ -1,0 +1,61 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&display=swap');
+/* page title */
+.ov-page-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.8rem;
+    color: #1b4332;
+    margin-bottom: 1.25rem;
+    font-weight: 400;
+}
+/* cards */
+.ov-card {
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px #1b43322f;
+}
+
+.ov-card:hover {
+    box-shadow: 0 10px 4px #1b43326f;
+}
+
+.ov-card-body {
+    padding: 24px 20px;
+    text-align: center;
+}
+
+.ov-card-icon {
+    margin-bottom: 8px;
+}
+
+.ov-card-num {
+    font-size: 2.6rem;
+    font-weight: 500;
+    line-height: 1;
+    margin-bottom: 6px;
+    color: #3a2c1b;
+}
+
+.ov-card-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #352109;
+}
+
+.ov-card--total {
+    background: rgba(249, 243, 205, 0.795);
+}
+
+.ov-card--stock {
+    background: rgb(242, 235, 220);
+}
+
+.ov-card--orders {
+    background: rgba(245, 217, 197, 0.789);
+}
+
+.ov-card--low {
+    background: rgb(251, 190, 190);
+}
+

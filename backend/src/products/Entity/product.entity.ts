@@ -31,7 +31,7 @@ export class Product {
     is_bundle: boolean;
 
     @Column({ type: 'date', nullable: true })
-    date_added: Date; 
+    date_added: Date;
     //if add and update nje produkt with variants, will autosave. 
     // 'remove' not necessary cuz we have cascadian ne productvariant
     @OneToMany(() => ProductVariant, variant => variant.product, { //Product → has many → ProductVariant
@@ -49,4 +49,3 @@ export class Product {
 // ManyToOne = child → parent → use @JoinColumn
 
 // OneToMany = parent → children → do NOT use @JoinColumn
-
