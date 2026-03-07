@@ -1,4 +1,3 @@
-// ProductTable.jsx
 import './ProductTable.css';
 import { GrFormEdit } from "react-icons/gr";
 import { GrFormTrash } from "react-icons/gr";

@@ -1,109 +1,83 @@
-import { useState, useEffect } from 'react';
-import { Form, Row, Col, Button, InputGroup } from 'react-bootstrap';
+// ProductFilters.jsx (simplified helpers)
+import { useState } from 'react';
+import { Form, Row, Col, InputGroup, Button } from 'react-bootstrap';
 import { Search } from 'react-bootstrap-icons';
-import './ProductFilters.css';
+import ProductTable from './ProductTable';
 
-const ProductFilters = ({ products, onFilterChange }) => {
+const ProductFilters = ({ products, onEdit, onDelete }) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [category, setCategory] = useState('All');
     const [stockStatus, setStockStatus] = useState('All');
     const [saleStatus, setSaleStatus] = useState('All');
-    const [priceRange, setPriceRange] = useState({ min: '', max: '' });
+    const [priceFilter, setPriceFilter] = useState('All');
     const [sortBy, setSortBy] = useState('featured');
 
-    // Helper function to calculate total stock
-    const getTotalStock = (variants) => {
-        return variants?.reduce((sum, v) => sum + v.stock, 0) || 0;
-    };
+    // get total stock of a product
+    function getTotalStock(variants) {
+        return !variants?.length ? 0 : variants.reduce((sum, v) => sum + v.stock, 0);
+    }
+    // !variants?.length is true when the array is missing or empty.
+//If condition is true(!variants?.length) → return 0
+// If condition is false → return sum of stocks
+    //If there’s no array or it’s empty, return 0. Otherwise, sum the stock.
 
-    // Helper function to get final price after discount
-    const getActualPrice = (product) => {
+    //  get actual price after sale/discount
+    function getActualPrice(product) {
         if (product.sale_price) {
-            return product.sale_price;
+            return parseFloat(product.sale_price);
         }
+
         if (product.sale_percentage) {
-            const discounted = product.price - (product.price * product.sale_percentage / 100);
-            return Math.round(discounted * 100) / 100;
-        }
-        return product.price;
-    };
-
-    // Filter and sort products whenever any filter changes
-    useEffect(() => {
-        // First, filter the products
-        let filtered = products.filter((product) => {
-            // Search by title or ID
-            const matchesSearch = searchTerm === '' ||
-                product.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                product.id.toString().includes(searchTerm);
-
-            // Filter by category
-            const matchesCategory = category === 'All' || product.category === category;
-
-            // Filter by stock status
-            const stock = getTotalStock(product.variants);
-            let matchesStock = true;
-
-            if (stockStatus === 'In Stock') {
-                matchesStock = stock > 0;
-            }
-            else if (stockStatus === 'Low Stock (Total)') {
-                // Total product stock is low (≤3)
-                matchesStock = stock > 0 && stock <= 3;
-            }
-            else if (stockStatus === 'Low Stock (Variant)') {
-                // ANY variant has low stock (≤3) - including zero
-                matchesStock = product.variants?.some(v => v.stock <= 3) || false;
-            }
-            else if (stockStatus === 'Out of Stock') {
-                matchesStock = stock === 0;
-            }
-
-            // Filter by sale status
-            const isOnSale = product.sale_price || product.sale_percentage;
-            let matchesSale = true;
-            if (saleStatus === 'On Sale') {
-                matchesSale = isOnSale;
-            } else if (saleStatus === 'Regular Price') {
-                matchesSale = !isOnSale;
-            }
-
-            // Filter by price range
-            const actualPrice = getActualPrice(product);
-            const matchesMinPrice = priceRange.min === '' || actualPrice >= Number(priceRange.min);
-            const matchesMaxPrice = priceRange.max === '' || actualPrice <= Number(priceRange.max);
-
-            return matchesSearch && matchesCategory && matchesStock && matchesSale &&
-                matchesMinPrice && matchesMaxPrice;
-        });
-
-        // Then, sort the filtered products
-        if (sortBy === 'price_low') {
-            filtered.sort((a, b) => getActualPrice(a) - getActualPrice(b));
-        } else if (sortBy === 'price_high') {
-            filtered.sort((a, b) => getActualPrice(b) - getActualPrice(a));
-        } else if (sortBy === 'newest') {
-            filtered.sort((a, b) => {
-                const dateA = new Date(a.date_added || 0);
-                const dateB = new Date(b.date_added || 0);
-                return dateB - dateA;
-            });
-        } else if (sortBy === 'oldest') {
-            filtered.sort((a, b) => {
-                const dateA = new Date(a.date_added || 0);
-                const dateB = new Date(b.date_added || 0);
-                return dateA - dateB;
-            });
-        } else if (sortBy === 'name') {
-            filtered.sort((a, b) => a.title.localeCompare(b.title));
+            let discount = product.price * (product.sale_percentage / 100);
+            let priceAfterDiscount = product.price - discount;
+            return Math.round(priceAfterDiscount * 100) / 100; // round to 2 decimals
         }
 
-        // Send filtered products back to parent
-        onFilterChange(filtered);
-    }, [products, searchTerm, category, stockStatus, saleStatus, priceRange, sortBy]);
+        return parseFloat(product.price);
+    }
 
-    // Get unique categories for dropdown
-    const categories = ['All', ...new Set(products.map(p => p.category).filter(Boolean))];
+    // Filter products
+    const filteredProducts = products.filter(product => {
+        // 1. Search filter
+        const lowerSearch = searchTerm.toLowerCase();
+        let matchesSearch = product.title.toLowerCase().includes(lowerSearch) ||
+            product.id.toString().includes(lowerSearch);
+
+        // 2. Category filter
+        let matchesCategory = category === 'All' || product.category === category;
+
+        // 3. Stock filter
+        const stock = getTotalStock(product.variants);
+        let matchesStock = stockStatus === 'In Stock' ? stock > 0
+            : stockStatus === 'Low Stock (Total)' ? stock > 0 && stock <= 5
+                : stockStatus === 'Low Stock (Variant)' ? product.variants?.some(v => v.stock <= 5)
+                    : stockStatus === 'Out of Stock' ? stock === 0
+                        : true;
+
+        // 4. Sale filter
+        let matchesSale = saleStatus === 'On Sale' ? !!product.sale_price
+            : saleStatus === 'Sale Percentage' ? !!product.sale_percentage
+                : saleStatus === 'Regular Price' ? !product.sale_price && !product.sale_percentage
+                    : true; // show all products if no filter
+
+        // 5. Price filter
+        const actualPrice = getActualPrice(product);
+        let matchesPrice = priceFilter === 'under50' ? actualPrice <= 50
+            : priceFilter === 'over50' ? actualPrice > 50
+                : true;
+
+        return matchesSearch && matchesCategory && matchesStock && matchesSale && matchesPrice;
+    });
+
+    // Sort products
+    const sortedProducts = [...filteredProducts].sort((a, b) => {
+        if (sortBy === 'price_low') return getActualPrice(a) - getActualPrice(b);
+        if (sortBy === 'price_high') return getActualPrice(b) - getActualPrice(a);
+        if (sortBy === 'newest') return new Date(b.date_added) - new Date(a.date_added);
+        if (sortBy === 'oldest') return new Date(a.date_added) - new Date(b.date_added);
+        if (sortBy === 'name') return a.title.localeCompare(b.title);
+        return 0;
+    });
 
     // Reset all filters
     const resetFilters = () => {
@@ -111,139 +85,134 @@ const ProductFilters = ({ products, onFilterChange }) => {
         setCategory('All');
         setStockStatus('All');
         setSaleStatus('All');
-        setPriceRange({ min: '', max: '' });
+        setPriceFilter('All');
         setSortBy('featured');
     };
 
+    // Get categories for dropdown
+    const categories = ['All', ...new Set(products.map(p => p.category).filter(Boolean))];
+
     return (
-        <div className="product-filters p-4 mb-4 bg-light rounded">
-            {/* Search Bar */}
-            <Row className="g-3 mb-4">
-                <Col md={12}>
-                    <InputGroup>
-                        <InputGroup.Text className="filter-control">
-                            <Search size={20} />
-                        </InputGroup.Text>
-                        <Form.Control
-                            type="text"
-                            placeholder="Search by product name or ID..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            className="filter-control"
-                        />
-                    </InputGroup>
-                </Col>
-            </Row>
+        <>
+            <div className="product-filters p-4 mb-4 bg-light rounded">
 
-            {/* Filters Row  */}
-            <Row className="g-3">
-                {/* Category Filter */}
-                <Col md={3} sm={6}>
-                    <Form.Group>
-                        <Form.Label className="fw-bold text-muted small">CATEGORY</Form.Label>
-                        <Form.Select
-                            value={category}
-                            onChange={(e) => setCategory(e.target.value)}
-                            className="filter-select"
-                        >
-                            {categories.map(cat => (
-                                <option key={cat} value={cat}>{cat}</option>
-                            ))}
-                        </Form.Select>
-                    </Form.Group>
-                </Col>
+                {/* Search Bar */}
+                <Row className="g-3 mb-4">
+                    <Col md={12}>
+                        <Form.Group>
+                            <Form.Label className="fw-bold text-muted small">SEARCH</Form.Label>
+                            <InputGroup>
+                                <InputGroup.Text className="filter-control">
+                                    <Search size={20} />
+                                </InputGroup.Text>
+                                <Form.Control
+                                    type="text"
+                                    placeholder="Search by product name or ID..."
+                                    value={searchTerm}
+                                    onChange={e => setSearchTerm(e.target.value)}
+                                    className="filter-control"
+                                />
+                            </InputGroup>
+                        </Form.Group>
+                    </Col>
+                </Row>
 
-                {/* Stock Status Filter */}
-                <Col md={3} sm={6}>
-                    <Form.Group>
-                        <Form.Label className="fw-bold text-muted small">STOCK STATUS</Form.Label>
-                        <Form.Select
-                            value={stockStatus}
-                            onChange={(e) => setStockStatus(e.target.value)}
-                            className="filter-select"
-                        >
-                            <option value="All">All Stock</option>
-                            <option value="In Stock">In Stock</option>
-                            <option value="Low Stock (Total)">Low Stock (Total ≤3)</option>
-                            <option value="Low Stock (Variant)">Low Stock (Any Variant ≤3)</option>
-                            <option value="Out of Stock">Out of Stock</option>
-                        </Form.Select>
-                    </Form.Group>
-                </Col>
+                {/* Filters Row */}
+                <Row className="g-3">
 
-                {/* Sale Status Filter */}
-                <Col md={3} sm={6}>
-                    <Form.Group>
-                        <Form.Label className="fw-bold text-muted small">SALE STATUS</Form.Label>
-                        <Form.Select
-                            value={saleStatus}
-                            onChange={(e) => setSaleStatus(e.target.value)}
-                            className="filter-select"
-                        >
-                            <option value="All">All Items</option>
-                            <option value="On Sale">On Sale</option>
-                            <option value="Regular Price">Regular Price</option>
-                        </Form.Select>
-                    </Form.Group>
-                </Col>
+                    {/* Category */}
+                    <Col md={3}>
+                        <Form.Group>
+                            <Form.Label className="fw-bold text-muted small">CATEGORY</Form.Label>
+                            <Form.Select
+                                value={category}
+                                onChange={e => setCategory(e.target.value)}>
+                                {categories.map(c =>
+                                    <option key={c} value={c}>{c}</option>
+                                )}
+                            </Form.Select>
+                        </Form.Group>
+                    </Col>
 
-                {/* Sort By */}
-                <Col md={3} sm={6}>
-                    <Form.Group>
-                        <Form.Label className="fw-bold text-muted small">SORT BY</Form.Label>
-                        <Form.Select
-                            value={sortBy}
-                            onChange={(e) => setSortBy(e.target.value)}
-                            className="filter-select"
-                        >
-                            <option value="featured">Featured</option>
-                            <option value="newest">Newest First</option>
-                            <option value="oldest">Oldest First</option>
-                            <option value="price_low">Price: Low to High</option>
-                            <option value="price_high">Price: High to Low</option>
-                            <option value="name">Name A-Z</option>
-                        </Form.Select>
-                    </Form.Group>
-                </Col>
-            </Row>
+                    {/* Stock Status */}
+                    <Col md={3}>
+                        <Form.Group>
+                            <Form.Label className="fw-bold text-muted small">STOCK STATUS</Form.Label>
+                            <Form.Select
+                                value={stockStatus}
+                                onChange={e => setStockStatus(e.target.value)}>
+                                <option>All</option>
+                                <option>In Stock</option>
+                                <option>Low Stock (Total)</option>
+                                <option>Low Stock (Variant)</option>
+                                <option>Out of Stock</option>
+                            </Form.Select>
+                        </Form.Group>
+                    </Col>
 
-            {/* Price Range Row */}
-            <Row className="g-3 mt-2">
-                <Col md={4}>
-                    <Form.Group>
-                        <Form.Label className="fw-bold text-muted small">MIN PRICE ($)</Form.Label>
-                        <Form.Control
-                            type="number"
-                            placeholder="Min"
-                            value={priceRange.min}
-                            onChange={(e) => setPriceRange({ ...priceRange, min: e.target.value })}
-                            className="filter-control"
-                        />
-                    </Form.Group>
-                </Col>
-                <Col md={4}>
-                    <Form.Group>
-                        <Form.Label className="fw-bold text-muted small">MAX PRICE ($)</Form.Label>
-                        <Form.Control
-                            type="number"
-                            placeholder="Max"
-                            value={priceRange.max}
-                            onChange={(e) => setPriceRange({ ...priceRange, max: e.target.value })}
-                            className="filter-control"
-                        />
-                    </Form.Group>
-                </Col>
-                <Col md={4} className="d-flex align-items-end">
-                    <Button
-                        variant="outline-secondary"
-                        onClick={resetFilters}
-                        className="w-100"
-                    >
-                        Reset All Filters
-                    </Button>
-                </Col>
-            </Row>
-        </div>
+                    {/* Sale Status */}
+                    <Col md={3}>
+                        <Form.Group>
+                            <Form.Label className="fw-bold text-muted small">SALE STATUS</Form.Label>
+                            <Form.Select
+                                value={saleStatus}
+                                onChange={e => setSaleStatus(e.target.value)}>
+                                <option>All</option>
+                                <option>On Sale</option>
+                                <option>Sale Percentage</option>
+                                <option>Regular Price</option>
+                            </Form.Select>
+                        </Form.Group>
+                    </Col>
+
+                    {/* Price Filter */}
+                    <Col md={3}>
+                        <Form.Group>
+                            <Form.Label className="fw-bold text-muted small">PRICE RANGE</Form.Label>
+                            <Form.Select
+                                value={priceFilter}
+                                onChange={e => setPriceFilter(e.target.value)}>
+                                <option>All</option>
+                                <option value="under50">Under $50</option>
+                                <option value="over50">Over $50</option>
+                            </Form.Select>
+                        </Form.Group>
+                    </Col>
+                </Row>
+
+                {/* Sort & Reset */}
+                <Row className="g-3 mt-2">
+
+                    <Col md={8}>
+                        <Form.Group>
+                            <Form.Label className="fw-bold text-muted small">SORT BY</Form.Label>
+                            <Form.Select
+                                value={sortBy}
+                                onChange={e => setSortBy(e.target.value)}>
+                                <option value="featured">Featured</option>
+                                <option value="newest">Newest First</option>
+                                <option value="oldest">Oldest First</option>
+                                <option value="price_low">Price: Low to High</option>
+                                <option value="price_high">Price: High to Low</option>
+                                <option value="name">Name A-Z</option>
+                            </Form.Select>
+                        </Form.Group>
+                    </Col>
+
+                    <Col md={4}>
+                        <Form.Label className="fw-bold text-muted small">RESET</Form.Label>
+                        <Button
+                            variant="outline-secondary"
+                            className="w-100"
+                            onClick={resetFilters}>
+                            Reset All Filters
+                        </Button>
+                    </Col>
+                </Row>
+            </div>
+
+            <ProductTable products={sortedProducts} onEdit={onEdit} onDelete={onDelete} />
+        </>
     );
 };
 

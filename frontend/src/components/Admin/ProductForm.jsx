@@ -252,7 +252,7 @@ const ProductForm = ({ show, onClose, product, onSave, allProducts = [] }) => {
                                     required>
                                     <option value="Indoor">Indoor</option>
                                     <option value="Outdoor">Outdoor</option>
-                                    <option value="Succulents">Pet-Friendly</option>
+                                    <option value="Pet-Friendly">Pet-Friendly</option>
                                 </Form.Select>
                             </Form.Group>
                         </Col>
