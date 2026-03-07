@@ -1,11 +1,16 @@
-// src/Helper/FormatDateImage.ts
 export class FormatDateImage {
-    generateDate(fileName: string) {
-        const fileExtension = fileName.split('.').pop();
+    public generateDate(imageName: string) {
         const date = new Date();
-        const day = date.getDate().toString().padStart(2, '0');
-        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const categoryImage = imageName.split(".");
+
+        const fileExt = categoryImage.pop();
+
+        const fileName = categoryImage.join(".");
+
         const year = date.getFullYear();
-        return `${day}${month}${year}.${fileExtension}`;
+        const month = String(date.getMonth() + 1).padStart(2, '0');  // Fix: +1 and padStart
+        const day = String(date.getDate()).padStart(2, '0');         // Fix: getDate() not getDay()
+
+        return fileName + '_' + day + month + year + '.' + fileExt;
     }
 }

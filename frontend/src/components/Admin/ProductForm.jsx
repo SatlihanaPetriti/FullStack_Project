@@ -125,7 +125,6 @@ const ProductForm = ({ show, onClose, product, onSave, allProducts = [] }) => {
         setFormData({ ...formData, [name]: type === "checkbox" ? checked : value });
     };
 
-    // Rest of your functions remain exactly the same...
     const handleVariantChange = (e) => {
         const { name, value } = e.target;
         setVariantInput({ ...variantInput, [name]: value });
@@ -169,7 +168,6 @@ const ProductForm = ({ show, onClose, product, onSave, allProducts = [] }) => {
         onSave(cleanedData);
     };
 
-    // The rest of your JSX remains exactly the same...
     return (
         <Modal show={show} onHide={onClose} size="lg" animation={false}>
             <Modal.Header closeButton>
@@ -223,7 +221,6 @@ const ProductForm = ({ show, onClose, product, onSave, allProducts = [] }) => {
                         </Col>
                     </Row>
 
-                    {/* Rest of your form remains exactly the same */}
                     <Row>
                         <Col md={4}>
                             <Form.Group className="mb-3">
@@ -281,7 +278,7 @@ const ProductForm = ({ show, onClose, product, onSave, allProducts = [] }) => {
                                     value={formData.price}
                                     onChange={handleChange}
                                     min="0"
-                                    step="0.01"
+                                    step="1"
                                     required
                                 />
                             </Form.Group>
@@ -295,11 +292,9 @@ const ProductForm = ({ show, onClose, product, onSave, allProducts = [] }) => {
                                     value={formData.sale_price}
                                     onChange={handleChange}
                                     min="0"
-                                    step="0.01"
+                                    step="1"
                                 />
-                                <Form.Text className="text-muted">
-                                    If set, this overrides sale %
-                                </Form.Text>
+                            
                             </Form.Group>
                         </Col>
                         <Col md={4}>
@@ -313,9 +308,7 @@ const ProductForm = ({ show, onClose, product, onSave, allProducts = [] }) => {
                                     min="0"
                                     max="100"
                                 />
-                                <Form.Text className="text-muted">
-                                    Will show "SALE X% OFF" label
-                                </Form.Text>
+                               
                             </Form.Group>
                         </Col>
                     </Row>
