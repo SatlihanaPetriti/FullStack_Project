@@ -75,7 +75,6 @@ const ProductFilters = ({ products, onEdit, onDelete }) => {
         if (sortBy === 'price_high') return getActualPrice(b) - getActualPrice(a);
         if (sortBy === 'newest') return new Date(b.date_added) - new Date(a.date_added);
         if (sortBy === 'oldest') return new Date(a.date_added) - new Date(b.date_added);
-        if (sortBy === 'name') return a.title.localeCompare(b.title);
         return 0;
     });
 
@@ -194,7 +193,6 @@ const ProductFilters = ({ products, onEdit, onDelete }) => {
                                 <option value="oldest">Oldest First</option>
                                 <option value="price_low">Price: Low to High</option>
                                 <option value="price_high">Price: High to Low</option>
-                                <option value="name">Name A-Z</option>
                             </Form.Select>
                         </Form.Group>
                     </Col>
