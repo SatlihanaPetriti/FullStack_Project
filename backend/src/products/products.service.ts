@@ -1,3 +1,4 @@
+// src/products/products.service.ts
 import { Injectable, HttpException, HttpStatus, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -19,111 +20,135 @@ export class ProductsService {
     // GET all products
     public async getAllProducts() {
         try {
-            const products = await this.productRepository.find({});
-            return products;
+            return await this.productRepository.find({ relations: ['variants'] });
         } catch (error) {
-            // console.error('----Get products:', error);
-            throw new HttpException('Could not fetch products', HttpStatus.INTERNAL_SERVER_ERROR,);
+            throw new HttpException('Could not fetch products', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     // GET single product by ID
     public async getProductById(id: string) {
-        const product = await this.productRepository.findOne({ where: { id } });
-        if (!product) {
-            throw new NotFoundException(`Product with ID ${id} not found`);
-        }
+        const product = await this.productRepository.findOne({
+            where: { id },
+            relations: ['variants']
+        });
+        if (!product) throw new NotFoundException(`Product with ID ${id} not found`);
         return product;
     }
 
-    // CREATE a new product
-    public async createProduct(createProductDto: CreateProductDto) {
+    // CREATE a product with images
+    public async createProduct(createProductDto: CreateProductDto, files?: { variantImages?: Express.Multer.File[] }) {
         try {
-            // check-ojme nese id eshte e dublicate
-            const existingProduct = await this.productRepository.findOne({
-                where: { id: createProductDto.id }
-            });
-            if (existingProduct) {
-                throw new HttpException(`Product with ID ${createProductDto.id} already exists`, HttpStatus.BAD_REQUEST);
+            const existingProduct = await this.productRepository.findOne({ where: { id: createProductDto.id } });
+            if (existingProduct) throw new HttpException(`Product ${createProductDto.id} already exists`, HttpStatus.BAD_REQUEST);
+
+            const productData = { ...createProductDto };
+            const { variants, ...productDataWithoutVariants } = createProductDto;
+            const savedProduct = await this.productRepository.save(productDataWithoutVariants);
+
+           
+
+            const variantImages = files?.variantImages || [];
+            for (let i = 0; i < createProductDto.variants.length; i++) {
+                const v = createProductDto.variants[i];
+                const variantData: any = {
+                    id: v.id,
+                    type: v.type,
+                    stock: v.stock,
+                    product: savedProduct
+                };
+                if (variantImages[i]?.filename) {
+                    variantData.image = variantImages[i].filename;
+                }
+                await this.variantRepository.save(variantData);
             }
-            return await this.productRepository.save(createProductDto);
+
+            return await this.productRepository.findOne({
+                where: { id: savedProduct.id },
+                relations: ['variants']
+            });
+
         } catch (error) {
-            console.error('Create product error:', error);
-            throw error;
+            throw new HttpException(`Failed to create product: ${error.message}`, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    // UPDATE a product
-    public async updateProduct(id: string, updateProductDto: UpdateProductDto) {
+    // UPDATE a product with optional images
+    // backend/src/products/products.service.ts
+    public async updateProduct(
+        id: string,
+        updateProductDto: UpdateProductDto,
+        files?: { variantImages?: Express.Multer.File[] }
+    ) {
         try {
-            // Check if product exists with variants 
+            // 1️⃣ Fetch product with existing variants
             const product = await this.productRepository.findOne({
                 where: { id },
-                relations: ['variants']
+                relations: ['variants'],
             });
+            if (!product) throw new NotFoundException(`Product ${id} not found`);
 
-            if (!product) {
-                throw new NotFoundException(`Product with ID ${id} not found`);
-            }
-
-            console.log('Found product:', product.id);
-            console.log('Product before update:', {
-                title: product.title,
-                price: product.price,
-                size: product.size
-            });
-
-            // Separate variants from product data
             const { variants, ...productData } = updateProductDto;
 
-            // ✅ STEP 1: Update the product data (title, price, size, etc.)
-            if (Object.keys(productData).length > 0) {
-                console.log('Updating product data:', productData);
+            // 2️⃣ Update main product fields
+            Object.keys(productData).forEach((key) => {
+                if (productData[key] !== undefined) product[key] = productData[key];
+            });
+            await this.productRepository.save(product);
 
-                // Method 1: Using Object.assign
-                Object.assign(product, productData);
-                await this.productRepository.save(product);
+            const variantImages = files?.variantImages || [];
 
-                // Method 2: Using update (alternative)
-                // await this.productRepository.update(id, productData);
-            }
-
-            // ✅ STEP 2: Handle variants if provided
             if (variants && variants.length > 0) {
-                console.log('Updating variants:', variants);
+                // 3️⃣ Track variant IDs sent from frontend
+                const variantIdsFromFrontend = variants.map(v => v.id);
 
-                // Delete existing variants
-                if (product.variants && product.variants.length > 0) {
-                    await this.variantRepository.delete({ product: { id } });
-                    console.log('Deleted old variants');
+                // 4️⃣ Delete variants that are no longer in frontend submission
+                const variantsToDelete = product.variants.filter(
+                    v => !variantIdsFromFrontend.includes(v.id)
+                );
+                if (variantsToDelete.length > 0) {
+                    const idsToDelete = variantsToDelete.map(v => v.id);
+                    await this.variantRepository.delete(idsToDelete);
                 }
 
-                // Create new variants
-                for (const v of variants) {
-                    await this.variantRepository.save({
-                        id: v.id,
+                // 5️⃣ Update existing or create new variants
+                for (let i = 0; i < variants.length; i++) {
+                    const v = variants[i];
+                    const existingVariant = product.variants.find(varnt => varnt.id === v.id);
+
+                    const variantData: any = {
                         type: v.type,
                         stock: v.stock,
-                        product: { id }
-                    });
+                        product: { id },
+                    };
+
+                    // Assign image if new file uploaded
+                    if (variantImages[i]?.filename) {
+                        variantData.image = variantImages[i].filename;
+                    } else if (v.image) {
+                        variantData.image = v.image; // preserve existing image
+                    }
+
+                    if (existingVariant) {
+                        Object.assign(existingVariant, variantData);
+                        await this.variantRepository.save(existingVariant);
+                    } else {
+                        await this.variantRepository.save({ id: v.id, ...variantData });
+                    }
                 }
-                console.log('Created new variants');
             }
 
-            // ✅ STEP 3: Return the fully updated product
-            const updatedProduct = await this.productRepository.findOne({
+            // 6️⃣ Return updated product with all variants
+            return await this.productRepository.findOne({
                 where: { id },
-                relations: ['variants']
+                relations: ['variants'],
             });
-            return updatedProduct;
+
         } catch (error) {
             console.error('Update product error:', error);
-            if (error instanceof NotFoundException) {
-                throw error;
-            }
             throw new HttpException(
-                `Could not update product with ID ${id}: ${error.message}`,
-                HttpStatus.INTERNAL_SERVER_ERROR,
+                `Could not update product ${id}: ${error.message}`,
+                HttpStatus.INTERNAL_SERVER_ERROR
             );
         }
     }
@@ -131,25 +156,12 @@ export class ProductsService {
     // DELETE a product
     public async deleteProduct(id: string) {
         try {
-            // Check nese ekziston id
-            const product = await this.productRepository.findOne({ where: { id } });
-            if (!product) {
-                throw new NotFoundException(`Product with ID ${id} not found`);
-            }
-            // Delete the product (automatically cuz of CASCADE)
+            const product = await this.productRepository.findOne({ where: { id }, relations: ['variants'] });
+            if (!product) throw new NotFoundException(`Product ${id} not found`);
             await this.productRepository.delete(id);
-            return {
-                statusCode: 200,
-                message: `Product with ID ${id} deleted successfully`
-            };
+            return { statusCode: 200, message: `Product ${id} deleted successfully` };
         } catch (error) {
-            if (error instanceof NotFoundException) {
-                throw error;
-            }
-            throw new HttpException(
-                `Could not delete product with ID ${id}: ${error.message}`,
-                HttpStatus.INTERNAL_SERVER_ERROR,
-            );
+            throw new HttpException(`Could not delete product ${id}: ${error.message}`, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

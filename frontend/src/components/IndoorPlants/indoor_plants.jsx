@@ -13,7 +13,6 @@ const IndoorPlants = () => {
   const [sortOption, setSortOption] = useState('featured');
   const [sortedProducts, setSortedProducts] = useState([]);
 
-  // Update sorted products when products from context change
   useEffect(() => {
     if (products.length > 0) {
       setSortedProducts([...products]);
@@ -23,7 +22,6 @@ const IndoorPlants = () => {
   }, [products]);
 
   
-  // Calculate final price after all discounts
   const getActualPrice = (product) => {
     if (product.sale_price) {
       return product.sale_price;
@@ -34,13 +32,12 @@ const IndoorPlants = () => {
     }
     return product.price;
   };
-
-  // Handle sort 
+  
   const handleSortChange = (e) => {
     const value = e.target.value;
     setSortOption(value);
 
-    const productsToSort = [...products]; // Use original products from context
+    const productsToSort = [...products]; 
 
     if (value === 'low') {
       productsToSort.sort((a, b) => getActualPrice(a) - getActualPrice(b));
@@ -53,7 +50,6 @@ const IndoorPlants = () => {
         return dateB - dateA;
       });
     } else {
-      // 'featured' - restore original order from context
       setSortedProducts([...products]);
       return;
     }
@@ -61,7 +57,6 @@ const IndoorPlants = () => {
     setSortedProducts(productsToSort);
   };
 
-  // Show loading state
   if (loading) {
     return (
       <Container className="mt-5 text-center">

@@ -28,11 +28,11 @@ const FilterSidebar = () => {
                                 </span>
                             </summary>
                             <Form className="mt-2">
-                                {options.map((label, idx) => (
+                                {options.map((label, id) => (
                                     <Form.Check
                                         type="checkbox"
-                                        id={`${category} ${idx}`}
-                                        key={idx}
+                                        id={`${category} ${id}`}
+                                        key={id}
                                         label={label}
                                         className="mb-2"
                                     />

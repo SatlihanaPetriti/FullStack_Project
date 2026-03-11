@@ -20,6 +20,10 @@ export class VariantDto {
     @IsPositive({ message: 'Stock must be a positive number' })
     @Min(0, { message: 'Stock cannot be negative' })
     stock: number;        // stock must be ≥ 0
+    
+    @IsOptional()
+    @IsString()
+    image?: string;
 }
 
 //CreateProductDto percakton fushat qe duhen per te krijuar nje product and validations

@@ -25,7 +25,7 @@ const OverviewPage = () => {
 
     const totalProducts = products.length;
     const totalStock = products.reduce((sum, p) => sum + getTotalStock(p.variants), 0);
-    const pendingOrders = 0; // working...
+   
 
     // Calculate out of stock and low stock items
     const outOfStock = products.filter((p) => getTotalStock(p.variants) === 0).length;
@@ -34,7 +34,7 @@ const OverviewPage = () => {
         return stock > 0 && stock <= 5;
     }).length;
 
-    // Items needing attention (out of stock + low stock)
+    // out of stock + low stock
     const needAttention = outOfStock + lowStockItems;
 
     if (loading && products.length === 0) {
@@ -102,7 +102,7 @@ const OverviewPage = () => {
                 </Col>
             </Row>
 
-            {/* ── Products table ── */}
+            {/* Products table */}
             {products.length === 0 ? (
                 <Alert variant="info">
                     No products found. Go to <strong>Products</strong> to add one.

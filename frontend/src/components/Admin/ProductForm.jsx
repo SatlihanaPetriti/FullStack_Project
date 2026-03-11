@@ -1,10 +1,9 @@
-// ProductForm.jsx
-import React, { useState, useEffect } from "react";
-import { Modal, Button, Form, Row, Col, Table } from "react-bootstrap";
+import React, { useState, useEffect, useRef } from "react";
+import { Modal, Button, Form, Row, Col, Table, Alert } from "react-bootstrap";
 
-// Add allProducts prop
+const IMAGE_BASE_URL = "http://localhost:3000/products/uploads";
+
 const ProductForm = ({ show, onClose, product, onSave, allProducts = [] }) => {
-    //main form (default value)
     const [formData, setFormData] = useState({
         id: "",
         title: "",
@@ -19,16 +18,29 @@ const ProductForm = ({ show, onClose, product, onSave, allProducts = [] }) => {
         variants: [],
     });
 
-    // VARIANT INPUT
-    const [variantInput, setVariantInput] = useState({ id: "", type: "", stock: "" });
+    const [variantInput, setVariantInput] = useState({
+        id: "",
+        type: "",
+        stock: "",
+        imageFile: null,
+    });
 
-    // Add state for validation errors
+    const [variantPreviewUrl, setVariantPreviewUrl] = useState(null);
     const [idError, setIdError] = useState("");
     const [titleError, setTitleError] = useState("");
+    const fileInputRef = useRef(null);
 
-    // EDIT fill the form ready for edit (add if exists, empty if not)
     useEffect(() => {
         if (product) {
+            const variantsWithImage = product.variants.map(v => ({
+                id: v.id,
+                type: v.type,
+                stock: v.stock,
+                imageName: v.image || null,
+                imageFile: null,
+                previewUrl: v.image ? `${IMAGE_BASE_URL}/${v.image.replace(/^.*[\\/]/, '')}` : null,
+            }));
+
             setFormData({
                 id: product.id || "",
                 title: product.title || "",
@@ -40,12 +52,9 @@ const ProductForm = ({ show, onClose, product, onSave, allProducts = [] }) => {
                 sale_percentage: product.sale_percentage || "",
                 is_bundle: product.is_bundle || false,
                 date_added: product.date_added?.split("T")[0] || new Date().toISOString().split("T")[0],
-                variants: product.variants || [],
+                variants: variantsWithImage,
             });
-            setIdError("");
-            setTitleError("");
         } else {
-            // CREATE - empty form
             setFormData({
                 id: "",
                 title: "",
@@ -59,16 +68,17 @@ const ProductForm = ({ show, onClose, product, onSave, allProducts = [] }) => {
                 date_added: new Date().toISOString().split("T")[0],
                 variants: [],
             });
-            setIdError("");
-            setTitleError("");
         }
-    }, [product, show]); // Add show dependency to reset when modal opens/closes
 
-    // Check if ID is unique
+        setIdError("");
+        setTitleError("");
+        setVariantInput({ id: "", type: "", stock: "", imageFile: null });
+        setVariantPreviewUrl(null);
+    }, [product, show]);
+
     const isIdUnique = (idToCheck) => {
         if (!idToCheck) return true;
 
-        // If editing, exclude current product
         if (product) {
             return !allProducts.some(p =>
                 p.id.toLowerCase() === idToCheck.toLowerCase() &&
@@ -76,17 +86,14 @@ const ProductForm = ({ show, onClose, product, onSave, allProducts = [] }) => {
             );
         }
 
-        // If creating, check all products
         return !allProducts.some(p =>
             p.id.toLowerCase() === idToCheck.toLowerCase()
         );
     };
 
-    // Check if title is unique
     const isTitleUnique = (titleToCheck) => {
         if (!titleToCheck) return true;
 
-        // If editing, exclude current product
         if (product) {
             return !allProducts.some(p =>
                 p.title.toLowerCase() === titleToCheck.toLowerCase() &&
@@ -94,90 +101,140 @@ const ProductForm = ({ show, onClose, product, onSave, allProducts = [] }) => {
             );
         }
 
-        // If creating, check all products
         return !allProducts.some(p =>
             p.title.toLowerCase() === titleToCheck.toLowerCase()
         );
     };
 
-    // function that runs everytime when the user types in an input
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
 
-        // Special handling for ID field - check for duplicates in real-time
         if (name === "id") {
-            if (!isIdUnique(value)) {
-                setIdError("A product with this ID already exists!");
-            } else {
-                setIdError("");
-            }
+            const isUnique = isIdUnique(value);
+            setIdError(isUnique ? "" : "A product with this ID already exists!");
         }
 
-        // Special handling for title field - check for duplicates in real-time
         if (name === "title") {
-            if (!isTitleUnique(value)) {
-                setTitleError("A product with this title already exists!");
-            } else {
-                setTitleError("");
-            }
+            const isUnique = isTitleUnique(value);
+            setTitleError(isUnique ? "" : "A product with this title already exists!");
         }
 
-        setFormData({ ...formData, [name]: type === "checkbox" ? checked : value });
+        setFormData({
+            ...formData,
+            [name]: type === "checkbox" ? checked : value
+        });
     };
 
     const handleVariantChange = (e) => {
         const { name, value } = e.target;
-        setVariantInput({ ...variantInput, [name]: value });
+        setVariantInput({
+            ...variantInput,
+            [name]: value
+        });
+    };
+
+    const handleVariantImage = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setVariantInput({
+                ...variantInput,
+                imageFile: file
+            });
+            setVariantPreviewUrl(URL.createObjectURL(file));
+        }
     };
 
     const addVariant = () => {
-        if (!variantInput.id || !variantInput.type)
+        if (!variantInput.id || !variantInput.type) {
+            alert("Variant ID and Type are required");
             return;
+        }
+
+        if (formData.variants.some(v => v.id === variantInput.id)) {
+            alert("Variant ID already exists in this product");
+            return;
+        }
+
         setFormData({
             ...formData,
-            variants: [...formData.variants, { ...variantInput, stock: parseInt(variantInput.stock) || 0 }],
+            variants: [...formData.variants, {
+                id: variantInput.id,
+                type: variantInput.type,
+                stock: Number(variantInput.stock) || 0,
+                imageName: null,
+                imageFile: variantInput.imageFile || null,
+                previewUrl: variantPreviewUrl,
+            }],
         });
-        setVariantInput({ id: "", type: "", stock: "" });
+
+        setVariantInput({ id: "", type: "", stock: "", imageFile: null });
+        setVariantPreviewUrl(null);
+        if (fileInputRef.current) fileInputRef.current.value = "";
+    };
+
+    const handleReplaceVariantImage = (index, e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const url = URL.createObjectURL(file);
+        const newVariants = [...formData.variants];
+        newVariants[index] = {
+            ...newVariants[index],
+            imageFile: file,
+            previewUrl: url
+        };
+
+        setFormData({
+            ...formData,
+            variants: newVariants
+        });
     };
 
     const removeVariant = (index) => {
         const newVariants = [...formData.variants];
         newVariants.splice(index, 1);
-        setFormData({ ...formData, variants: newVariants });
+
+        setFormData({
+            ...formData,
+            variants: newVariants
+        });
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
+
         const cleanedData = {
-            id: formData.id,
-            title: formData.title,
-            label: formData.label || null,
-            category: formData.category,
-            size: formData.size,
+            ...formData,
             price: Number(formData.price),
             sale_price: formData.sale_price === "" ? null : Number(formData.sale_price),
             sale_percentage: formData.sale_percentage === "" ? null : Number(formData.sale_percentage),
-            is_bundle: formData.is_bundle,
-            date_added: formData.date_added,
             variants: formData.variants.map(v => ({
                 id: v.id,
                 type: v.type,
                 stock: Number(v.stock),
-            }))
+                imageName: v.imageFile ? null : (v.imageName || null),
+            })),
         };
-        onSave(cleanedData);
+
+        const imageFiles = formData.variants.map(v => v.imageFile || null);
+        onSave(cleanedData, imageFiles);
     };
 
     return (
         <Modal show={show} onHide={onClose} size="lg" animation={false}>
             <Modal.Header closeButton>
-                <Modal.Title>{product ? "Edit Product" : "Add New Product"}</Modal.Title>
+                <Modal.Title>
+                    {product ? "Edit Product" : "Add New Product"}
+                </Modal.Title>
             </Modal.Header>
+
             <Form onSubmit={handleSubmit}>
                 <Modal.Body>
-                    <Row>
+                    <h5>Product Information</h5>
+
+                    <Row className="mb-3">
                         <Col md={6}>
-                            <Form.Group className="mb-3">
+                            <Form.Group>
                                 <Form.Label>Product ID *</Form.Label>
                                 <Form.Control
                                     type="text"
@@ -185,23 +242,15 @@ const ProductForm = ({ show, onClose, product, onSave, allProducts = [] }) => {
                                     value={formData.id}
                                     onChange={handleChange}
                                     required
-                                    disabled={!!product}
-                                    isInvalid={!!idError && !product}
+                                    isInvalid={!!idError}
                                 />
-                                {!product && (
-                                    <Form.Control.Feedback type="invalid">
-                                        {idError}
-                                    </Form.Control.Feedback>
-                                )}
-                                <Form.Text className="text-muted">
-                                    {product
-                                        ? "ID cannot be changed after creation"
-                                        : "Unique product identifier (must be unique)"}
-                                </Form.Text>
+                                <Form.Control.Feedback type="invalid">
+                                    {idError}
+                                </Form.Control.Feedback>
                             </Form.Group>
                         </Col>
                         <Col md={6}>
-                            <Form.Group className="mb-3">
+                            <Form.Group>
                                 <Form.Label>Title *</Form.Label>
                                 <Form.Control
                                     type="text"
@@ -214,187 +263,257 @@ const ProductForm = ({ show, onClose, product, onSave, allProducts = [] }) => {
                                 <Form.Control.Feedback type="invalid">
                                     {titleError}
                                 </Form.Control.Feedback>
-                                <Form.Text className="text-muted">
-                                    Product display name (must be unique)
-                                </Form.Text>
                             </Form.Group>
                         </Col>
                     </Row>
 
-                    <Row>
+                    <Row className="mb-3">
                         <Col md={4}>
-                            <Form.Group className="mb-3">
+                            <Form.Group>
                                 <Form.Label>Label</Form.Label>
-                                <Form.Select
+                                <Form.Control
+                                    type="text"
                                     name="label"
                                     value={formData.label}
-                                    onChange={handleChange}>
-                                    <option value="">None</option>
-                                    <option value="NEW">NEW</option>
-                                    <option value="BESTSELLER">BESTSELLER</option>
-                                    <option value="SALE">SALE</option>
-                                    <option value="MOST_GIFTED">MOST_GIFTED</option>
-                                    <option value="LOW_MAINTENANCE">LOW_MAINTENANCE</option>
-                                    <option value="RARE_BLOOM">RARE_BLOOM</option>
-                                </Form.Select>
+                                    onChange={handleChange}
+                                />
                             </Form.Group>
                         </Col>
                         <Col md={4}>
-                            <Form.Group className="mb-3">
-                                <Form.Label>Category *</Form.Label>
+                            <Form.Group>
+                                <Form.Label>Category</Form.Label>
                                 <Form.Select
                                     name="category"
                                     value={formData.category}
                                     onChange={handleChange}
-                                    required>
-                                    <option value="Indoor">Indoor</option>
-                                    <option value="Outdoor">Outdoor</option>
-                                    <option value="Pet-Friendly">Pet-Friendly</option>
+                                >
+                                    <option>Indoor</option>
+                                    <option>Outdoor</option>
+                                    <option>Accessories</option>
                                 </Form.Select>
                             </Form.Group>
                         </Col>
                         <Col md={4}>
-                            <Form.Group className="mb-3">
-                                <Form.Label>Size *</Form.Label>
-                                <Form.Select name="size" value={formData.size} onChange={handleChange} required>
-                                    <option value="XS">XS</option>
-                                    <option value="SM">SM</option>
-                                    <option value="MD">MD</option>
-                                    <option value="LG">LG</option>
-                                    <option value="XL">XL</option>
-                                    <option value="XXL">XXL</option>
+                            <Form.Group>
+                                <Form.Label>Size</Form.Label>
+                                <Form.Select
+                                    name="size"
+                                    value={formData.size}
+                                    onChange={handleChange}
+                                >
+                                    <option>SM</option>
+                                    <option>MD</option>
+                                    <option>LG</option>
+                                    <option>XL</option>
                                 </Form.Select>
                             </Form.Group>
                         </Col>
                     </Row>
 
-                    <Row>
+                    <Row className="mb-3">
                         <Col md={4}>
-                            <Form.Group className="mb-3">
+                            <Form.Group>
                                 <Form.Label>Price *</Form.Label>
                                 <Form.Control
                                     type="number"
                                     name="price"
                                     value={formData.price}
                                     onChange={handleChange}
-                                    min="0"
-                                    step="1"
                                     required
+                                    step="0.01"
                                 />
                             </Form.Group>
                         </Col>
                         <Col md={4}>
-                            <Form.Group className="mb-3">
+                            <Form.Group>
                                 <Form.Label>Sale Price</Form.Label>
                                 <Form.Control
                                     type="number"
                                     name="sale_price"
                                     value={formData.sale_price}
                                     onChange={handleChange}
-                                    min="0"
-                                    step="1"
+                                    step="0.01"
                                 />
-                            
                             </Form.Group>
                         </Col>
                         <Col md={4}>
-                            <Form.Group className="mb-3">
-                                <Form.Label>Sale %</Form.Label>
+                            <Form.Group>
+                                <Form.Label>Sale Percentage</Form.Label>
                                 <Form.Control
                                     type="number"
                                     name="sale_percentage"
                                     value={formData.sale_percentage}
                                     onChange={handleChange}
-                                    min="0"
-                                    max="100"
+                                    step="0.01"
                                 />
-                               
                             </Form.Group>
                         </Col>
                     </Row>
 
-                    <Form.Group className="mb-3">
-                        <Form.Check
-                            type="checkbox"
-                            name="is_bundle"
-                            label="Is Bundle"
-                            checked={formData.is_bundle}
-                            onChange={handleChange} />
-                    </Form.Group>
-
-                    <Form.Group className="mb-3">
-                        <Form.Label>Date Added</Form.Label>
-                        <Form.Control
-                            type="date"
-                            name="date_added"
-                            value={formData.date_added}
-                            onChange={handleChange} />
-                    </Form.Group>
+                    <Row className="mb-3">
+                        <Col md={6}>
+                            <Form.Group>
+                                <Form.Label>Date Added</Form.Label>
+                                <Form.Control
+                                    type="date"
+                                    name="date_added"
+                                    value={formData.date_added}
+                                    onChange={handleChange}
+                                />
+                            </Form.Group>
+                        </Col>
+                        <Col md={6} className="d-flex align-items-end">
+                            <Form.Check
+                                type="checkbox"
+                                label="Is Bundle"
+                                name="is_bundle"
+                                checked={formData.is_bundle}
+                                onChange={handleChange}
+                            />
+                        </Col>
+                    </Row>
 
                     <hr />
-                    <h5>Variants</h5>
-                    <Row className="mb-3">
-                        <Col md={4}>
-                            <Form.Control
-                                type="text"
-                                name="id"
-                                placeholder="Variant ID (e.g., ALM-CLAY)"
-                                value={variantInput.id}
-                                onChange={handleVariantChange}
-                            />
-                        </Col>
-                        <Col md={4}>
-                            <Form.Control
-                                type="text"
-                                name="type"
-                                placeholder="Type (CLAY, SLATE, STONE...)"
-                                value={variantInput.type}
-                                onChange={handleVariantChange}
-                            />
+
+                    <h5>Add Variants with Images</h5>
+
+                    <Row className="mb-3 align-items-end">
+                        <Col md={2}>
+                            <Form.Group>
+                                <Form.Label>Variant ID *</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    name="id"
+                                    placeholder="e.g., red-sm"
+                                    value={variantInput.id}
+                                    onChange={handleVariantChange}
+                                />
+                            </Form.Group>
                         </Col>
                         <Col md={2}>
-                            <Form.Control
-                                type="number"
-                                name="stock"
-                                placeholder="Stock"
-                                value={variantInput.stock}
-                                onChange={handleVariantChange}
-                            />
+                            <Form.Group>
+                                <Form.Label>Type *</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    name="type"
+                                    placeholder="e.g., Red Small"
+                                    value={variantInput.type}
+                                    onChange={handleVariantChange}
+                                />
+                            </Form.Group>
                         </Col>
                         <Col md={2}>
-                            <Button variant="success" onClick={addVariant}>Add</Button>
+                            <Form.Group>
+                                <Form.Label>Stock</Form.Label>
+                                <Form.Control
+                                    type="number"
+                                    name="stock"
+                                    placeholder="0"
+                                    value={variantInput.stock}
+                                    onChange={handleVariantChange}
+                                />
+                            </Form.Group>
+                        </Col>
+                        <Col md={4}>
+                            <Form.Group>
+                                <Form.Label>Image</Form.Label>
+                                <Form.Control
+                                    ref={fileInputRef}
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={handleVariantImage}
+                                />
+                                {variantPreviewUrl && (
+                                    <img
+                                        src={variantPreviewUrl}
+                                        alt="preview"
+                                        style={{
+                                            width: 60,
+                                            height: 60,
+                                            borderRadius: 6,
+                                            marginTop: 6
+                                        }}
+                                    />
+                                )}
+                            </Form.Group>
+                        </Col>
+                        <Col md={2}>
+                            <Button
+                                variant="success"
+                                onClick={addVariant}
+                                className="w-100"
+                            >
+                                Add
+                            </Button>
                         </Col>
                     </Row>
 
                     {formData.variants.length > 0 && (
-                        <Table striped bordered size="sm">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Type</th>
-                                    <th>Stock</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {formData.variants.map((v, index) => (
-                                    <tr key={index}>
-                                        <td>{v.id}</td>
-                                        <td>{v.type}</td>
-                                        <td>{v.stock}</td>
-                                        <td>
-                                            <Button variant="danger" size="sm" onClick={() => removeVariant(index)}>
-                                                Remove
-                                            </Button>
-                                        </td>
+                        <>
+                            <h6 className="mt-4">Variants List</h6>
+                            <Table striped bordered hover responsive size="sm">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Type</th>
+                                        <th>Stock</th>
+                                        <th>Image</th>
+                                        <th>Replace Image</th>
+                                        <th>Action</th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </Table>
+                                </thead>
+                                <tbody>
+                                    {formData.variants.map((variant, index) => (
+                                        <tr key={index}>
+                                            <td>{variant.id}</td>
+                                            <td>{variant.type}</td>
+                                            <td>{variant.stock}</td>
+                                            <td>
+                                                {variant.previewUrl ? (
+                                                    <img
+                                                        src={variant.previewUrl}
+                                                        alt={variant.type}
+                                                        style={{
+                                                            width: 50,
+                                                            height: 50,
+                                                            objectFit: "cover",
+                                                            borderRadius: 4
+                                                        }}
+                                                    />
+                                                ) : (
+                                                    <small className="text-muted">
+                                                        No image
+                                                    </small>
+                                                )}
+                                            </td>
+                                            <td>
+                                                <Form.Control
+                                                    type="file"
+                                                    accept="image/*"
+                                                    size="sm"
+                                                    onChange={(e) => handleReplaceVariantImage(index, e)}
+                                                />
+                                            </td>
+                                            <td>
+                                                <Button
+                                                    variant="danger"
+                                                    size="sm"
+                                                    onClick={() => removeVariant(index)}
+                                                >
+                                                    Remove
+                                                </Button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </Table>
+                        </>
                     )}
 
                     {formData.variants.length === 0 && (
-                        <p className="text-danger">At least one variant is required</p>
+                        <Alert variant="warning" className="mt-3">
+                            At least one variant is required
+                        </Alert>
                     )}
                 </Modal.Body>
 
@@ -405,7 +524,12 @@ const ProductForm = ({ show, onClose, product, onSave, allProducts = [] }) => {
                     <Button
                         variant="primary"
                         type="submit"
-                        disabled={formData.variants.length === 0 || !!idError || !!titleError}>
+                        disabled={
+                            formData.variants.length === 0 ||
+                            !!idError ||
+                            !!titleError
+                        }
+                    >
                         {product ? "Save Changes" : "Create Product"}
                     </Button>
                 </Modal.Footer>

@@ -64,54 +64,38 @@ const PlantCard = ({ product }) => {
         return labels;
     };
 
-    // imageholder - with safety check
+    const IMAGE_BASE_URL = "http://localhost:3000/products/uploads";
+
+    // Show real image if selected variant has one, fallback to placeholder
     const holderImage = () => {
-        const displayText = selectedVariant?.type || 'Plant';
+        const imageName = selectedVariant?.image;
+        if (imageName) {
+            const filename = imageName.replace(/^.*[\\/]/, '');
+            const imageUrl = `${IMAGE_BASE_URL}/${filename}`;
+            return (
+                <>
+                    <img
+                        src={imageUrl}
+                        alt={selectedVariant?.type || product.title}
+                        className="plant-image"
+                        onError={(e) => {
+                            e.currentTarget.style.display = 'none';
+                            e.currentTarget.nextElementSibling.style.display = 'flex';
+                        }}
+                    />
+                    <div className="image-placeholder" style={{ display: 'none' }}>
+                        <span>{selectedVariant?.type || product.title}</span>
+                    </div>
+                </>
+            );
+        }
         return (
             <div className="image-placeholder">
-                <span>{displayText}</span>
+                <span>{selectedVariant?.type || product.title}</span>
             </div>
         );
     };
 
-    // If no variants at all, show a simplified card
-    if (!hasVariants) {
-        return (
-            <Card className="plant-card">
-                <div
-                    className="image-wrapper"
-                    onMouseEnter={() => setShowCartButton(true)}
-                    onMouseLeave={() => setShowCartButton(false)}>
-                    <div className="labels-container">
-                        {renderLabels()}
-                    </div>
-                    <div className="image-placeholder">
-                        <span>{product.title}</span>
-                    </div>
-                    <Button
-                        variant="dark"
-                        className={`cart-btn ${showCartButton ? 'show' : ''}`}>
-                        Add to Cart
-                    </Button>
-                </div>
-
-                <Card.Body className="details">
-                    <div className="title-row">
-                        <Card.Title className="title">{product.title}</Card.Title>
-                        <div className="price">{getPrice()}</div>
-                    </div>
-                    <div className="info-row">
-                        <div className="color-buttons">
-                            <span className="text-muted small">No variants</span>
-                        </div>
-                        <span className="size-badge">{product.size}</span>
-                    </div>
-                </Card.Body>
-            </Card>
-        );
-    }
-
-    // Normal rendering with variants
     return (
         <Card className="plant-card">
             <div

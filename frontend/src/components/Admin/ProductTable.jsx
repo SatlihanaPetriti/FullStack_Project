@@ -1,7 +1,13 @@
 import './ProductTable.css';
 import { GrFormEdit } from "react-icons/gr";
 import { GrFormTrash } from "react-icons/gr";
+import { Button } from "react-bootstrap";
+import { useState } from "react";
+import ImageModal from "./ImageModal";
+
 const ProductTable = ({ products, onEdit, onDelete }) => {
+    const [selectedProduct, setSelectedProduct] = useState(null);
+    const [showImageModal, setShowImageModal] = useState(false);
 
     const handleDelete = async (id) => {
         if (!window.confirm("Are you sure you want to delete this product?")) return;
@@ -27,6 +33,11 @@ const ProductTable = ({ products, onEdit, onDelete }) => {
         return `$${parseFloat(product.price).toFixed(2)}`;
     };
 
+    const handleViewImages = (product) => {
+        setSelectedProduct(product);
+        setShowImageModal(true);
+    };
+
     const totalUnits = products.reduce((s, p) => s + getTotalStock(p.variants), 0);
     const outOfStock = products.filter(p => getTotalStock(p.variants) === 0).length;
     const onSale = products.filter(p => p.sale_price || p.sale_percentage).length;
@@ -34,7 +45,7 @@ const ProductTable = ({ products, onEdit, onDelete }) => {
     return (
         <div className="plant-table-wrap">
 
-            {/* ── Decorative header bar ── */}
+            {/* header bar */}
             <div className="plant-table-topbar">
                 <span className="plant-table-title">Product Catalogue</span>
                 <div className="plant-table-topbar-stats">
@@ -60,6 +71,7 @@ const ProductTable = ({ products, onEdit, onDelete }) => {
                             <th>Price</th>
                             <th>Variants</th>
                             <th>Stock</th>
+                            <th>Images</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -67,7 +79,7 @@ const ProductTable = ({ products, onEdit, onDelete }) => {
                         {products.map((product, index) => {
                             const totalStock = getTotalStock(product.variants);
                             const isOut = totalStock === 0;
-                            const isLow = !isOut && totalStock <= 5;// low stock 
+                            const isLow = !isOut && totalStock <= 5;
 
                             return (
                                 <tr
@@ -117,12 +129,10 @@ const ProductTable = ({ products, onEdit, onDelete }) => {
 
                                     {/* Combined price cell */}
                                     <td className="plant-cell-price">
-                                        {/* Final price — always shown big on top */}
                                         <div className="plant-price-final">
                                             {getPriceAfterDiscount(product)}
                                         </div>
 
-                                        {/* sale_price case*/}
                                         {product.sale_price && (
                                             <div className="plant-price-meta">
                                                 <span className="plant-price-original--struck">
@@ -134,7 +144,6 @@ const ProductTable = ({ products, onEdit, onDelete }) => {
                                             </div>
                                         )}
 
-                                        {/* sale_percentage case: show original struck + % badge below */}
                                         {!product.sale_price && product.sale_percentage && (
                                             <div className="plant-price-meta">
                                                 <span className="plant-price-original--struck">
@@ -146,7 +155,6 @@ const ProductTable = ({ products, onEdit, onDelete }) => {
                                             </div>
                                         )}
 
-                                        {/* No discount — just show original */}
                                         {!product.sale_price && !product.sale_percentage && (
                                             <div className="plant-price-meta">
                                                 <span className="plant-price-base">
@@ -182,6 +190,24 @@ const ProductTable = ({ products, onEdit, onDelete }) => {
                                         </div>
                                     </td>
 
+                                    {/* Images column  */}
+                                    <td>
+                                        {product.variants?.some(v => v.image) ? (
+                                            <>
+                                                <Button
+                                                    variant="outline-info"
+                                                    size="sm"
+                                                    onClick={() => handleViewImages(product)}
+                                                >
+                                                    {product.variants.filter(v => v.image).length} images
+                                                </Button>
+                                                
+                                            </>
+                                        ) : (
+                                            <span className="text-muted">No images</span>
+                                        )}
+                                    </td>
+
                                     {/* Actions */}
                                     <td>
                                         <div className="plant-actions">
@@ -189,17 +215,25 @@ const ProductTable = ({ products, onEdit, onDelete }) => {
                                                 <GrFormEdit size={15} />Edit
                                             </button>
                                             <button className="plant-btn plant-btn--delete" onClick={() => handleDelete(product.id)}>
-                                                <GrFormTrash size={15}/>Delete
+                                                <GrFormTrash size={15} />Delete
                                             </button>
                                         </div>
                                     </td>
-
                                 </tr>
                             );
                         })}
                     </tbody>
                 </table>
             </div>
+
+            {/* Image Modal*/}
+            {showImageModal && (
+                <ImageModal
+                    show={showImageModal}
+                    onClose={() => setShowImageModal(false)}
+                    product={selectedProduct}
+                />
+            )}
         </div>
     );
 };

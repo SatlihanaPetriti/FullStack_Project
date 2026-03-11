@@ -1,41 +1,97 @@
 // src/products/products.controller.ts
-import { Controller, Get, Post, Put, Delete, Param, Body } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Param, Body, UseInterceptors, UploadedFiles, Res } from '@nestjs/common';
 import { ProductsService } from './products.service';
-import { CreateProductDto } from './dto/create-product.dto';
-import { UpdateProductDto } from './dto/update-product.dto';
+import { FormatDateImage } from 'src/Helper/FormatDateImage';
+import { AnyFilesInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import type { Response } from 'express';
+
+const formatDateImage = new FormatDateImage(); // Create instance
+
+const storage = diskStorage({
+    destination: './uploads',
+    filename: (req, file, cb) => {
+        const newFilename = formatDateImage.generateDate(file.originalname);
+        cb(null, newFilename);
+    }
+});
+
+function matchFilesToVariants(files: Express.Multer.File[]) {
+    const result: Express.Multer.File[] = [];  // 👈 Specifiko tipin
+
+    for (const file of files) {
+        const index = parseInt(file.fieldname.replace('variantImage_', ''));
+        result[index] = file;
+    }
+
+    return result;
+}
 
 @Controller('products')
 export class ProductsController {
     constructor(private readonly productService: ProductsService) { }
 
-    // GET all products
+    @Get('uploads/:filename')
+    serveImage(@Param('filename') filename: string, @Res() res: Response) {
+        res.sendFile(filename, { root: 'uploads' });
+    }
+
     @Get()
     async getAllProducts() {
         return await this.productService.getAllProducts();
     }
 
-    // GET single product by ID
     @Get(':id')
     async getProductById(@Param('id') id: string) {
         return await this.productService.getProductById(id);
     }
 
-    // CREATE a new product
     @Post()
-    async createProduct(@Body() createProductDto: CreateProductDto) {
-        return await this.productService.createProduct(createProductDto);
-    }
+    @UseInterceptors(AnyFilesInterceptor({ storage }))
+    async createProduct(
+        @Body() body: any,
+        @UploadedFiles() files: Express.Multer.File[]
+    ) {
+        // Parse të dhënat
+        let productData = body;
+        if (body.data) {
+            productData = JSON.parse(body.data);
+        }
 
-    // UPDATE a product
+        // Organizo imazhet - THJESHT KËSHTU!
+        const indexedFiles = matchFilesToVariants(files || []);
+
+        // Thirr service
+        return await this.productService.createProduct(
+            productData,
+            { variantImages: indexedFiles }
+        );
+    }
     @Put(':id')
+    @UseInterceptors(AnyFilesInterceptor({ storage }))
     async updateProduct(
         @Param('id') id: string,
-        @Body() updateProductDto: UpdateProductDto
+        @Body() body: any,
+        @UploadedFiles() files: Express.Multer.File[]
     ) {
-        return await this.productService.updateProduct(id, updateProductDto);
+        let productData = body;
+        if (body.data) {
+            productData = JSON.parse(body.data);
+        }
+
+        if (productData.variants) {
+            productData.variants = productData.variants.map((variant: any) => ({
+                ...variant,
+                image: variant.image || variant.image || null
+            }));
+        }
+
+        // 👇 TANI FUNKSIONON!
+        const indexedFiles = matchFilesToVariants(files || []);
+
+        return await this.productService.updateProduct(id, productData, { variantImages: indexedFiles as any });
     }
 
-    // DELETE a product
     @Delete(':id')
     async deleteProduct(@Param('id') id: string) {
         return await this.productService.deleteProduct(id);

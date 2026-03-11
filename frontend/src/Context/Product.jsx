@@ -14,7 +14,6 @@ const ProductProvider = (props) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
-    // Load all products
     const getAllProducts = async () => {
         setLoading(true);
         try {
@@ -31,7 +30,6 @@ const ProductProvider = (props) => {
         }
     };
 
-    // Get single product by ID
     const getProductById = async (id) => {
         setLoading(true);
         try {
@@ -46,13 +44,11 @@ const ProductProvider = (props) => {
         }
     };
 
-    // Create new product
-    const createProduct = async (productData) => {
+    const createProduct = async (productData, images = []) => {
         setLoading(true);
         try {
-            const result = await create_product_service(productData);
+            const result = await create_product_service(productData, images);
             if (result.status === 201 || result.status === 200) {
-                // Refresh the product list
                 await getAllProducts();
                 setError(null);
             }
@@ -66,15 +62,12 @@ const ProductProvider = (props) => {
         }
     };
 
-    // Update product
-    const updateProduct = async (id, productData) => {
+    const updateProduct = async (id, productData, images = []) => {
         setLoading(true);
         try {
-            const result = await update_product_service(id, productData);
+            const result = await update_product_service(id, productData, images);
             if (result.status === 200) {
-                setProducts(prev =>
-                    prev.map(p => p.id === id ? { ...p, ...productData } : p)
-                );
+                await getAllProducts();
                 setError(null);
             }
             return result;
@@ -87,13 +80,11 @@ const ProductProvider = (props) => {
         }
     };
 
-    // Delete product
     const deleteProduct = async (id) => {
         setLoading(true);
         try {
             const result = await delete_product_service(id);
             if (result.status === 200) {
-                // Refresh the product list
                 await getAllProducts();
                 setError(null);
             }
@@ -107,7 +98,6 @@ const ProductProvider = (props) => {
         }
     };
 
-    // Load products on mount
     useEffect(() => {
         getAllProducts();
     }, []);
@@ -130,12 +120,6 @@ const ProductProvider = (props) => {
     );
 };
 
-const useProductContext = () => {
-    const context = useContext(ProductContext);
-    if (!context) {
-        throw new Error("useProductContext must be used within a ProductProvider");
-    }
-    return context;
-};
+const useProductContext = () => { return useContext(ProductContext) }
 
 export { ProductProvider, useProductContext };

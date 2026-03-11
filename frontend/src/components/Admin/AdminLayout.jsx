@@ -12,7 +12,6 @@ const AdminLayout = ({ children }) => {
                     <span className="admin-logo-text">PlantShop<br /><small>Admin Dashboard</small></span>
                 </div>
 
-                {/* Navigation links */}
                 <Nav className="flex-column admin-nav">
                     <NavLink to="/admin/overview" className={({ isActive }) => 'admin-nav-link' + (isActive ? ' active' : '')}>
                          Overview
