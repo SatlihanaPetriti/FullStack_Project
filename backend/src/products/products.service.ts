@@ -73,15 +73,13 @@ export class ProductsService {
         }
     }
 
-    // UPDATE a product with optional images
-    // backend/src/products/products.service.ts
+ 
     public async updateProduct(
         id: string,
         updateProductDto: UpdateProductDto,
         files?: { variantImages?: Express.Multer.File[] }
     ) {
         try {
-            // 1️⃣ Fetch product with existing variants
             const product = await this.productRepository.findOne({
                 where: { id },
                 relations: ['variants'],
@@ -90,7 +88,6 @@ export class ProductsService {
 
             const { variants, ...productData } = updateProductDto;
 
-            // 2️⃣ Update main product fields
             Object.keys(productData).forEach((key) => {
                 if (productData[key] !== undefined) product[key] = productData[key];
             });
@@ -99,10 +96,8 @@ export class ProductsService {
             const variantImages = files?.variantImages || [];
 
             if (variants && variants.length > 0) {
-                // 3️⃣ Track variant IDs sent from frontend
                 const variantIdsFromFrontend = variants.map(v => v.id);
 
-                // 4️⃣ Delete variants that are no longer in frontend submission
                 const variantsToDelete = product.variants.filter(
                     v => !variantIdsFromFrontend.includes(v.id)
                 );
@@ -111,7 +106,6 @@ export class ProductsService {
                     await this.variantRepository.delete(idsToDelete);
                 }
 
-                // 5️⃣ Update existing or create new variants
                 for (let i = 0; i < variants.length; i++) {
                     const v = variants[i];
                     const existingVariant = product.variants.find(varnt => varnt.id === v.id);
@@ -138,7 +132,6 @@ export class ProductsService {
                 }
             }
 
-            // 6️⃣ Return updated product with all variants
             return await this.productRepository.findOne({
                 where: { id },
                 relations: ['variants'],

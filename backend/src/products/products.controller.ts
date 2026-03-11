@@ -52,13 +52,11 @@ export class ProductsController {
         @Body() body: any,
         @UploadedFiles() files: Express.Multer.File[]
     ) {
-        // Parse të dhënat
+     
         let productData = body;
-        if (body.data) {
-            productData = JSON.parse(body.data);
-        }
+    
 
-        // Organizo imazhet - THJESHT KËSHTU!
+     
         const indexedFiles = matchFilesToVariants(files || []);
 
         // Thirr service
@@ -86,7 +84,7 @@ export class ProductsController {
             }));
         }
 
-        // 👇 TANI FUNKSIONON!
+       
         const indexedFiles = matchFilesToVariants(files || []);
 
         return await this.productService.updateProduct(id, productData, { variantImages: indexedFiles as any });
