@@ -82,7 +82,7 @@ const OverviewPage = () => {
                         </Card.Body>
                     </Card>
                 </Col>
-                <Col xs={6} md={3}>
+                {/* <Col xs={6} md={3}>
                     <Card className="ov-card ov-card--orders">
                         <Card.Body className="ov-card-body">
                             <FaCartShopping size={52} color='#1b4332' className="ov-card-icon" />
@@ -90,7 +90,7 @@ const OverviewPage = () => {
                             <div className="ov-card-label">Pending Orders</div>
                         </Card.Body>
                     </Card>
-                </Col>
+                </Col> */}
                 <Col xs={6} md={3}>
                     <Card className="ov-card ov-card--low">
                         <Card.Body className="ov-card-body">

@@ -1,29 +1,27 @@
-// src/products/products.controller.ts
 import { Controller, Get, Post, Put, Delete, Param, Body, UseInterceptors, UploadedFiles, Res } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { FormatDateImage } from 'src/Helper/FormatDateImage';
 import { AnyFilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
+import { CreateProductDto } from './dto/create-product.dto';
+import { UpdateProductDto } from './dto/update-product.dto';
 import type { Response } from 'express';
 
-const formatDateImage = new FormatDateImage(); // Create instance
+const formatDateImage = new FormatDateImage();
 
 const storage = diskStorage({
     destination: './uploads',
     filename: (req, file, cb) => {
-        const newFilename = formatDateImage.generateDate(file.originalname);
-        cb(null, newFilename);
+        cb(null, formatDateImage.generateDate(file.originalname));
     }
 });
 
-function matchFilesToVariants(files: Express.Multer.File[]) {
-    const result: Express.Multer.File[] = [];  // 👈 Specifiko tipin
-
+function matchFilesToVariants(files: Express.Multer.File[]): Express.Multer.File[] {
+    const result: Express.Multer.File[] = [];
     for (const file of files) {
         const index = parseInt(file.fieldname.replace('variantImage_', ''));
         result[index] = file;
     }
-
     return result;
 }
 
@@ -49,45 +47,22 @@ export class ProductsController {
     @Post()
     @UseInterceptors(AnyFilesInterceptor({ storage }))
     async createProduct(
-        @Body() body: any,
+        @Body() body: CreateProductDto,
         @UploadedFiles() files: Express.Multer.File[]
     ) {
-     
-        let productData = body;
-    
-
-     
         const indexedFiles = matchFilesToVariants(files || []);
-
-        // Thirr service
-        return await this.productService.createProduct(
-            productData,
-            { variantImages: indexedFiles }
-        );
+        return await this.productService.createProduct(body, { variantImages: indexedFiles });
     }
+
     @Put(':id')
     @UseInterceptors(AnyFilesInterceptor({ storage }))
     async updateProduct(
         @Param('id') id: string,
-        @Body() body: any,
+        @Body() body: UpdateProductDto,
         @UploadedFiles() files: Express.Multer.File[]
     ) {
-        let productData = body;
-        if (body.data) {
-            productData = JSON.parse(body.data);
-        }
-
-        if (productData.variants) {
-            productData.variants = productData.variants.map((variant: any) => ({
-                ...variant,
-                image: variant.image || variant.image || null
-            }));
-        }
-
-       
         const indexedFiles = matchFilesToVariants(files || []);
-
-        return await this.productService.updateProduct(id, productData, { variantImages: indexedFiles as any });
+        return await this.productService.updateProduct(id, body, { variantImages: indexedFiles });
     }
 
     @Delete(':id')

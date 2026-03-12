@@ -13,17 +13,26 @@ export async function get_product_by_id_service(id) {
 export async function create_product_service(data, images = []) {
     const formData = new FormData();
 
-    // dergon t edhenat ne json string
-    formData.append('data', JSON.stringify(data));
+    formData.append('id', data.id);
+    formData.append('title', data.title);
+    formData.append('category', data.category);
+    formData.append('size', data.size);
+    formData.append('price', String(data.price));
 
-    // dergon pa json
-    if (images && images.length > 0) {
-        images.forEach((image, index) => {
-            if (image) {
-                formData.append(`variantImage_${index}`, image);
-            }
-        });
-    }
+    if (data.label) formData.append('label', data.label);
+    if (data.sale_price) formData.append('sale_price', String(data.sale_price));
+    if (data.sale_percentage) formData.append('sale_percentage', String(data.sale_percentage));
+    if (data.is_bundle != null) formData.append('is_bundle', String(data.is_bundle));
+    if (data.date_added) formData.append('date_added', data.date_added);
+
+    data.variants.forEach((variant, i) => {
+        formData.append(`variants[${i}][id]`, variant.id);
+        formData.append(`variants[${i}][type]`, variant.type);
+        formData.append(`variants[${i}][stock]`, String(variant.stock));
+        if (images[i]) {
+            formData.append(`variantImage_${i}`, images[i]);
+        }
+    });
 
     return await axios.post(`${URL}`, formData, {
         headers: { "Content-Type": "multipart/form-data" }
@@ -32,11 +41,28 @@ export async function create_product_service(data, images = []) {
 
 export async function update_product_service(id, data, images = []) {
     const formData = new FormData();
-    formData.append("data", JSON.stringify(data));
-    if (images && images.length > 0) {
-        images.forEach((img, index) => {
-            if (img) {
-                formData.append(`variantImage_${index}`, img); 
+
+    if (data.title) formData.append('title', data.title);
+    if (data.category) formData.append('category', data.category);
+    if (data.size) formData.append('size', data.size);
+    if (data.price) formData.append('price', String(data.price));
+    if (data.label) formData.append('label', data.label);
+    if (data.sale_price) formData.append('sale_price', String(data.sale_price));
+    if (data.sale_percentage) formData.append('sale_percentage', String(data.sale_percentage));
+    if (data.is_bundle != null) formData.append('is_bundle', String(data.is_bundle));
+    if (data.date_added) formData.append('date_added', data.date_added);
+
+    if (data.variants) {
+        data.variants.forEach((variant, i) => {
+            formData.append(`variants[${i}][id]`, variant.id);
+            formData.append(`variants[${i}][type]`, variant.type);
+            formData.append(`variants[${i}][stock]`, String(variant.stock));
+            if (variant.image && !images[i]) {
+                // preserve existing image filename from DB
+                formData.append(`variants[${i}][image]`, variant.image);
+            }
+            if (images[i]) {
+                formData.append(`variantImage_${i}`, images[i]);
             }
         });
     }
