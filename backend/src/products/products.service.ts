@@ -118,7 +118,7 @@ export class ProductsService {
                     if (variantImages[i]?.filename) {
                         variantData.image = variantImages[i].filename;
                     } else if (v.image) {
-                        variantData.image = v.image; // preserve existing image
+                        variantData.image = v.image;
                     }
 
                     if (existingVariant) {
