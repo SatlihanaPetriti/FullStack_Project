@@ -150,6 +150,11 @@ const ProductForm = ({ show, onClose, product, onSave, allProducts = [] }) => {
             return;
         }
 
+        if (!variantInput.imageFile) {
+            alert("Variant image is required");
+            return;
+        }
+
         if (formData.variants.some(v => v.id === variantInput.id)) {
             alert("Variant ID already exists in this product");
             return;
@@ -181,6 +186,7 @@ const ProductForm = ({ show, onClose, product, onSave, allProducts = [] }) => {
         newVariants[index] = {
             ...newVariants[index],
             imageFile: file,
+            imageName: null, 
             previewUrl: url
         };
 

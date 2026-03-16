@@ -58,7 +58,6 @@ export async function update_product_service(id, data, images = []) {
             formData.append(`variants[${i}][type]`, variant.type);
             formData.append(`variants[${i}][stock]`, String(variant.stock));
             if (variant.image && !images[i]) {
-                // preserve existing image filename from DB
                 formData.append(`variants[${i}][image]`, variant.image);
             }
             if (images[i]) {
