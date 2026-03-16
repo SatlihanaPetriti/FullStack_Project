@@ -43,7 +43,6 @@ export class ProductsService {
             if (existingProduct) 
                 throw new HttpException(`Product ${createProductDto.id} already exists`, HttpStatus.BAD_REQUEST);
 
-            const productData = { ...createProductDto };
             const { variants, ...productDataWithoutVariants } = createProductDto;
             const savedProduct = await this.productRepository.save(productDataWithoutVariants);
 
