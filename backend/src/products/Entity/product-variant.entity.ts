@@ -12,7 +12,7 @@ export class ProductVariant {
     @Column('int')
     stock: number;
 
-    @ManyToOne(() => Product, product => product.variants, {//  belong to one parent
+    @ManyToOne(() => Product, product => product.variants, {
         onDelete: 'CASCADE',
     })
     @JoinColumn({ name: 'productId' })
@@ -21,7 +21,7 @@ export class ProductVariant {
     @Column({ name: 'productId' })
     productId: string;
 
-    @Column({ nullable: true })
+    @Column()
     image: string;
 }
 //JoinColumn its written always to one side to the owning side(ManyToOne)

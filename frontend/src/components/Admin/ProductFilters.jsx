@@ -1,4 +1,3 @@
-// ProductFilters.jsx (simplified helpers)
 import { useState } from 'react';
 import { Form, Row, Col, InputGroup, Button } from 'react-bootstrap';
 import { Search } from 'react-bootstrap-icons';

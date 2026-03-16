@@ -1,4 +1,3 @@
-// src/products/products.service.ts
 import { Injectable, HttpException, HttpStatus, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -7,14 +6,10 @@ import { ProductVariant } from './Entity/product-variant.entity';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 
+
 @Injectable()
 export class ProductsService {
-    constructor(
-        @InjectRepository(Product)
-        private readonly productRepository: Repository<Product>,
-
-        @InjectRepository(ProductVariant)
-        private readonly variantRepository: Repository<ProductVariant>,
+    constructor(@InjectRepository(Product)private readonly productRepository: Repository<Product>,
     ) { }
 
     // GET all products
@@ -37,43 +32,59 @@ export class ProductsService {
     }
 
     // CREATE a product with images
-    public async createProduct(createProductDto: CreateProductDto, files?: { variantImages?: Express.Multer.File[] }) {
+    public async createProduct(
+        createProductDto: CreateProductDto,
+        files?: { variantImages?: Express.Multer.File[] }
+    ) {
         try {
-            const existingProduct = await this.productRepository.findOne({ where: { id: createProductDto.id } });
-            if (existingProduct) throw new HttpException(`Product ${createProductDto.id} already exists`, HttpStatus.BAD_REQUEST);
-
-            const productData = { ...createProductDto };
-            const { variants, ...productDataWithoutVariants } = createProductDto;
-            const savedProduct = await this.productRepository.save(productDataWithoutVariants);
-
-           
-
-            const variantImages = files?.variantImages || [];
-            for (let i = 0; i < createProductDto.variants.length; i++) {
-                const v = createProductDto.variants[i];
-                const variantData: any = {
-                    id: v.id,
-                    type: v.type,
-                    stock: v.stock,
-                    product: savedProduct
-                };
-                if (variantImages[i]?.filename) {
-                    variantData.image = variantImages[i].filename;
-                }
-                await this.variantRepository.save(variantData);
-            }
-
-            return await this.productRepository.findOne({
-                where: { id: savedProduct.id },
-                relations: ['variants']
+            const existing = await this.productRepository.findOne({
+                where: { id: createProductDto.id }
             });
+            if (existing) {
+                throw new HttpException('Product exists', HttpStatus.BAD_REQUEST);
+            }
+            // kontrollojme imazhet
+            const variantImages = files?.variantImages || [];
+
+            // cdo variant duhet te kete imazhe
+            if (variantImages.length !== createProductDto.variants.length) {
+                throw new HttpException(
+                    'Each variant must have an image',
+                    HttpStatus.BAD_REQUEST
+                );
+            }
+            //  bashkimi i varinteve me imazhet
+            const variantsWithImages = createProductDto.variants.map((v, i) => {
+                if (!variantImages[i]?.filename) {
+                    throw new HttpException(
+                        `Variant ${v.id} is missing an image`,
+                        HttpStatus.BAD_REQUEST
+                    );
+                }
+
+                return {
+                    ...v, // kthehen te gjitha variantet id, stock...
+                    image: variantImages[i].filename // si dhe imazhet nga file
+                };
+            });
+            // ruhet produkti
+            const savedProduct = await this.productRepository.save({
+                ...createProductDto,
+                variants: variantsWithImages
+            });
+            //variantsWithImages tani permban array e ri me productet dhe varaintet me imazhe  dhe kthehen ne front
+
+            return savedProduct; 
 
         } catch (error) {
-            throw new HttpException(`Failed to create product: ${error.message}`, HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new HttpException(
+                `Failed: ${error.message}`,
+                HttpStatus.INTERNAL_SERVER_ERROR
+            );
         }
     }
 
- 
+
     public async updateProduct(
         id: string,
         updateProductDto: UpdateProductDto,
@@ -82,79 +93,94 @@ export class ProductsService {
         try {
             const product = await this.productRepository.findOne({
                 where: { id },
-                relations: ['variants'],
             });
-            if (!product) throw new NotFoundException(`Product ${id} not found`);
+
+            if (!product) {
+                throw new NotFoundException(`Product ${id} not found`);
+            }
+            //  productData = { price: 65, label: "SALE" }
+            //Object.keys(productData) = ['price', 'label']
+            // HAPI 3: forEach kalon nëpër çdo key
+            // Iteracioni 1: key = 'price'
+            //   productData.price = 65 !== undefined
+            //   product.price = 65
 
             const { variants, ...productData } = updateProductDto;
-
+            // perditesohet fushat qe vijne nga frontend
             Object.keys(productData).forEach((key) => {
-                if (productData[key] !== undefined) product[key] = productData[key];
+                if (productData[key] !== undefined) {
+                    product[key] = productData[key];
+                }
             });
-            await this.productRepository.save(product);
-
+                //nese ka imazhe te reja i marrim ato
             const variantImages = files?.variantImages || [];
-
+                // nese kemi variante per te perditesuar(variante shtese)
             if (variants && variants.length > 0) {
-                const variantIdsFromFrontend = variants.map(v => v.id);
+                // checkojme nese cdo variant ka nje imazh
+                if (variantImages.length !== variants.length) {
+                    throw new HttpException(
+                        `Each variant must have an image.`,
+                        HttpStatus.BAD_REQUEST
+                    );
+                }
+                // krijohen varaintet e reja me imazhet perkatese
+                const variantEntities = variants.map((v, i) => {
+                    if (!variantImages[i]?.filename) {
+                        throw new HttpException(
+                            `Variant ${v.id} is missing an image`,
+                            HttpStatus.BAD_REQUEST
+                        );
+                    }
 
-                const variantsToDelete = product.variants.filter(
-                    v => !variantIdsFromFrontend.includes(v.id)
+                    const variant = new ProductVariant();
+                    variant.id = v.id;
+                    variant.type = v.type;
+                    variant.stock = v.stock;
+                    variant.image = variantImages[i].filename; // nese ka replace vendosim imazhin per i replacuar
+                    variant.product = product; // lidhet varianti me productin
+                    return variant;
+                });
+                // replace variantet e vjetra me te rejat
+                product.variants = variantEntities;
+
+            } else if (variants !== undefined) {
+                // nese dergohen bosh kthehet errro
+                throw new HttpException(
+                    'Product must have at least one variant',
+                    HttpStatus.BAD_REQUEST
                 );
-                if (variantsToDelete.length > 0) {
-                    const idsToDelete = variantsToDelete.map(v => v.id);
-                    await this.variantRepository.delete(idsToDelete);
-                }
-
-                for (let i = 0; i < variants.length; i++) {
-                    const v = variants[i];
-                    const existingVariant = product.variants.find(varnt => varnt.id === v.id);
-
-                    const variantData: any = {
-                        type: v.type,
-                        stock: v.stock,
-                        product: { id },
-                    };
-
-                    // Assign image if new file uploaded
-                    if (variantImages[i]?.filename) {
-                        variantData.image = variantImages[i].filename;
-                    } else if (v.image) {
-                        variantData.image = v.image; // preserve existing image
-                    }
-
-                    if (existingVariant) {
-                        Object.assign(existingVariant, variantData);
-                        await this.variantRepository.save(existingVariant);
-                    } else {
-                        await this.variantRepository.save({ id: v.id, ...variantData });
-                    }
-                }
             }
-
-            return await this.productRepository.findOne({
-                where: { id },
-                relations: ['variants'],
-            });
+                // ruhen ne database dhe kthehen ne front
+            const savedProduct = await this.productRepository.save(product);
+            return savedProduct;
 
         } catch (error) {
-            console.error('Update product error:', error);
-            throw new HttpException(
-                `Could not update product ${id}: ${error.message}`,
-                HttpStatus.INTERNAL_SERVER_ERROR
-            );
+            throw new HttpException(error.message,error.status || HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     // DELETE a product
     public async deleteProduct(id: string) {
         try {
-            const product = await this.productRepository.findOne({ where: { id }, relations: ['variants'] });
-            if (!product) throw new NotFoundException(`Product ${id} not found`);
-            await this.productRepository.delete(id);
-            return { statusCode: 200, message: `Product ${id} deleted successfully` };
+            const result = await this.productRepository.delete(id);
+
+            if (result.affected === 0) {
+                throw new NotFoundException(`Product ${id} not found`);
+            }
+
+            return {
+                statusCode: 200,
+                message: `Product ${id} deleted successfully`
+            };
+
         } catch (error) {
-            throw new HttpException(`Could not delete product ${id}: ${error.message}`, HttpStatus.INTERNAL_SERVER_ERROR);
+            if (error instanceof NotFoundException) {
+                throw error;
+            }
+            throw new HttpException(
+                `Could not delete product ${id}: ${error.message}`,
+                HttpStatus.INTERNAL_SERVER_ERROR
+            );
         }
     }
 }

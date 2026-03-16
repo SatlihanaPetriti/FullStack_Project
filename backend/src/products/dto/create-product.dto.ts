@@ -19,9 +19,9 @@ export class VariantDto {
     @Min(0, { message: 'Stock cannot be negative' })
     stock: number;
 
-    @IsOptional()
+    @IsNotEmpty({ message: 'Variant image is required' })
     @IsString()
-    image?: string;
+    image: string;
 }
 
 export class CreateProductDto {
