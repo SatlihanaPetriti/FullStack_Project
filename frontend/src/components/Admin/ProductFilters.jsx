@@ -23,7 +23,7 @@ const ProductFilters = ({ products, onEdit, onDelete }) => {
     //  get actual price after sale/discount
     function getActualPrice(product) {
         if (product.sale_price) {
-            return parseFloat(product.sale_price);
+            return parseFloat(product.sale_price); // parseFloat një string në numër (decimal).
         }
 
         if (product.sale_percentage) {
@@ -77,7 +77,14 @@ const ProductFilters = ({ products, onEdit, onDelete }) => {
         return 0;
     });
 
-    // Reset all filters
+    // Get categories for dropdown
+    const allCategories = products
+        .map(p => p.category)
+        .filter(cat => cat);
+
+    const uniqueCategories = [...new Set(allCategories)]; // liste pa dublikime
+    const categories = ['All', ...uniqueCategories];  // Reset all filters
+    
     const resetFilters = () => {
         setSearchTerm('');
         setCategory('All');
@@ -87,8 +94,6 @@ const ProductFilters = ({ products, onEdit, onDelete }) => {
         setSortBy('featured');
     };
 
-    // Get categories for dropdown
-    const categories = ['All', ...new Set(products.map(p => p.category).filter(Boolean))];
 
     return (
         <>
@@ -106,8 +111,8 @@ const ProductFilters = ({ products, onEdit, onDelete }) => {
                                 <Form.Control
                                     type="text"
                                     placeholder="Search by product name or ID..."
-                                    value={searchTerm}
-                                    onChange={e => setSearchTerm(e.target.value)}
+                                    value={searchTerm} // shfaq vleren aktuale nga state searchTerm(input)
+                                    onChange={e => setSearchTerm(e.target.value)} //perditeson state
                                     className="filter-control"
                                 />
                             </InputGroup>
@@ -123,8 +128,9 @@ const ProductFilters = ({ products, onEdit, onDelete }) => {
                         <Form.Group>
                             <Form.Label className="fw-bold text-muted small">CATEGORY</Form.Label>
                             <Form.Select
-                                value={category}
-                                onChange={e => setCategory(e.target.value)}>
+                                value={category} // SFAQ CILA ESHTE ZGJEDHUR
+                                // perditeson state kur ndryshon zgjedhja
+                                onChange={e => setCategory(e.target.value)}> 
                                 {categories.map(c =>
                                     <option key={c} value={c}>{c}</option>
                                 )}
@@ -207,7 +213,6 @@ const ProductFilters = ({ products, onEdit, onDelete }) => {
                     </Col>
                 </Row>
             </div>
-
             <ProductTable products={sortedProducts} onEdit={onEdit} onDelete={onDelete} />
         </>
     );

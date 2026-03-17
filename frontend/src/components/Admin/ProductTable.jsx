@@ -37,7 +37,7 @@ const ProductTable = ({ products, onEdit, onDelete }) => {
         setSelectedProduct(product);
         setShowImageModal(true);
     };
-
+    // stats ne topbar
     const totalUnits = products.reduce((s, p) => s + getTotalStock(p.variants), 0);
     const outOfStock = products.filter(p => getTotalStock(p.variants) === 0).length;
     const onSale = products.filter(p => p.sale_price || p.sale_percentage).length;
@@ -45,7 +45,7 @@ const ProductTable = ({ products, onEdit, onDelete }) => {
     return (
         <div className="plant-table-wrap">
 
-            {/* header bar */}
+            {/* topbar */}
             <div className="plant-table-topbar">
                 <span className="plant-table-title">Product Catalogue</span>
                 <div className="plant-table-topbar-stats">
@@ -85,7 +85,7 @@ const ProductTable = ({ products, onEdit, onDelete }) => {
                                 <tr
                                     key={product.id}
                                     className={`plant-row ${isOut ? 'plant-row--out' : isLow ? 'plant-row--low' : ''}`}
-                                    style={{ animationDelay: `${index * 0.04}s` }}>
+                                >
                                     <td></td>
 
                                     {/* Product ID + Title stacked */}
@@ -192,6 +192,7 @@ const ProductTable = ({ products, onEdit, onDelete }) => {
 
                                     {/* Images column  */}
                                     <td>
+                                        {/* kontrollohet nese ka te pakten nje imazh*/}
                                         {product.variants?.some(v => v.image) ? (
                                             <>
                                                 <Button
@@ -199,9 +200,9 @@ const ProductTable = ({ products, onEdit, onDelete }) => {
                                                     size="sm"
                                                     onClick={() => handleViewImages(product)}
                                                 >
-                                                    {product.variants.filter(v => v.image).length} images
+                                                    {product.variants.filter(v => v.image).length} images {/* nese ka behet sa me length*/}
                                                 </Button>
-                                                
+
                                             </>
                                         ) : (
                                             <span className="text-muted">No images</span>
@@ -239,3 +240,12 @@ const ProductTable = ({ products, onEdit, onDelete }) => {
 };
 
 export default ProductTable;
+
+// lexo ina
+// 1. Kliko butonin "3 images"
+// 2. setSelectedProduct(product) → selectedProduct = produkti aktual
+// 3. setShowImageModal(true) → showImageModal = true
+// 4. Kushti { showImageModal && ... } behet true
+// 5. Modali shfaqet me produktin e zgjedhur
+// 6. Kliko "Close" → onClose therret setShowImageModal(false)
+// 7. Modali mbyllet

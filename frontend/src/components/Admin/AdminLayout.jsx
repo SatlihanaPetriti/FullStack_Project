@@ -13,16 +13,19 @@ const AdminLayout = ({ children }) => {
                 </div>
 
                 <Nav className="flex-column admin-nav">
-                    <NavLink to="/admin/overview" className={({ isActive }) => 'admin-nav-link' + (isActive ? ' active' : '')}>
-                         Overview
+                    <NavLink to="/admin/overview" className="admin-nav-link">
+                        Overview
                     </NavLink>
-                    <NavLink to="/admin/products" className={({ isActive }) => 'admin-nav-link' + (isActive ? ' active' : '')}>
-                         Products
+
+                    <NavLink to="/admin/products" className="admin-nav-link">
+                        Products
                     </NavLink>
-                    <NavLink to="/admin/orders" className={({ isActive }) => 'admin-nav-link' + (isActive ? ' active' : '')}>
-                         Orders
+
+                    <NavLink to="/admin/orders" className="admin-nav-link">
+                        Orders
                     </NavLink>
-                    <NavLink to="/admin/inventory" className={({ isActive }) => 'admin-nav-link' + (isActive ? ' active' : '')}>
+
+                    <NavLink to="/admin/inventory" className="admin-nav-link">
                         Inventory
                     </NavLink>
                 </Nav>
