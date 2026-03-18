@@ -6,7 +6,7 @@ import { useState } from "react";
 import ImageModal from "./ImageModal";
 
 const ProductTable = ({ products, onEdit, onDelete }) => {
-    const [selectedProduct, setSelectedProduct] = useState(null);
+    const [selectedProduct, setSelectedProduct] = useState(null); // produkti qe zgjedhim per te pare imazhet
     const [showImageModal, setShowImageModal] = useState(false);
 
     const handleDelete = async (id) => {

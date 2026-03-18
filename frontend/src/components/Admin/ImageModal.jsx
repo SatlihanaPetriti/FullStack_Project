@@ -26,17 +26,17 @@ const ImageModal = ({ show, onClose, product }) => {
                     {variantsWithImages.length === 0 ? (
                         <p>No images available</p>
                     ) : (
-                            <div className="images-grid">
-                                {variantsWithImages.map((variant) => (
-                                    <div key={variant.id} className="image-item">
-                                        <div className="image-type">{variant.type}</div>
-                                        <img
-                                            src={getImageUrl(variant.image)}
-                                            alt={variant.type}
-                                        />
-                                    </div>
-                                ))}
-                            </div>
+                        <div className="images-grid">
+                            {variantsWithImages.map((variant) => (
+                                <div key={variant.id} className="image-item">
+                                    <div className="image-type">{variant.type}</div>
+                                    <img
+                                        src={getImageUrl(variant.image)}
+                                        alt={variant.type}
+                                    />
+                                </div>
+                            ))}
+                        </div>
                     )}
                 </div>
             </div>

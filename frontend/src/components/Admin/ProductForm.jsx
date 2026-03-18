@@ -1,211 +1,184 @@
-import React, { useState, useEffect, useRef } from "react";
-import { Modal, Button, Form, Row, Col, Table, Alert } from "react-bootstrap";
+import { useState, useEffect, useRef } from "react";
+import { Modal, Button, Form } from "react-bootstrap";
+import ProductInfo from "./ProductForm/ProductInfo";
+import VariantInput from "./ProductForm/VariantInput";
+import VariantList from "./ProductForm/VariantList";
+
 
 const IMAGE_BASE_URL = "http://localhost:3000/products/uploads";
 
+// gjendja fillestare (per krijimin e produktiti te ri)
+const EMPTY_FORM = {
+    id: "",
+    title: "",
+    label: "",
+    category: "Indoor",
+    size: "SM",
+    price: "",
+    sale_price: "",
+    sale_percentage: "",
+    is_bundle: false,
+    date_added: new Date().toISOString().split("T")[0],
+    variants: [],
+};
+
+const EMPTY_VARIANT_INPUT = {
+    id: "",
+    type: "",
+    stock: "",
+    imageFile: null,
+};
+// konverton variiantin nga serveri ne formatin e formes
+const toFormVariant = (v) => ({
+    id: v.id || "",
+    type: v.type || "",
+    stock: v.stock || 0,
+    imageName: v.image || "", 
+    imageFile: null,
+    previewUrl: v.image ? `${IMAGE_BASE_URL}/${v.image}` : null,
+});
+
+
+// merren props nga prinderi
 const ProductForm = ({ show, onClose, product, onSave, allProducts = [] }) => {
-    const [formData, setFormData] = useState({
-        id: "",
-        title: "",
-        label: "",
-        category: "Indoor",
-        size: "SM",
-        price: "",
-        sale_price: "",
-        sale_percentage: "",
-        is_bundle: false,
-        date_added: new Date().toISOString().split("T")[0],
-        variants: [],
-    });
-
-    const [variantInput, setVariantInput] = useState({
-        id: "",
-        type: "",
-        stock: "",
-        imageFile: null,
-    });
-
-    const [variantPreviewUrl, setVariantPreviewUrl] = useState(null);
-    const [idError, setIdError] = useState("");
-    const [titleError, setTitleError] = useState("");
+    // per te ruajtur te dhenat e plota
+    const [formData, setFormData] = useState(EMPTY_FORM);
+    // ruhen te dhenat e variantit para se te shtohen ne liste 
+    const [variantInput, setVariantInput] = useState(EMPTY_VARIANT_INPUT);
+    // shfaqja e imazhit
+    const [variantPreview, setVariantPreview] = useState(null);
+    //gaabimet e validimit
+    const [errors, setErrors] = useState({ id: "", title: "" });
+    // per te pastruar inputet e file pasi te shtohet nje variant 
     const fileInputRef = useRef(null);
 
+    // func pastrim i inputeve(pas shtimit te nje varianti inputet duhen t ejen bosh per te shtuar nje tjt)
+    const resetVariantInput = () => {
+        setVariantInput(EMPTY_VARIANT_INPUT);
+        setVariantPreview(null);
+        if (fileInputRef.current) fileInputRef.current.value = "";
+    };
+    // kontroollon nese eshte 2
+    const isUnique = (field, value) => {
+        if (!value) return true;
+        return !allProducts.some(p =>
+            p[field].toLowerCase() === value.toLowerCase() && p.id !== product?.id
+        );
+    };
+
+    // behet inicializimi i formes (ekzekutohet kur ndryshohet product ose show)
     useEffect(() => {
         if (product) {
-            const variantsWithImage = product.variants.map(v => ({
-                id: v.id,
-                type: v.type,
-                stock: v.stock,
-                imageName: v.image || null,
-                imageFile: null,
-                previewUrl: v.image ? `${IMAGE_BASE_URL}/${v.image.replace(/^.*[\\/]/, '')}` : null,
-            }));
-
             setFormData({
                 id: product.id || "",
                 title: product.title || "",
                 label: product.label || "",
                 category: product.category || "Indoor",
                 size: product.size || "SM",
-                price: product.price || "",
-                sale_price: product.sale_price || "",
-                sale_percentage: product.sale_percentage || "",
+                price: product.price ?? "",
+                sale_price: product.sale_price ?? "",
+                sale_percentage: product.sale_percentage ?? "",
                 is_bundle: product.is_bundle || false,
                 date_added: product.date_added?.split("T")[0] || new Date().toISOString().split("T")[0],
-                variants: variantsWithImage,
+                variants: product.variants?.map(toFormVariant) || [],
             });
         } else {
-            setFormData({
-                id: "",
-                title: "",
-                label: "",
-                category: "Indoor",
-                size: "SM",
-                price: "",
-                sale_price: "",
-                sale_percentage: "",
-                is_bundle: false,
-                date_added: new Date().toISOString().split("T")[0],
-                variants: [],
-            });
+            setFormData(EMPTY_FORM);
         }
-
-        setIdError("");
-        setTitleError("");
-        setVariantInput({ id: "", type: "", stock: "", imageFile: null });
-        setVariantPreviewUrl(null);
+        resetVariantInput();
+        setErrors({ id: "", title: "" });
     }, [product, show]);
 
-    const isIdUnique = (idToCheck) => {
-        if (!idToCheck) return true;
 
-        if (product) {
-            return !allProducts.some(p =>
-                p.id.toLowerCase() === idToCheck.toLowerCase() &&
-                p.id !== product.id
-            );
-        }
-
-        return !allProducts.some(p =>
-            p.id.toLowerCase() === idToCheck.toLowerCase()
-        );
-    };
-
-    const isTitleUnique = (titleToCheck) => {
-        if (!titleToCheck) return true;
-
-        if (product) {
-            return !allProducts.some(p =>
-                p.title.toLowerCase() === titleToCheck.toLowerCase() &&
-                p.id !== product.id
-            );
-        }
-
-        return !allProducts.some(p =>
-            p.title.toLowerCase() === titleToCheck.toLowerCase()
-        );
-    };
-
-    const handleChange = (e) => {
+    // validim ne kohe reale, ruan ate qe shkruhet dhe budle 
+    const handleProductChange = (e) => {
         const { name, value, type, checked } = e.target;
 
         if (name === "id") {
-            const isUnique = isIdUnique(value);
-            setIdError(isUnique ? "" : "A product with this ID already exists!");
+            setErrors(prev => ({
+                ...prev,
+                id: isUnique("id", value) ? "" : "A product with this ID already exists!"
+            }));
         }
-
         if (name === "title") {
-            const isUnique = isTitleUnique(value);
-            setTitleError(isUnique ? "" : "A product with this title already exists!");
+            setErrors(prev => ({
+                ...prev,
+                title: isUnique("title", value) ? "" : "A product with this title already exists!"
+            }));
         }
 
-        setFormData({
-            ...formData,
+        setFormData(prev => ({
+            ...prev,
             [name]: type === "checkbox" ? checked : value
-        });
+        }));
     };
 
-    const handleVariantChange = (e) => {
+    // perditesim i te dhenave te varianteve qe po shkruhet
+    const handleVariantFieldChange = (e) => {
         const { name, value } = e.target;
-        setVariantInput({
-            ...variantInput,
-            [name]: value
-        });
+        setVariantInput(prev => ({ ...prev, [name]: value }));
     };
-
-    const handleVariantImage = (e) => {
+    // merr imazhin e ruan ne varaintInput dhe nj  url per te pare imazhin
+    const handleVariantImageChange = (e) => {
         const file = e.target.files[0];
-        if (file) {
-            setVariantInput({
-                ...variantInput,
-                imageFile: file
-            });
-            setVariantPreviewUrl(URL.createObjectURL(file));
-        }
+        if (!file) return;
+        setVariantInput(prev => ({ ...prev, imageFile: file }));
+        setVariantPreview(URL.createObjectURL(file));
     };
-
+    //shtohet varianti i ri ne listen e formData.variants
     const addVariant = () => {
         if (!variantInput.id || !variantInput.type) {
             alert("Variant ID and Type are required");
             return;
         }
-
         if (!variantInput.imageFile) {
             alert("Variant image is required");
             return;
         }
-
         if (formData.variants.some(v => v.id === variantInput.id)) {
             alert("Variant ID already exists in this product");
             return;
         }
 
-        setFormData({
-            ...formData,
-            variants: [...formData.variants, {
+        setFormData(prev => ({
+            ...prev,
+            variants: [...prev.variants, {
                 id: variantInput.id,
                 type: variantInput.type,
                 stock: Number(variantInput.stock) || 0,
                 imageName: null,
-                imageFile: variantInput.imageFile || null,
-                previewUrl: variantPreviewUrl,
-            }],
-        });
+                imageFile: variantInput.imageFile,
+                previewUrl: variantPreview,
+            }]
+        }));
 
-        setVariantInput({ id: "", type: "", stock: "", imageFile: null });
-        setVariantPreviewUrl(null);
-        if (fileInputRef.current) fileInputRef.current.value = "";
+        resetVariantInput();
     };
-
-    const handleReplaceVariantImage = (index, e) => {
+    // zevendesimi ii imazhit
+    const replaceVariantImage = (index, e) => {
         const file = e.target.files[0];
         if (!file) return;
 
-        const url = URL.createObjectURL(file);
-        const newVariants = [...formData.variants];
-        newVariants[index] = {
-            ...newVariants[index],
-            imageFile: file,
-            imageName: null, 
-            previewUrl: url
-        };
-
-        setFormData({
-            ...formData,
-            variants: newVariants
+        setFormData(prev => {
+            const updated = [...prev.variants];
+            updated[index] = {
+                ...updated[index],
+                imageFile: file,
+                imageName: null, // fshihet imazhi i vjeter
+                previewUrl: URL.createObjectURL(file),
+            };
+            return { ...prev, variants: updated };
         });
     };
-
+    // fshirja e variantit me index nga lista
     const removeVariant = (index) => {
-        const newVariants = [...formData.variants];
-        newVariants.splice(index, 1);
-
-        setFormData({
-            ...formData,
-            variants: newVariants
-        });
+        setFormData(prev => ({
+            ...prev,
+            variants: prev.variants.filter((_, i) => i !== index)
+        }));
     };
 
+    // DERGOHET FORMA
     const handleSubmit = (e) => {
         e.preventDefault();
 
@@ -221,13 +194,17 @@ const ProductForm = ({ show, onClose, product, onSave, allProducts = [] }) => {
                 imageName: v.imageFile ? null : (v.imageName || null),
             })),
         };
-
+        //ndaj imazhet
         const imageFiles = formData.variants.map(v => v.imageFile || null);
+        //dergo te prindi
         onSave(cleanedData, imageFiles);
     };
 
+    // kontrolli i butonit aktivizohet(ka te pakten nje variant, nuk ka gabime dhe nuk ka gabim ne titull)
+    const canSubmit = formData.variants.length > 0 && !errors.id && !errors.title;
+
     return (
-        <Modal show={show} onHide={onClose} size="lg" animation={false}>
+        <Modal show={show} onHide={onClose} size="lg">
             <Modal.Header closeButton>
                 <Modal.Title>
                     {product ? "Edit Product" : "Add New Product"}
@@ -236,306 +213,37 @@ const ProductForm = ({ show, onClose, product, onSave, allProducts = [] }) => {
 
             <Form onSubmit={handleSubmit}>
                 <Modal.Body>
-                    <h5>Product Information</h5>
+                    {/*te dhenat e produktit */}
+                    <ProductInfo
+                        formData={formData}
+                        errors={errors}
+                        onChange={handleProductChange}
+                    />
 
-                    <Row className="mb-3">
-                        <Col md={6}>
-                            <Form.Group>
-                                <Form.Label>Product ID *</Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    name="id"
-                                    value={formData.id}
-                                    onChange={handleChange}
-                                    required
-                                    isInvalid={!!idError}
-                                />
-                                <Form.Control.Feedback type="invalid">
-                                    {idError}
-                                </Form.Control.Feedback>
-                            </Form.Group>
-                        </Col>
-                        <Col md={6}>
-                            <Form.Group>
-                                <Form.Label>Title *</Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    name="title"
-                                    value={formData.title}
-                                    onChange={handleChange}
-                                    required
-                                    isInvalid={!!titleError}
-                                />
-                                <Form.Control.Feedback type="invalid">
-                                    {titleError}
-                                </Form.Control.Feedback>
-                            </Form.Group>
-                        </Col>
-                    </Row>
+                    <hr className="my-4" />
 
-                    <Row className="mb-3">
-                        <Col md={4}>
-                            <Form.Group>
-                                <Form.Label>Label</Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    name="label"
-                                    value={formData.label}
-                                    onChange={handleChange}
-                                />
-                            </Form.Group>
-                        </Col>
-                        <Col md={4}>
-                            <Form.Group>
-                                <Form.Label>Category</Form.Label>
-                                <Form.Select
-                                    name="category"
-                                    value={formData.category}
-                                    onChange={handleChange}
-                                >
-                                    <option>Indoor</option>
-                                    <option>Outdoor</option>
-                                    <option>Accessories</option>
-                                </Form.Select>
-                            </Form.Group>
-                        </Col>
-                        <Col md={4}>
-                            <Form.Group>
-                                <Form.Label>Size</Form.Label>
-                                <Form.Select
-                                    name="size"
-                                    value={formData.size}
-                                    onChange={handleChange}
-                                >
-                                    <option>SM</option>
-                                    <option>MD</option>
-                                    <option>LG</option>
-                                    <option>XL</option>
-                                </Form.Select>
-                            </Form.Group>
-                        </Col>
-                    </Row>
+                    {/* input per variantin e ri*/}
+                    <VariantInput
+                        variantInput={variantInput}
+                        previewUrl={variantPreview}
+                        onFieldChange={handleVariantFieldChange}
+                        onImageChange={handleVariantImageChange}
+                        onAdd={addVariant}
+                    />
 
-                    <Row className="mb-3">
-                        <Col md={4}>
-                            <Form.Group>
-                                <Form.Label>Price *</Form.Label>
-                                <Form.Control
-                                    type="number"
-                                    name="price"
-                                    value={formData.price}
-                                    onChange={handleChange}
-                                    required
-                                    step="0.01"
-                                />
-                            </Form.Group>
-                        </Col>
-                        <Col md={4}>
-                            <Form.Group>
-                                <Form.Label>Sale Price</Form.Label>
-                                <Form.Control
-                                    type="number"
-                                    name="sale_price"
-                                    value={formData.sale_price}
-                                    onChange={handleChange}
-                                    step="0.01"
-                                />
-                            </Form.Group>
-                        </Col>
-                        <Col md={4}>
-                            <Form.Group>
-                                <Form.Label>Sale Percentage</Form.Label>
-                                <Form.Control
-                                    type="number"
-                                    name="sale_percentage"
-                                    value={formData.sale_percentage}
-                                    onChange={handleChange}
-                                    step="0.01"
-                                />
-                            </Form.Group>
-                        </Col>
-                    </Row>
-
-                    <Row className="mb-3">
-                        <Col md={6}>
-                            <Form.Group>
-                                <Form.Label>Date Added</Form.Label>
-                                <Form.Control
-                                    type="date"
-                                    name="date_added"
-                                    value={formData.date_added}
-                                    onChange={handleChange}
-                                />
-                            </Form.Group>
-                        </Col>
-                        <Col md={6} className="d-flex align-items-end">
-                            <Form.Check
-                                type="checkbox"
-                                label="Is Bundle"
-                                name="is_bundle"
-                                checked={formData.is_bundle}
-                                onChange={handleChange}
-                            />
-                        </Col>
-                    </Row>
-
-                    <hr />
-
-                    <h5>Add Variants with Images</h5>
-
-                    <Row className="mb-3 align-items-end">
-                        <Col md={2}>
-                            <Form.Group>
-                                <Form.Label>Variant ID *</Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    name="id"
-                                    placeholder="e.g., red-sm"
-                                    value={variantInput.id}
-                                    onChange={handleVariantChange}
-                                />
-                            </Form.Group>
-                        </Col>
-                        <Col md={2}>
-                            <Form.Group>
-                                <Form.Label>Type *</Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    name="type"
-                                    placeholder="e.g., Red Small"
-                                    value={variantInput.type}
-                                    onChange={handleVariantChange}
-                                />
-                            </Form.Group>
-                        </Col>
-                        <Col md={2}>
-                            <Form.Group>
-                                <Form.Label>Stock</Form.Label>
-                                <Form.Control
-                                    type="number"
-                                    name="stock"
-                                    placeholder="0"
-                                    value={variantInput.stock}
-                                    onChange={handleVariantChange}
-                                />
-                            </Form.Group>
-                        </Col>
-                        <Col md={4}>
-                            <Form.Group>
-                                <Form.Label>Image</Form.Label>
-                                <Form.Control
-                                    ref={fileInputRef}
-                                    type="file"
-                                    accept="image/*"
-                                    onChange={handleVariantImage}
-                                />
-                                {variantPreviewUrl && (
-                                    <img
-                                        src={variantPreviewUrl}
-                                        alt="preview"
-                                        style={{
-                                            width: 60,
-                                            height: 60,
-                                            borderRadius: 6,
-                                            marginTop: 6
-                                        }}
-                                    />
-                                )}
-                            </Form.Group>
-                        </Col>
-                        <Col md={2}>
-                            <Button
-                                variant="success"
-                                onClick={addVariant}
-                                className="w-100"
-                            >
-                                Add
-                            </Button>
-                        </Col>
-                    </Row>
-
-                    {formData.variants.length > 0 && (
-                        <>
-                            <h6 className="mt-4">Variants List</h6>
-                            <Table striped bordered hover responsive size="sm">
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Type</th>
-                                        <th>Stock</th>
-                                        <th>Image</th>
-                                        <th>Replace Image</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {formData.variants.map((variant, index) => (
-                                        <tr key={index}>
-                                            <td>{variant.id}</td>
-                                            <td>{variant.type}</td>
-                                            <td>{variant.stock}</td>
-                                            <td>
-                                                {variant.previewUrl ? (
-                                                    <img
-                                                        src={variant.previewUrl}
-                                                        alt={variant.type}
-                                                        style={{
-                                                            width: 50,
-                                                            height: 50,
-                                                            objectFit: "cover",
-                                                            borderRadius: 4
-                                                        }}
-                                                    />
-                                                ) : (
-                                                    <small className="text-muted">
-                                                        No image
-                                                    </small>
-                                                )}
-                                            </td>
-                                            <td>
-                                                <Form.Control
-                                                    type="file"
-                                                    accept="image/*"
-                                                    size="sm"
-                                                    onChange={(e) => handleReplaceVariantImage(index, e)}
-                                                />
-                                            </td>
-                                            <td>
-                                                <Button
-                                                    variant="danger"
-                                                    size="sm"
-                                                    onClick={() => removeVariant(index)}
-                                                >
-                                                    Remove
-                                                </Button>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </Table>
-                        </>
-                    )}
-
-                    {formData.variants.length === 0 && (
-                        <Alert variant="warning" className="mt-3">
-                            At least one variant is required
-                        </Alert>
-                    )}
+                    {/* lista e varianteve*/}
+                    <VariantList
+                        variants={formData.variants}
+                        onReplaceImage={replaceVariantImage}
+                        onRemove={removeVariant}
+                    />
                 </Modal.Body>
 
                 <Modal.Footer>
                     <Button variant="secondary" onClick={onClose}>
                         Close
                     </Button>
-                    <Button
-                        variant="primary"
-                        type="submit"
-                        disabled={
-                            formData.variants.length === 0 ||
-                            !!idError ||
-                            !!titleError
-                        }
-                    >
+                    <Button variant="primary" type="submit" disabled={!canSubmit}>
                         {product ? "Save Changes" : "Create Product"}
                     </Button>
                 </Modal.Footer>

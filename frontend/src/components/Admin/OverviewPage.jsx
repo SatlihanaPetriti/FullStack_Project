@@ -1,7 +1,7 @@
 import { Container, Row, Col, Card, Alert, Spinner, Button } from 'react-bootstrap';
 import { useProductContext } from '../../Context/Product';
 import { IoWarning } from "react-icons/io5";
-import { FaCartShopping } from "react-icons/fa6";
+// import { FaCartShopping } from "react-icons/fa6";
 import { AiOutlineStock } from "react-icons/ai";
 import { BiSolidPackage } from "react-icons/bi";
 import './OverviewPage.css';

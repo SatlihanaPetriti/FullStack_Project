@@ -3,7 +3,6 @@ import { Container, Button, Alert } from 'react-bootstrap';
 import { useProductContext } from '../../Context/Product';
 import ProductForm from './ProductForm';
 import ProductFilters from './ProductFilters';
-import ImageModal from './ImageModal';
 
 const AdminProductsPage = () => {
     const { products, loading, error, createProduct, updateProduct, deleteProduct } = useProductContext();
@@ -90,16 +89,6 @@ const AdminProductsPage = () => {
                     onClose={handleCloseForm}
                     onSave={handleSave}
                     allProducts={products}
-                />
-            )}
-
-            {/* Image Modal */}
-            {showImages && selectedProductForImages && (
-                <ImageModal
-                    key={selectedProductForImages.id}
-                    show={showImages}
-                    product={selectedProductForImages}
-                    onClose={handleCloseImages}
                 />
             )}
         </Container>

@@ -1,5 +1,4 @@
-// plantcard.jsx
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Card, Button } from 'react-bootstrap';
 import './indoor_plants.css';
 
@@ -66,36 +65,21 @@ const PlantCard = ({ product }) => {
 
     const IMAGE_BASE_URL = "http://localhost:3000/products/uploads";
 
-    // Show real image if selected variant has one, fallback to placeholder
+    // Show real image if selected variant has one
     const holderImage = () => {
         const imageName = selectedVariant?.image;
-        if (imageName) {
-            const filename = imageName.replace(/^.*[\\/]/, '');
-            const imageUrl = `${IMAGE_BASE_URL}/${filename}`;
-            return (
-                <>
-                    <img
-                        src={imageUrl}
-                        alt={selectedVariant?.type || product.title}
-                        className="plant-image"
-                        onError={(e) => {
-                            e.currentTarget.style.display = 'none';
-                            e.currentTarget.nextElementSibling.style.display = 'flex';
-                        }}
-                    />
-                    <div className="image-placeholder" style={{ display: 'none' }}>
-                        <span>{selectedVariant?.type || product.title}</span>
-                    </div>
-                </>
-            );
-        }
+        if (!imageName) return null;
+
+        const imageUrl = `${IMAGE_BASE_URL}/${imageName}`;
+
         return (
-            <div className="image-placeholder">
-                <span>{selectedVariant?.type || product.title}</span>
-            </div>
+            <img
+                src={imageUrl}
+                alt={selectedVariant?.type || product.title}
+                className="plant-image"
+            />
         );
     };
-
     return (
         <Card className="plant-card">
             <div
@@ -129,7 +113,7 @@ const PlantCard = ({ product }) => {
                                     color-${variant.type?.toLowerCase() || 'default'}
                                     ${selectedVariant?.id === variant.id ? 'active' : ''}
                                 `}
-                                title={variant.type} //show name on hover
+                                title={variant.type}
                             />
                         ))}
                     </div>
