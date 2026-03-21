@@ -48,9 +48,11 @@ export async function update_product_service(id, data, images = []) {
     if (data.category) formData.append('category', data.category);
     if (data.size) formData.append('size', data.size);
     if (data.price) formData.append('price', String(data.price));
-    if (data.label) formData.append('label', data.label);
-    if (data.sale_price) formData.append('sale_price', String(data.sale_price));
-    if (data.sale_percentage) formData.append('sale_percentage', String(data.sale_percentage));
+   
+    formData.append('label', data.label != null ? data.label : '');
+    formData.append('sale_price', data.sale_price != null ? String(data.sale_price) : '');
+    formData.append('sale_percentage', data.sale_percentage != null ? String(data.sale_percentage) : '');
+
     if (data.is_bundle != null) formData.append('is_bundle', String(data.is_bundle));
     if (data.date_added) formData.append('date_added', data.date_added);
         // variante nese ekziston
