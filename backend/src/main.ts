@@ -9,9 +9,8 @@ async function bootstrap() {
     methods: ["GET", "POST", "PUT", "DELETE"]
   });
   app.useGlobalPipes(new ValidationPipe({
-    whitelist: true, transform: true, transformOptions: {
-      enableImplicitConversion: false 
-    } }));
+    whitelist: true, 
+    transform: true,}));
   await app.listen(process.env.PORT ?? 3000);
 
 }

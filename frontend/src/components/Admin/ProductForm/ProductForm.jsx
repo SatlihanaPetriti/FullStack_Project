@@ -33,7 +33,7 @@ const toFormVariant = (v) => ({
     id: v.id || "",
     type: v.type || "",
     stock: v.stock || 0,
-    imageName: v.image || "",
+    imageName: v.image || "", 
     imageFile: null,
     previewUrl: v.image ? `${IMAGE_BASE_URL}/${v.image}` : null,
 });
