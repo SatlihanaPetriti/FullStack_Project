@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
-import ProductInfo from "./ProductForm/ProductInfo";
-import VariantInput from "./ProductForm/VariantInput";
-import VariantList from "./ProductForm/VariantList";
+import ProductInfo from "./ProductInfo";
+import VariantInput from "./VariantInput";
+import VariantList from "./VariantList";
 
 
 const IMAGE_BASE_URL = "http://localhost:3000/products/uploads";
@@ -33,7 +33,7 @@ const toFormVariant = (v) => ({
     id: v.id || "",
     type: v.type || "",
     stock: v.stock || 0,
-    imageName: v.image || "", 
+    imageName: v.image || "",
     imageFile: null,
     previewUrl: v.image ? `${IMAGE_BASE_URL}/${v.image}` : null,
 });

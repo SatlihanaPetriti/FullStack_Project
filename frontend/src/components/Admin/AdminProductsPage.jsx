@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Container, Button, Alert } from 'react-bootstrap';
 import { useProductContext } from '../../Context/Product';
-import ProductForm from './ProductForm';
+import ProductForm from './ProductForm/ProductForm';
 import ProductFilters from './ProductFilters';
 
 const AdminProductsPage = () => {
@@ -40,7 +40,7 @@ const AdminProductsPage = () => {
     };
 
     const handleSave = async (productData, images) => {
-            try {
+        try {
             const existingProduct = products.find(p => p.id === productData.id);
 
             if (existingProduct) {
@@ -77,7 +77,7 @@ const AdminProductsPage = () => {
                         products={products}
                         onEdit={handleEdit}
                         onDelete={deleteProduct}
-                        onViewImages={handleShowImages} 
+                        onViewImages={handleShowImages}
                     />
                 </>
             )}

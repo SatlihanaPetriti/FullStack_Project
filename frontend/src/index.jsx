@@ -1,4 +1,3 @@
-// App.jsx
 import { Routes, Route } from "react-router-dom";
 import HomePage from './Pages/Home/index.jsx';
 import IndoorPlants from './components/IndoorPlants/indoor_plants.jsx';

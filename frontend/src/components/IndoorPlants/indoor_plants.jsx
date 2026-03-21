@@ -4,7 +4,6 @@ import PlantCard from './plantcard';
 import FilterSidebar from './filtersidebar/';
 import { useProductContext } from '../../Context/Product'; 
 import './indoor_plants.css';
-import '../../Pages/IndoorPlants/index.css';
 
 const IndoorPlants = () => {
   

@@ -1,11 +1,11 @@
 import { Container, Row, Col, Card, Alert, Spinner, Button } from 'react-bootstrap';
-import { useProductContext } from '../../Context/Product';
+import { useProductContext } from '../../../Context/Product';
 import { IoWarning } from "react-icons/io5";
 // import { FaCartShopping } from "react-icons/fa6";
 import { AiOutlineStock } from "react-icons/ai";
 import { BiSolidPackage } from "react-icons/bi";
 import './OverviewPage.css';
-import './ProductTable.css';
+import '../ProductTable';
 
 const OverviewPage = () => {
     const { products, loading, error, getAllProducts } = useProductContext();
@@ -25,7 +25,7 @@ const OverviewPage = () => {
 
     const totalProducts = products.length;
     const totalStock = products.reduce((sum, p) => sum + getTotalStock(p.variants), 0);
-   
+
 
     // Calculate out of stock and low stock items
     const outOfStock = products.filter((p) => getTotalStock(p.variants) === 0).length;
@@ -120,16 +120,16 @@ const OverviewPage = () => {
                             <span className="plant-stat">
                                 <span className="plant-stat-num">{totalStock}</span> units
                             </span>
-                                {lowStockItems > 0 && (
-                                    <span className="plant-stat plant-stat--warn">
-                                        <span className="plant-stat-num">{lowStockItems}</span> low stock
-                                    </span>
-                                )}
-                                {outOfStock > 0 && (
-                                    <span className="plant-stat plant-stat--warn">
-                                        <span className="plant-stat-num">{outOfStock}</span> out of stock
-                                    </span>
-                                )}
+                            {lowStockItems > 0 && (
+                                <span className="plant-stat plant-stat--warn">
+                                    <span className="plant-stat-num">{lowStockItems}</span> low stock
+                                </span>
+                            )}
+                            {outOfStock > 0 && (
+                                <span className="plant-stat plant-stat--warn">
+                                    <span className="plant-stat-num">{outOfStock}</span> out of stock
+                                </span>
+                            )}
                         </div>
                     </div>
 
@@ -152,7 +152,7 @@ const OverviewPage = () => {
                                 {products.map((product, index) => {
                                     const stock = getTotalStock(product.variants);
                                     const isOut = stock === 0;
-                                    const isLow = !isOut && stock <= 5; 
+                                    const isLow = !isOut && stock <= 5;
 
                                     return (
                                         <tr

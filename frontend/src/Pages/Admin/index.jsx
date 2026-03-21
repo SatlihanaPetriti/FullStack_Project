@@ -1,6 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import AdminLayout from '../../components/Admin/AdminLayout';
-import OverviewPage from '../../components/Admin/OverviewPage';
+import OverviewPage from '../../components/Admin/Overview/OverviewPage';
 import AdminProductsPage from '../../components/Admin/AdminProductsPage';
 
 const AdminRouter = () => {
