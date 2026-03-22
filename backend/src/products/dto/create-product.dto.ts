@@ -14,7 +14,11 @@ export class VariantDto {
     @IsNotEmpty({ message: 'Variant type is required' })
     type: string;
 
-    @Transform(({ value }) => Number(value))
+    @Transform(({ value }) => {
+        if (value === '' || value === null || value === undefined) return undefined;
+        const parsed = Number(value);
+        return isNaN(parsed) ? value : parsed;
+    })
     @IsNumber()
     @Min(0, { message: 'Stock cannot be negative' })
     stock: number;
@@ -45,25 +49,42 @@ export class CreateProductDto {
     @IsNotEmpty({ message: 'Size is required' })
     size: string;
 
-    @Transform(({ value }) => Number(value))
+    @Transform(({ value }) => {
+        if (value === '' || value === null || value === undefined) return undefined;
+        const parsed = Number(value);
+        return isNaN(parsed) ? value : parsed;
+    })
     @IsNumber()
     @IsPositive({ message: 'Price must be a positive number' })
     price: number;
 
     @IsOptional()
-    @Transform(({ value }) => value != null ? Number(value) : undefined)
+    @Transform(({ value }) => {
+        if (value === '' || value === null || value === undefined) return undefined;
+        const parsed = Number(value);
+        return isNaN(parsed) ? value : parsed;
+    })
     @IsNumber()
     @Min(0)
     sale_price?: number;
 
     @IsOptional()
-    @Transform(({ value }) => value != null ? Number(value) : undefined)
+    @Transform(({ value }) => {
+        if (value === '' || value === null || value === undefined) return undefined;
+        const parsed = Number(value);
+        return isNaN(parsed) ? value : parsed;
+    })
     @IsNumber()
-    @Min(0) @Max(100)
+    @Min(0)
+    @Max(100)
     sale_percentage?: number;
 
     @IsOptional()
-    @Transform(({ value }) => value === 'true' || value === true)
+    @Transform(({ value }) => {
+        if (value === 'true') return true;
+        if (value === 'false') return false;
+        return value;
+    })
     @IsBoolean()
     is_bundle?: boolean;
 
