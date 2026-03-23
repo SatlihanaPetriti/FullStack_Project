@@ -4,6 +4,7 @@ import IndoorPlants from './components/IndoorPlants/indoor_plants.jsx';
 import Header from './components/Header/index.jsx';
 import Announcement from './components/Abar/Announcement.jsx';
 import AdminRouter from "./Pages/Admin/index.jsx";
+import Productcart from "./components/Products/productcart.jsx";
 import { ProductProvider } from './Context/Product';
 
 function App() {
@@ -27,6 +28,13 @@ function App() {
         } />
 
         <Route path="/admin/*" element={<AdminRouter />} />
+        <Route path="/productcart" element={
+          <>
+            <Announcement />
+            <Header />
+            <Productcart />
+          </>
+        } />
       </Routes>
     </ProductProvider>
   );

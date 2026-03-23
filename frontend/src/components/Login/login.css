@@ -1,0 +1,179 @@
+.login-fullscreen .modal-content{
+  border-radius:0;
+  height:100%;
+}
+
+.login-image{
+  background-image: url("../../assets/images/Home/try4.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 100%;
+}
+
+/* Form side */
+.login-panel{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+}
+
+.login-container{
+  width:100%;
+  max-width:380px;
+}
+
+/* close button */
+.close-btn{
+  position:absolute;
+  top:20px;
+  right:20px;
+  border:none;
+  background:none;
+  font-size:22px;
+  cursor:pointer;
+  color:#444;
+}
+
+/* inputs */
+.login-input{
+  border-radius:10px;
+  padding:12px 15px;
+  border:1px solid #dcdcdc;
+  transition:all 0.3s ease;
+  border-color: #2d6a4f;
+}
+
+.login-input:focus{
+  outline:none;
+  border-color: #2d6a4f !important;
+  box-shadow: 0 0 0 3px rgba(45, 106, 79, 0.7);
+}
+
+.login-btn{
+  background:#2d6a4f;
+  border:none;
+  padding:12px;
+  font-weight:600;
+  border-radius:10px;
+  transition:all 0.3s ease;
+  color:white;
+}
+
+.login-btn:hover{
+  background:#285f46!important;
+}
+
+.login-btn:focus:active{
+  background:#1a4131 !important;
+  color:#fff !important;
+}
+
+.login-options{
+  display:flex;
+  justify-content:space-between;
+  font-size:14px;
+  margin-bottom:15px;
+}
+.from-check-input {
+  border-color:#2d6a4f;
+  outline:none;
+  box-shadow:none;
+}
+.form-check-input:focus {
+  border-color: #2d6a4f;      
+  box-shadow: 0 0 0 0.25rem rgba(45, 106, 79, 0.25); 
+}
+
+.form-check-input:checked {
+  background-color: #2d6a4f; 
+  border-color: #2d6a4f;
+}
+
+.divider{
+  text-align:center;
+  margin:20px 0;
+  position:relative;
+}
+
+.divider::before,
+.divider::after{
+  content:"";
+  position:absolute;
+  top:50%;
+  width:40%;
+  height:1px;
+  background:#ddd;
+}
+
+.divider::before{ left:0; }
+.divider::after{ right:0; }
+
+
+.signup-link{
+  text-align:center;
+  margin-top:15px;
+  font-size:14px;
+}
+.social-btn{
+  border-radius:10px;
+  padding:12px;
+  font-weight:500;
+  transition:all 0.3s ease;
+  color:#000; 
+  font-weight:bold;                
+  background:#e0e0e0;        
+  border:none;
+  position:relative;
+  display: flex;              
+  align-items: center;        
+  justify-content: center;    
+  
+}
+
+.social-btn:hover{
+  background:#c9c9c9;        
+  color:#000;               
+}
+
+.social-btn:focus:active{
+  background:#b5b5b5 !important;
+  color:#000 !important;
+}
+.social-icon {
+  position:absolute;
+  left: 12px;
+}
+.social-text{
+flex:1;
+text-align:center;
+}
+
+.password-toggle{
+  position:absolute;
+  right:15px;
+  top:50%;
+  transform:translateY(-50%);
+  cursor:pointer;
+  font-size:20px;
+  color:#777;
+  z-index:5;
+}
+
+.password-toggle:hover{
+  color:#000;
+}
+
+.login-input{
+  padding-right:40px;
+}
+.toggle-auth{
+  color:#2d6a4f;
+  cursor:pointer;
+  font-weight:600;
+}
+
+.toggle-auth:hover{
+  text-decoration:underline;
+}

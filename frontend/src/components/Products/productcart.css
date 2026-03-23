@@ -1,0 +1,265 @@
+.product-breadcrumb {
+  font-size: 17px;
+  padding-left: 35px;
+}
+
+.product-breadcrumb a {
+  text-decoration: none;
+  color: #214332;
+}
+
+.product-breadcrumb a:hover {
+  font-weight: bold;
+}
+.product-breadcrumb .breadcrumb-item.active {
+  color: #214332;
+}
+.thumbnail-column {
+  padding-left: 20px;      /* remove extra left padding */
+  padding-right: 10px;  /* small gap between thumbnails and main image */
+}
+
+/* Thumbnails style */
+.product-thumb {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  cursor: pointer;
+  border-color: #dee2e6;
+  transition: transform 0.2s ease;
+}
+
+/* Hover effect */
+.product-thumb:hover {
+  transform: scale(1.05);
+}
+
+/* Selected thumbnail */
+.active-thumb {
+  border-color: #214332 !important;
+  border-width: 2px !important;
+}
+
+/* Optional: make main image responsive */
+.main-product-image {
+  padding-left: 10px;
+  max-width: 500px;
+  height: auto;
+}
+.product-info{
+padding: 0px 45px;
+}
+.product-options-scroll {
+  max-height: 55vh;   /* controls where scrolling starts */
+  overflow-y: auto;
+  padding-right: 10px;
+}
+
+/* optional clean scrollbar */
+.product-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.product-scroll::-webkit-scrollbar-thumb {
+  background: #d6d6d6;
+  border-radius: 10px;
+}
+.text-title{
+  color:#214332;
+  font-size: 35px;
+
+}
+.text-price{
+  color:#256628;
+  font-size: 30px;
+  font-weight: bolder;
+}
+.text-desc{
+  color:black;
+  font-size:17px;
+}
+.text-pot{
+  color:#214332;
+  font-size: 15px;
+  font-weight: bold;
+}
+.text-size{
+  color:#214332;
+  font-size: 15px;
+  font-weight: bold;
+}
+.color-option{
+display:flex;
+flex-direction:column;
+align-items:center;
+cursor:pointer;
+}
+
+.color-label{
+font-size:13px;
+margin-top:6px;
+color:#555;
+}
+
+.color-circle{
+width: 45px;
+height:45px;
+border-radius:50%;
+border: 0 solid transparent;
+cursor: pointer;
+transition: all 0.2s ease;
+position: relative;
+}
+.color-circle:hover{
+  border:4px solid white; 
+  box-shadow:0 0 0 2px #2e8132;
+}
+
+.active-color{
+ border:2px solid white;
+ box-shadow: 0 0 0 2px #214332;
+}
+.wishlist-icon {
+  font-size: 30px;
+  cursor: pointer;
+  color: #c40518;
+}
+.size-btn {
+  border: 2px solid #214332; /* default border color */
+  background-color: transparent; /* default fill */
+  color: black; /* text color */
+  font-weight: 500;
+  padding: 6px 16px;
+  transition: all 0.2s ease;
+}
+
+/* Hover state */
+.size-btn:hover {
+  border-color: #256628; /* lighter green border */
+  background-color: #256628; /* light fill */
+  color: white;
+}
+
+/* Active / Selected state */
+.size-btn.active {
+  border-color: #214332; /* dark green border */
+  background-color: #214332; /* green fill */
+  color: white; /* text color when active */
+}
+.size-btn:focus:active{
+  border-color: #214332 !important;
+  background-color: #214332 !important;
+}
+/* Disabled state */
+.size-btn:disabled {
+  border-color: #214332;
+  color: black;
+  background-color: #F5F5F5;
+}
+/* remove bootstrap focus glow */
+
+.botton-cart {
+  background-color: #214332;
+  border: none;
+  color: white;
+  padding: 12px 32px;
+  font-weight: 600;
+  border-radius: 8px;
+  transition: all 0.25s ease;
+}
+
+.botton-cart:hover {
+  background-color: #256628;
+  transform: translateY(-2px);
+}
+
+/* when pressing */
+.botton-cart:active {
+  background-color: #17421b;
+  transform: translateY(0);
+}
+
+/* remove bootstrap blue effect */
+
+.botton-cart:focus:active{
+  box-shadow: none;
+  outline: none;
+  background-color: #17421b !important;
+}
+.text-note{
+  font-size: 0.9rem;
+  color: #214332; /* red for warning */
+  font-weight: 600;
+  margin-top: 10px;
+  font-style: italic;
+}
+
+.quantity {
+  border: 2px solid #214332; /* default border color */
+  background-color: transparent; /* default fill */
+  color: black; /* text color */
+  font-weight: 500;
+  width: 40px;
+  height: 40px;
+  transition: all 0.2s ease;
+}
+
+.quantity:hover{
+  border-color: #214332; /* lighter green border */
+  background-color: #256628; /* light green fill */
+  color: white; /* darker text */
+}
+.quantity:active{
+  border-color: #214332; /* lighter green border */
+  background-color: #214332; /* light green fill */
+  color: white; /* darker text */
+}
+.quantity:disabled{
+  border-color: #BDBDBD;
+  color: #BDBDBD;
+  background-color: #F5F5F5;
+}
+
+.quantity:focus:active{
+  border-color: #214332; /* lighter green border */
+  background-color: #214332; /* light green fill */
+  color: white;
+}
+.product-tabs {
+  max-width: 1100px;
+  margin: auto;
+}
+.product-tabs-nav{
+  border-bottom:2px solid #214332;
+  display:flex !important;
+  justify-content: space-around !important;
+  gap: 1px;
+}
+.product-tabs-nav .nav-link {
+  color: #214332;
+  font-weight: 500;
+  font-size:20px;
+  transition: color 0.2s;
+  text-align: center;
+  
+}
+
+.product-tabs-nav .nav-link:hover {
+  color:white;
+  font-weight:bold;
+  border-bottom: none;
+  background-color: #214332;
+}
+
+.product-tabs-nav .nav-link.active {
+  color:white;
+  border-bottom: none;
+  background-color: #214332;
+}
+
+.tab-text {
+  margin: 20px;
+  color: #214332;
+  line-height: 1.6;
+  font-size: 20px;
+}
