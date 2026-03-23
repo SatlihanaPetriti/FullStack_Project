@@ -36,24 +36,14 @@ export class UsersService {
         }
     }
 
-    public async findbyId(id: number): Promise<UserEntity | null> {
-        try {
-            const result = await this.userRepository.findOneBy({ id });
-            return result;
-        } catch (error) {
-            throw new ErrorHandler(error.message, HttpStatus.NOT_FOUND);
+    public async findbyId(id: number): Promise<UserEntity> {
+        const user = await this.userRepository.findOneBy({ id });
+
+        if (!user) {
+            throw new ErrorHandler('User not found', HttpStatus.NOT_FOUND);
         }
-    }
-    public async delete(id: number): Promise<void> {
-        try {
-            const user = await this.findbyId(id);
-            if (!user) {
-                throw new ErrorHandler('User not found', HttpStatus.NOT_FOUND);
-            }
-            await this.userRepository.delete(id);
-        } catch (error) {
-            throw new ErrorHandler(error.message, HttpStatus.BAD_REQUEST);
-        }
+
+        return user;
     }
 
 }

@@ -19,12 +19,15 @@ export class PermissionGuard implements CanActivate {
         //getHandler- merr hnadlerin metoden aktuale
         const roles = this.reflector.get<string[]>('roles', context.getHandler());
         //vendoset user ne request
+        //const user = request.user;
         const user = request.user;
-        //krahasohen rolet
+
+        if (!roles) return true; // nuk ka role te vendosur ne users controller // pa role del  500 Error
+
         if (!user) {
             throw new ErrorHandler('User not authenticated', HttpStatus.UNAUTHORIZED);
         }
-        // Kontrollo nese roli i perdoruesit eshte ne listen e roleve te lejuara
+
         if (!roles.includes(user.role)) {
             throw new ErrorHandler('You do not have permissions', HttpStatus.FORBIDDEN);
         }

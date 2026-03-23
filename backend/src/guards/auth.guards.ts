@@ -23,7 +23,7 @@ export class AuthGuard implements CanActivate {
         const jwt = request.cookies.jwt;
         //nese ka token 
         if (!jwt) {
-            throw new HttpException("You are not unauthorized", HttpStatus.UNAUTHORIZED)
+            throw new HttpException("Unauthorized", HttpStatus.UNAUTHORIZED)
         }
         //verifikimi i token nese eshe i vlefshem(jwtService.verify())
         try {

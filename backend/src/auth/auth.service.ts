@@ -45,7 +45,7 @@ export class AuthService {
         }
         const password = await bcrypt.compare(body.password, user?.password)
         if(!password){
-            throw new ErrorHandler ("Password incorrect", HttpStatus.NOT_FOUND)
+            throw new ErrorHandler ("Incorrect passoword", HttpStatus.NOT_FOUND)
         }
         const token = await this.jwtService.signAsync({is:user.id});
         return { user, token};
