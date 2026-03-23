@@ -47,7 +47,7 @@ export class AuthService {
         if(!password){
             throw new ErrorHandler ("Incorrect passoword", HttpStatus.NOT_FOUND)
         }
-        const token = await this.jwtService.signAsync({is:user.id});
+        const token = await this.jwtService.signAsync({id:user.id});
         return { user, token};
 
     } catch (error) {

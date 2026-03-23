@@ -27,10 +27,10 @@ export class UserController {
         return this.usersService.findbyId(id);
     }
     //endpoint per admin per te krijuar user te rinj; ne sistem.
-    @Post()
-    @Roles('admin')
-    create(@Body() userDto: UserDto) {
-        return this.usersService.registerUser(userDto);
-    }
+    // @Post()
+    // @Roles('admin')
+    // create(@Body() userDto: UserDto) {
+    //     return this.usersService.registerUser(userDto);
+    // }
 
 }
