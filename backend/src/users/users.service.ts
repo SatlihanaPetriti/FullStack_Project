@@ -10,14 +10,22 @@ import { ErrorHandler } from '../ErrorHandler/ErrorHandler';
 export class UsersService {
     constructor(@InjectRepository(UserEntity) private readonly userRepository: Repository<UserEntity>){}
     
-    public async findbyemail(email:string): Promise<UserEntity | null>{
-        try{
-            const result =await this.userRepository.findOneBy({email})
-            return result;
-        } catch(error){
-            throw new ErrorHandler(error.message, HttpStatus.NOT_FOUND)
+    public async findAll(): Promise<UserEntity[]> {
+        try {
+            const users = await this.userRepository.find();
+            return users;
+        } catch (error) {
+            throw new ErrorHandler(error.message, HttpStatus.NOT_FOUND);
         }
-
+    }
+    
+    public async findbyemail(email: string): Promise<UserEntity | null> {
+        try {
+            const result = await this.userRepository.findOneBy({ email });
+            return result;
+        } catch (error) {
+            throw new ErrorHandler(error.message, HttpStatus.NOT_FOUND);
+        }
     }
 
     public async registerUser(user:UserDto): Promise<UserEntity>{
@@ -28,14 +36,24 @@ export class UsersService {
         }
     }
 
-    public async findbyId(id:number): Promise<UserEntity[]>{
+    public async findbyId(id: number): Promise<UserEntity | null> {
         try {
-            const result =await this.userRepository.findBy({id});
+            const result = await this.userRepository.findOneBy({ id });
             return result;
-        } catch (error){
-            throw new ErrorHandler (error.message, HttpStatus.NOT_FOUND);
+        } catch (error) {
+            throw new ErrorHandler(error.message, HttpStatus.NOT_FOUND);
         }
-       
+    }
+    public async delete(id: number): Promise<void> {
+        try {
+            const user = await this.findbyId(id);
+            if (!user) {
+                throw new ErrorHandler('User not found', HttpStatus.NOT_FOUND);
+            }
+            await this.userRepository.delete(id);
+        } catch (error) {
+            throw new ErrorHandler(error.message, HttpStatus.BAD_REQUEST);
+        }
     }
 
 }
