@@ -7,12 +7,12 @@ const VariantInput = ({ variantInput, previewUrl, onFieldChange, onImageChange, 
         <>
             <h5 className="mb-3">Add Variants with Images</h5>
 
-            <Row className="mb-3 align-items-end">
+            <Row className="mb-3 text-start">
                 <Col md={2}>
                     <Form.Group>
-                        <Form.Label>Variant ID *</Form.Label>
+                        <Form.Label >Variant ID *</Form.Label>
                         <Form.Control
-                            type="text" name="id" placeholder="e.g., red-sm"
+                            type="text" name="id" placeholder="plant name"
                             value={variantInput.id}
                             onChange={onFieldChange}
                         />
@@ -22,7 +22,7 @@ const VariantInput = ({ variantInput, previewUrl, onFieldChange, onImageChange, 
                     <Form.Group>
                         <Form.Label>Type *</Form.Label>
                         <Form.Control
-                            type="text" name="type" placeholder="e.g., Red Small"
+                            type="text" name="type" placeholder="pot color"
                             value={variantInput.type}
                             onChange={onFieldChange}
                         />

@@ -6,7 +6,7 @@ const ProductInfo = ({ formData, errors, onChange }) => {
             <h5 className="mb-3">Product Information</h5>
 
             {/* Rreshti 1: ID dhe Title */}
-            <Row className="mb-3">
+            <Row className="mb-3 text-start">
                 <Col md={6}>
                     <Form.Group>
                         <Form.Label>Product ID *</Form.Label>
@@ -38,15 +38,23 @@ const ProductInfo = ({ formData, errors, onChange }) => {
             </Row>
 
             {/* Rreshti 2: Label, Category, Size */}
-            <Row className="mb-3">
+            <Row className="mb-3 text-start">
                 <Col md={4}>
                     <Form.Group>
                         <Form.Label>Label</Form.Label>
-                        <Form.Control
-                            type="text" name="label"
+                        <Form.Select
+                            name="label"
                             value={formData.label}
                             onChange={onChange}
-                        />
+                        >
+                            <option value="">Select label</option>
+                            <option value="SALE">SALE</option>
+                            <option value="MOST_GIFTED">MOST GIFTED</option>
+                            <option value="BESTSELLER">BESTSELLER</option>
+                            <option value="NEW">NEW</option>
+                            <option value="LOW_MAINTENANCE">LOW MAINTENANCE</option>
+                            <option value="RARE_BLOOM">RARE BLOOM</option>
+                        </Form.Select>
                     </Form.Group>
                 </Col>
                 <Col md={4}>
@@ -55,7 +63,6 @@ const ProductInfo = ({ formData, errors, onChange }) => {
                         <Form.Select name="category" value={formData.category} onChange={onChange}>
                             <option>Indoor</option>
                             <option>Outdoor</option>
-                            <option>Accessories</option>
                         </Form.Select>
                     </Form.Group>
                 </Col>
@@ -67,18 +74,19 @@ const ProductInfo = ({ formData, errors, onChange }) => {
                             <option>MD</option>
                             <option>LG</option>
                             <option>XL</option>
+                            <option>XXL</option>
                         </Form.Select>
                     </Form.Group>
                 </Col>
             </Row>
 
             {/* Rreshti 3: Price, Sale Price, Sale Percentage */}
-            <Row className="mb-3">
+            <Row className="mb-3 text-start">
                 <Col md={4}>
                     <Form.Group>
                         <Form.Label>Price *</Form.Label>
                         <Form.Control
-                            type="number" name="price" step="0.01"
+                            type="number" name="price" step="0.5"
                             value={formData.price}
                             onChange={onChange} required
                         />
@@ -88,7 +96,7 @@ const ProductInfo = ({ formData, errors, onChange }) => {
                     <Form.Group>
                         <Form.Label>Sale Price</Form.Label>
                         <Form.Control
-                            type="number" name="sale_price" step="0.01"
+                            type="number" name="sale_price" step="0.5"
                             value={formData.sale_price}
                             onChange={onChange}
                         />
@@ -98,7 +106,7 @@ const ProductInfo = ({ formData, errors, onChange }) => {
                     <Form.Group>
                         <Form.Label>Sale Percentage</Form.Label>
                         <Form.Control
-                            type="number" name="sale_percentage" step="0.01"
+                            type="number" name="sale_percentage" step="0.5"
                             value={formData.sale_percentage}
                             onChange={onChange}
                         />
@@ -107,7 +115,7 @@ const ProductInfo = ({ formData, errors, onChange }) => {
             </Row>
 
             {/* Rreshti 4: Date Added dhe Is Bundle */}
-            <Row className="mb-3">
+            <Row className="mb-3 text-start">
                 <Col md={6}>
                     <Form.Group>
                         <Form.Label>Date Added</Form.Label>

@@ -18,7 +18,6 @@ function App() {
             <HomePage />
           </>
         } />
-
         <Route path="/indoor-plants" element={
           <>
             <Announcement />

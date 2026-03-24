@@ -1,118 +1,96 @@
-import { Container, Row, Col, Carousel } from 'react-bootstrap';
-import { StarFill, Quote } from 'react-bootstrap-icons';
-import test1 from '../../assets/images/Home/plant-testi1.jpg';
-import test2 from '../../assets/images/Home/plant-testi2.jpg';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { FreeMode, Navigation } from 'swiper/modules';
+import { Container, Button } from 'react-bootstrap';
+import { ChevronLeft, ChevronRight } from 'react-bootstrap-icons';
+import { FaShoppingCart, FaHeart } from 'react-icons/fa';
+
+import 'swiper/css';
+import 'swiper/css/free-mode';
 import './testimonial.css';
-import '../../Pages/Home/index.css';
 
-const TestimonialSection = () => {
+import Product1 from '../../assets/images/Home/plant-1.jpg';
+import Product2 from '../../assets/images/Home/plant-2.jpg';
+import Product3 from '../../assets/images/Home/plant-3.jpg';
+import Product4 from '../../assets/images/Home/plant-4.jpg';
+import Product5 from '../../assets/images/Home/plant-5.jpg';
+
+const products = [
+  { img: Product1, name: 'Fiddle Leaf Fig', originalPrice: 120, salePrice: 90, salePercent: 25 },
+  { img: Product2, name: 'Snake Plant', originalPrice: 80, salePrice: 60, salePercent: 25 },
+  { img: Product3, name: 'Monstera Deliciosa', originalPrice: 150, salePrice: 120, salePercent: 20 },
+  { img: Product4, name: 'Peace Lily', originalPrice: 70, salePrice: 50, salePercent: 30 },
+  { img: Product5, name: 'Succulent Pack', originalPrice: 50, salePrice: 40, salePercent: 20 },
+];
+
+const ProductSale = () => {
   return (
-    <section className='testimonial-section'>
-      <Container className='edit-container py-5 px-5'>
-        <Carousel controls indicators={false} interval={null}>
-          {/* TESTIMONIAL 1 */}
-          <Carousel.Item>
-            <Row className='position-items'>
-              <Col lg={7} className='text-white'>
-                <div className='mb-4'>
-                  <Quote size={80} color='#B5B5B5' />
-                </div>
-                <div className='testimonial-heading mb-3'>
-                  OUR CUSTOMER'S RAVE REVIEWS
-                </div>
-                <div className='star-rating mb-3'>
-                  <StarFill /><StarFill /><StarFill /><StarFill /><StarFill />
-                </div>
-                <p className='testimonial-text mt-3'>
-                  I've ordered from a lot of places, a lot! and I must say that
-                  this place here has the best shipping experience ever.
-                  Thank you guys so much for this ♥️
-                </p>
+    <Container fluid className="product-sale-section py-5">
 
-                {/* Mobile / tablet  */}
-                <div className='image-author d-lg-none mt-3'>
-                  <div className='image-1 image-zoom'>
-                    <img src={test1} alt='Testimonial Vincent' />
-                  </div>
-                  <div className='author-info mt-2'>
-                    <div className='author-name'>Vincent Pahm</div>
-                    <div className='purchase-item'>
-                      Purchase item: <span>Aglaonema Siam</span>
-                    </div>
-                  </div>
-                </div>
+      {/* HEADER */}
+      <div className="d-flex align-items-center justify-content-between mb-4">
+        <h1 className="sale-text m-0">Product Sale</h1>
 
-                {/* Desktop author info */}
-                <div className='author-info mt-5 d-none d-lg-block'>
-                  <div className='author-name'>Vincent Pahm</div>
-                  <div className='purchase-item'>
-                    Purchase item: <span>Aglaonema Siam</span>
-                  </div>
-                </div>
-              </Col>
+        <div className="slider-arrows">
+          <button className="slider-arrow prev">
+            <ChevronLeft size={20} />
+          </button>
+          <button className="slider-arrow next">
+            <ChevronRight size={20} />
+          </button>
+        </div>
+      </div>
 
-              {/* Desktop image */}
-              <Col lg={5} className='d-none d-lg-flex align-items-center justify-content-center'>
-                <div className='image-1 image-zoom'>
-                  <img src={test1} alt='Testimonial Vincent' />
-                </div>
-              </Col>
-            </Row>
-          </Carousel.Item>
+      {/* SWIPER */}
+      <Swiper
+        slidesPerView="auto"
+        spaceBetween={20}
+        grabCursor
+        freeMode={{ enabled: true }}
+        navigation={{
+          prevEl: '.slider-arrow.prev',
+          nextEl: '.slider-arrow.next',
+        }}
+        modules={[FreeMode, Navigation]}
+        className="productSwiper"
+      >
+        {products.map((product, index) => (
+          <SwiperSlide key={index}>
+            <div className="product-card">
 
-          {/* TESTIMONIAL 2 */}
-          <Carousel.Item>
-            <Row className='position-items'>
-              <Col lg={7} className='text-white'>
-                <div className='mb-4'>
-                  <Quote size={80} color='#B5B5B5' />
-                </div>
-                <div className='testimonial-heading mb-3'>
-                  OUR CUSTOMER'S RAVE REVIEWS
-                </div>
-                <div className='star-rating mb-3'>
-                  <StarFill /><StarFill /><StarFill /><StarFill /><StarFill />
-                </div>
-                <p className='testimonial-text mt-3'>
-                  Love my new indoor plant! It arrived healthy and adds a
-                  refreshing touch to my home. Super easy to care for, highly
-                  recommended!
-                </p>
+              {/* IMAGE */}
+              <div className="image-wrapper">
+                <img src={product.img} alt={product.name} />
 
-                {/* Mobile / tablet*/}
-                <div className='image-author d-lg-none mt-3'>
-                  <div className='image-1 image-zoom'>
-                    <img src={test2} alt='Testimonial Robert' />
-                  </div>
-                  <div className='author-info mt-2'>
-                    <div className='author-name'>Robert Smith</div>
-                    <div className='purchase-item'>
-                      Purchase item: <span>Baby Stroller with Ride-Along Board</span>
-                    </div>
-                  </div>
+                {/* SALE BADGE */}
+                <div className="sale-badge">-{product.salePercent}%</div>
+
+                {/* ❤️ HEART */}
+                <FaHeart className="heart-icon" />
+              </div>
+
+              {/* INFO */}
+              <div className="product-info">
+                <h6 className="product-name">{product.name}</h6>
+
+                <div className="product-prices">
+                  <span className="sale-price">${product.salePrice}</span>
+                  <span className="original-price">${product.originalPrice}</span>
                 </div>
 
-                {/* Desktop author info*/}
-                <div className='author-info mt-5 d-none d-lg-block'>
-                  <div className='author-name'>Robert Smith</div>
-                  <div className='purchase-item'>
-                    Purchase item: <span>Baby Stroller with Ride-Along Board</span>
-                  </div>
-                </div>
-              </Col>
+                {/* 🛒 BUTTON */}
+                <Button className="add-to-cart-btn" variant="success">
+                  <FaShoppingCart className="btn-cart-icon" />
+                  Add to Cart
+                </Button>
+              </div>
 
-              {/* Desktop image */}
-              <Col lg={5} className='d-none d-lg-flex align-items-center justify-content-center'>
-                <div className='image-1 image-zoom'>
-                  <img src={test2} alt='Testimonial Robert' />
-                </div>
-              </Col>
-            </Row>
-          </Carousel.Item>
-        </Carousel>
-      </Container>
-    </section>
+            </div>
+          </SwiperSlide>
+        ))}
+      </Swiper>
+
+    </Container>
   );
 };
 
-export default TestimonialSection;
+export default ProductSale;

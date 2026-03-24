@@ -19,7 +19,8 @@ const ImageModal = ({ show, onClose, product }) => {
             <div className="modal-container" onClick={e => e.stopPropagation()}>
                 <div className="modal-header">
                     <h3>{product.title} - Images</h3>
-                    <button className="close-btn" onClick={onClose}>X</button>
+                    <button
+                     onClick={onClose}>X</button>
                 </div>
 
                 <div className="modal-body">
