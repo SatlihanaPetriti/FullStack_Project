@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Container, Button, Alert } from 'react-bootstrap';
 import { useProductContext } from '../../Context/Product';
-import ProductForm from './ProductForm/ProductForm';
-import ProductFilters from './ProductFilters';
+import ProductForm from './CreateEditModal/ProductForm';
+import ProductFilters from './AllProducts/ProductFilters';
 
 const AdminProductsPage = () => {
     const { products, loading, error, createProduct, updateProduct, deleteProduct } = useProductContext();

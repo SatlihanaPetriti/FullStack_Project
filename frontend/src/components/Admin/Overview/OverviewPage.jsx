@@ -5,7 +5,7 @@ import { IoWarning } from "react-icons/io5";
 import { AiOutlineStock } from "react-icons/ai";
 import { BiSolidPackage } from "react-icons/bi";
 import './OverviewPage.css';
-import '../ProductTable';
+import '../AllProducts/ProductTable';
 
 const OverviewPage = () => {
     const { products, loading, error, getAllProducts } = useProductContext();

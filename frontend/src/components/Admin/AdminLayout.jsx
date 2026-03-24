@@ -18,13 +18,14 @@ const AdminLayout = ({ children }) => {
                     </NavLink>
 
                     <NavLink to="/admin/products" className="admin-nav-link">
-                        Products
+                        All Products
                     </NavLink>
-
+                    <NavLink to="/admin/categories" className="admin-nav-link">
+                        Categories
+                    </NavLink>
                     <NavLink to="/admin/orders" className="admin-nav-link">
                         Orders
                     </NavLink>
-
                     <NavLink to="/admin/inventory" className="admin-nav-link">
                         Inventory
                     </NavLink>
