@@ -1,20 +1,17 @@
+/* 
 .plant-title {
   font-size: 3rem;
   font-weight: 600;
   color: #214332;
   margin-bottom: 20px;
-  /* spacing below title */
 }
 .plant-subtitle {
   font-size: 1rem;
   color: #214332;
-  /* single color */
   max-width: 500px;
   margin: 0 auto 50px auto;
 
-  /* centered and spacing below */
   line-height: 1.5;
-  /* easier to read */
 }
 .plant-add {
   font-size: 1rem;
@@ -30,7 +27,6 @@
   height: 220px;
   border-radius: 20px;
   overflow: hidden;
-  /* 🌫 Glass effect */
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   background: rgba(255, 255, 255, 0.1);
@@ -52,7 +48,6 @@
   object-fit: cover;
 }
 
-/* Overlay (dark glass layer) */
 .plant-overlay {
   position: absolute;
   bottom: 0;
@@ -70,7 +65,7 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%) translateY(10px);
+  transform: translate(-50%, -50%) translateY(10px);/
   opacity: 0;
   transition: all 0.3s ease;
   background: rgba(0,0,0,0.2);
@@ -83,7 +78,6 @@
   font-weight: 600;
   pointer-events: auto;
   cursor: pointer;
-  /* prevents interfering with hover */
 }
 .plant-card:hover .shop-now {
   opacity: 1;
@@ -97,4 +91,4 @@
   margin: 0;
   font-weight: 600;
 }
-
+ */
