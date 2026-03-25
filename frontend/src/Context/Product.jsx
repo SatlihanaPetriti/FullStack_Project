@@ -12,7 +12,7 @@ const ProductContext = createContext({});
 // komponenti qe do te mbeshtjelle te gjihthw aplikacionin (index.jsx)
 // roli i props  perdoret per te marre children (props.children) qe ti jape akses ne ProductContext 
 const ProductProvider = (props) => {
-    const [products, setProducts] = useState([]); // per listen e produkteve
+    const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
@@ -25,9 +25,9 @@ const ProductProvider = (props) => {
             }
         } catch (error) {
             setError("Failed to load products");
-            
-        } 
-        setLoading(false);
+        } finally {
+            setLoading(false);
+        }
     };
 
     const getProductById = async (id) => {
@@ -36,22 +36,23 @@ const ProductProvider = (props) => {
             const result = await get_product_by_id_service(id);
             return result.data;
         } catch (error) {
-            setError("Failed to get product id");
-            
-        } 
-       setLoading(false);
+            setError("Failed to get product");
+        } finally {
+            setLoading(false);
+        }
     };
 
     const createProduct = async (productData, images = []) => {
         setLoading(true);
         try {
             const result = await create_product_service(productData, images);
-            await getAllProducts();  // per te rifreskuar listen me produktin e krijuar
+            await getAllProducts();
             return result;
         } catch (error) {
             setError("Failed to create product");
-        } 
-        setLoading(false);
+        } finally {
+            setLoading(false);
+        }
     };
 
     const updateProduct = async (id, productData, images = []) => {
@@ -61,9 +62,10 @@ const ProductProvider = (props) => {
             await getAllProducts();
             return result;
         } catch (error) {
-            setError("Failed to create product");
+            setError("Failed to update product");
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
     };
 
     const deleteProduct = async (id) => {
@@ -74,15 +76,15 @@ const ProductProvider = (props) => {
             return result;
         } catch (error) {
             setError("Failed to delete product");
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
     };
 
     useEffect(() => {
         getAllProducts();
     }, []);
 
-    // vlerat qe do te shperndahen neper component
     const values = {
         products,
         loading,
@@ -95,13 +97,12 @@ const ProductProvider = (props) => {
     };
 
     return (
-        // i jep te gjithe komponenteve brenda Provider qasje tek ProductContext
         <ProductContext.Provider value={values}>
-            {props.children} 
-        </ProductContext.Provider> 
+            {props.children}
+        </ProductContext.Provider>
     );
 };
 
-const useProductContext = () => { return useContext(ProductContext) }
+const useProductContext = () => { return useContext(ProductContext); };
 
 export { ProductProvider, useProductContext };

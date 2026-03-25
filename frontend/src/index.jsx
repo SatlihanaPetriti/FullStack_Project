@@ -6,36 +6,46 @@ import Announcement from './components/Abar/Announcement.jsx';
 import AdminRouter from "./Pages/Admin/index.jsx";
 import Productcart from "./components/Products/productcart.jsx";
 import { ProductProvider } from './Context/Product';
+import {AuthProvider} from './Context/Auth.jsx';
+import ProtectedRoute from './Services/ProtectedRoute.jsx'; 
 
 function App() {
   return (
-    <ProductProvider>
-      <Routes> 
-        <Route path="/" element={
-          <>
-            <Announcement />
-            <Header />
-            <HomePage />
-          </>
-        } />
-        <Route path="/indoor-plants" element={
-          <>
-            <Announcement />
-            <Header />
-            <IndoorPlants />
-          </>
-        } />
-
-        <Route path="/admin/*" element={<AdminRouter />} />
-        <Route path="/productcart" element={
-          <>
-            <Announcement />
-            <Header />
-            <Productcart />
-          </>
-        } />
-      </Routes>
-    </ProductProvider>
+    <AuthProvider>
+      <ProductProvider>
+        <Routes>
+          <Route path="/" element={
+            <>
+              <Announcement />
+              <Header />
+              <HomePage />
+            </>
+          } />
+          <Route path="/indoor-plants" element={
+            <>
+              <Announcement />
+              <Header />
+              <IndoorPlants />
+            </>
+          } />
+          
+          
+          <Route path="/admin/*" element={
+            <ProtectedRoute requiredRole="admin">
+              <AdminRouter />
+            </ProtectedRoute>
+          } />
+          
+          <Route path="/productcart" element={
+            <>
+              <Announcement />
+              <Header />
+              <Productcart />
+            </>
+          } />
+        </Routes>
+      </ProductProvider>
+    </AuthProvider>
   );
 }
 

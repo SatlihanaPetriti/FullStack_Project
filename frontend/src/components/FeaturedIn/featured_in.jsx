@@ -21,27 +21,27 @@ const FeaturedSection = () => {
     return (
         <Container fluid className='text-center pt-5 pb-5'>
 
-            <div className='plant-intro mb-5'>
-                <p className="plant-add">Find your perfect plant</p>
-                <h2 className='plant-title'>Discover Your Ideal Green Companion</h2>
-                <p className='plant-subtitle'>
+            <div className='plant-intro1 mb-5'>
+                <p className="plant-add1">Find your perfect plant</p>
+                <h2 className='plant-title1'>Discover Your Ideal Green Companion</h2>
+                <p className='plant-subtitle1'>
                     Explore plants that match your lifestyle, space, and vibe — effortlessly.
                 </p>
 
                 <Row className='justify-content-center mt-4 gx-4'>
                     {categories.map((cat, index) => (
                         <Col xs={12} sm={6} md={3} key={index} className='mb-4'>
-                            <div className='plant-card'>
-                                <img src={cat.img} alt={cat.name} className='plant-img' />
+                            <div className='plant-card1'>
+                                <img src={cat.img} alt={cat.name} className='plant-img1' />
 
                                 {/* Bottom overlay with category name */}
-                                <div className='plant-overlay'>
+                                <div className='plant-overlay1'>
                                     <h5>{cat.name}</h5>
                                 </div>
 
                                 {/* Centered hover "Shop Now" button */}
                                 <span
-                                    className='shop-now'
+                                    className='shop-now1'
                                     onClick={() => navigate(cat.path)}>
                                     Shop Now
                                 </span>

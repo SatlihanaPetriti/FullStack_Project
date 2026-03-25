@@ -1,11 +1,11 @@
-/* 
-.plant-title {
+
+.plant-title1 {
   font-size: 3rem;
   font-weight: 600;
   color: #214332;
   margin-bottom: 20px;
 }
-.plant-subtitle {
+.plant-subtitle1 {
   font-size: 1rem;
   color: #214332;
   max-width: 500px;
@@ -13,7 +13,7 @@
 
   line-height: 1.5;
 }
-.plant-add {
+.plant-add1 {
   font-size: 1rem;
   color: #6c757d;
   font-weight: 600;
@@ -22,7 +22,7 @@
   color: #214332;
 }
 
-.plant-card {
+.plant-card1 {
   position: relative;
   height: 220px;
   border-radius: 20px;
@@ -37,18 +37,18 @@
   transition: all 0.4s ease;
 }
 
-.plant-card:hover {
+.plant-card1:hover {
   transform: translateY(-8px) scale(1.02);
   box-shadow: 0 15px 40px rgba(0, 0, 0, 0.35);
 }
 
-.plant-img {
+.plant-img1 {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.plant-overlay {
+.plant-overlay1 {
   position: absolute;
   bottom: 0;
   width: 100%;
@@ -61,11 +61,11 @@
   text-align: left;
 }
 
-.shop-now {
+.shop-now1 {
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%) translateY(10px);/
+  transform: translate(-50%, -50%) translateY(10px);
   opacity: 0;
   transition: all 0.3s ease;
   background: rgba(0,0,0,0.2);
@@ -79,16 +79,16 @@
   pointer-events: auto;
   cursor: pointer;
 }
-.plant-card:hover .shop-now {
+.plant-card1:hover .shop-now1 {
   opacity: 1;
   transform: translate(-50%, -50%) translateY(0);
 }
-.shop-now:hover{
+.shop-now1:hover{
   background: #214332;
 
 }
-.plant-overlay h5 {
+.plant-overlay1 h5 {
   margin: 0;
   font-weight: 600;
 }
- */
+

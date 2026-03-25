@@ -1,5 +1,5 @@
 import { Table, Button, Alert, Form } from "react-bootstrap";
-
+// per te krijuar nje variant
 const VariantRow = ({ variant, index, onReplaceImage, onRemove }) => (
     <tr>
         <td>{variant.id}</td>
@@ -26,7 +26,7 @@ const VariantRow = ({ variant, index, onReplaceImage, onRemove }) => (
         </td>
     </tr>
 );
-
+// per te shfaqur te dhenat e futura nese length 0 shfaq alert
 const VariantList = ({ variants, onReplaceImage, onRemove }) => {
     if (variants.length === 0) {
         return (

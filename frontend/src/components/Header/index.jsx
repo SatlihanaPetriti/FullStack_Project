@@ -1,5 +1,5 @@
 import { Navbar, Nav, Container, NavDropdown } from 'react-bootstrap';
-import { Search, Person, Heart, Bag, ChevronDown } from 'react-bootstrap-icons';
+import { Search, Person, Heart, Bag, ChevronDown, BoxArrowRight } from 'react-bootstrap-icons';
 import logo from '../../assets/images/Home/logo-green.png';
 import './menu.css';
 import '../../Pages/Home/index.css';
@@ -8,21 +8,54 @@ import FriendlyPlant from '../../assets/images/Home/friendly_plant.jpg';
 import { Link } from 'react-router-dom';
 import Login from '../Login/login';
 import { useState } from 'react';
+import { useAuthContext } from '../../Context/Auth';
 
 const Header = () => {
+    //state per te kontrolluar nese eshte i hapur(true) apo closed(false)
     const [showLogin, setShowLogin] = useState(false);
+    const { user, logout } = useAuthContext();
 
-
-    // Modal handlers
     const handleLoginShow = () => setShowLogin(true);
     const handleLoginClose = () => setShowLogin(false);
-
 
     const DropDown = (title) => (
         <span className='dropdown-title'>
             {title} <ChevronDown size={10} />
         </span>
     );
+
+    // funksioni qe kthen ikonen bazuar ne autentikim
+    const renderUserIcon = () => {
+        //pa user
+        if (!user) {
+            return (
+                <Person
+                    size={20}
+                    className='icon'
+                    onClick={handleLoginShow}
+                    title="Log In"
+                />
+            );
+        }
+
+        // Per  user
+        return (
+            <NavDropdown
+                title={
+                    <span>
+                        <Person size={20} className='icon' />
+                        <span>{user.name}</span>
+                    </span>
+                }
+            >
+                <NavDropdown.Item onClick={logout}>
+                    <BoxArrowRight size={16} />
+                    Log Out
+                </NavDropdown.Item>
+            </NavDropdown>
+        );
+    };
+
 
     return (
         <>
@@ -31,11 +64,7 @@ const Header = () => {
 
                     {/* Logo */}
                     <Navbar.Brand as={Link} to="/">
-                        <img
-                            src={logo}
-                            alt="home link"
-                            height="20"
-                        />
+                        <img src={logo} alt="home link" height="20" />
                     </Navbar.Brand>
 
                     <Navbar.Toggle />
@@ -43,22 +72,20 @@ const Header = () => {
                     <Navbar.Collapse>
                         <div className='home-con'>
                             <Nav className='align-items-center left-menu'>
-                                <Nav.Link as={Link} to="/">
-                                    Home
-                                </Nav.Link>
+                                <Nav.Link as={Link} to="/">Home</Nav.Link>
 
                                 <NavDropdown
                                     title={DropDown('Plants')}
                                     id='plants-dropdown'
                                     className='plants-dropdown'
                                 >
-                                    <Container className='plants-mega-menu '>
-                                        {/* LEFT COLUMN */}
+                                    <Container className='plants-mega-menu'>
                                         <div className='plants-links'>
                                             <NavDropdown.Item className='mega-item bold-item'>
                                                 <Nav.Link as={Link} to="/indoor-plants">
                                                     INDOOR PLANTS
-                                                </Nav.Link></NavDropdown.Item>
+                                                </Nav.Link>
+                                            </NavDropdown.Item>
                                             <NavDropdown.Item className='mega-item'>Best Sellers</NavDropdown.Item>
                                             <NavDropdown.Item className='mega-item'>Self-Watering Plants</NavDropdown.Item>
                                             <NavDropdown.Item className='mega-item'>New Arrivals</NavDropdown.Item>
@@ -67,19 +94,14 @@ const Header = () => {
                                             <NavDropdown.Item className='mega-item'>Pet-Friendly Plants</NavDropdown.Item>
                                             <NavDropdown.Item className='mega-item'>Cold Weather Plants</NavDropdown.Item>
                                             <NavDropdown.Item className='mega-item'>Air Purifying Plants</NavDropdown.Item>
-
-                                            <NavDropdown.Item className='mega-item shop-all'>
-                                                SHOP ALL ITEMS
-                                            </NavDropdown.Item>
+                                            <NavDropdown.Item className='mega-item shop-all'>SHOP ALL ITEMS</NavDropdown.Item>
                                         </div>
 
-                                        {/* RIGHT COLUMN */}
                                         <div className='plants-images'>
                                             <div className='menu-image-card'>
                                                 <img src={GiantPlant} alt='Giant Plants' />
-                                                <span >GIANT PLANTS</span>
+                                                <span>GIANT PLANTS</span>
                                             </div>
-
                                             <div className='menu-image-card'>
                                                 <img src={FriendlyPlant} alt='Pet Friendly Plants' />
                                                 <span>PET-FRIENDLY PLANTS</span>
@@ -87,6 +109,7 @@ const Header = () => {
                                         </div>
                                     </Container>
                                 </NavDropdown>
+
                                 <NavDropdown title={DropDown('Care Tools')}>
                                     <NavDropdown.Item>Product One</NavDropdown.Item>
                                     <NavDropdown.Item>Product Two</NavDropdown.Item>
@@ -103,7 +126,7 @@ const Header = () => {
 
                             <div className='right-icons'>
                                 <Search size={20} className='icon' />
-                                <Person size={20} className='icon' onClick={handleLoginShow} />
+                                {renderUserIcon()}
                                 <Heart size={20} className='icon' />
                                 <Bag size={20} className='icon' />
                             </div>
@@ -112,10 +135,13 @@ const Header = () => {
 
                 </Container>
             </Navbar>
-            <Login show={showLogin} handleClose={handleLoginClose} />
+
+            {/* modali shfaqet kur nuk ka user te loguar*/}
+            {!user && (
+                <Login show={showLogin} handleClose={handleLoginClose} />
+            )}
         </>
     );
-};
+}
 
 export default Header;
-

@@ -1,7 +1,7 @@
 import { Form, Row, Col, Button } from "react-bootstrap";
 
 
-const VariantInput = ({ variantInput, previewUrl, onFieldChange, onImageChange, onAdd }) => {
+const VariantInput = ({ variantInput, previewUrl, onFieldChange, fileInputRef, onImageChange, onAdd }) => {
 
     return (
         <>
@@ -42,8 +42,9 @@ const VariantInput = ({ variantInput, previewUrl, onFieldChange, onImageChange, 
                     <Form.Group>
                         <Form.Label>Image</Form.Label>
                         <Form.Control
-                            type="file" accept="image/*"
+                            type="file"
                             onChange={onImageChange}
+                            ref={fileInputRef}
                         />
                         {previewUrl && (
                             <img src={previewUrl} alt="preview"
@@ -53,7 +54,7 @@ const VariantInput = ({ variantInput, previewUrl, onFieldChange, onImageChange, 
                 </Col>
                 <Col md={2}>
                     <Button variant="success" onClick={onAdd} className="w-100">
-                    Add
+                        Add
                     </Button>
                 </Col>
             </Row>

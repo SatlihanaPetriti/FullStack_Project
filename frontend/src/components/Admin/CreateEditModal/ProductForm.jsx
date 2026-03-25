@@ -33,7 +33,7 @@ const toFormVariant = (v) => ({
     id: v.id || "",
     type: v.type || "",
     stock: v.stock || 0,
-    imageName: v.image || "", 
+    imageName: v.image || "",
     imageFile: null,
     previewUrl: v.image ? `${IMAGE_BASE_URL}/${v.image}` : null,
 });
@@ -52,13 +52,13 @@ const ProductForm = ({ show, onClose, product, onSave, allProducts = [] }) => {
     // per te pastruar inputet e file pasi te shtohet nje variant 
     const fileInputRef = useRef(null);
 
-    // func pastrim i inputeve(pas shtimit te nje varianti inputet duhen t ejen bosh per te shtuar nje tjt)
+    // funk pastrim i inputeve(pas shtimit te nje varianti inputet duhen t ejen bosh per te shtuar nje tjt)
     const resetVariantInput = () => {
         setVariantInput(EMPTY_VARIANT_INPUT);
         setVariantPreview(null);
         if (fileInputRef.current) fileInputRef.current.value = "";
     };
-    // kontroollon nese eshte 2
+    // kontrollon nese eshte i perseritur
     const isUnique = (field, value) => {
         if (!value) return true;
         return !allProducts.some(p =>
@@ -229,6 +229,7 @@ const ProductForm = ({ show, onClose, product, onSave, allProducts = [] }) => {
                         onFieldChange={handleVariantFieldChange}
                         onImageChange={handleVariantImageChange}
                         onAdd={addVariant}
+                        fileInputRef={fileInputRef}
                     />
 
                     {/* lista e varianteve*/}
