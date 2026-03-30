@@ -5,7 +5,7 @@ import { Product } from './Entity/product.entity';
 import { ProductVariant } from './Entity/product-variant.entity';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-
+import { FileService } from '../products/file.service';
 @Injectable()
 export class ProductsService {
     constructor(
@@ -14,6 +14,7 @@ export class ProductsService {
 
         @InjectRepository(ProductVariant)
         private readonly variantRepository: Repository<ProductVariant>,
+        private readonly fileService: FileService,
     ) { }
 
     // GET all products
@@ -39,7 +40,7 @@ export class ProductsService {
     public async createProduct(createProductDto: CreateProductDto, files?: { variantImages?: Express.Multer.File[] }) {
         try {
             const existingProduct = await this.productRepository.findOne({ where: { id: createProductDto.id } });
-            if (existingProduct) 
+            if (existingProduct)
                 throw new HttpException(`Product ${createProductDto.id} already exists`, HttpStatus.BAD_REQUEST);
 
             const { variants, ...productDataWithoutVariants } = createProductDto;
@@ -98,7 +99,14 @@ export class ProductsService {
                 const variantsToDelete = product.variants.filter(
                     v => !variantIdsFromFrontend.includes(v.id)
                 );
+
                 if (variantsToDelete.length > 0) {
+                    for (const variant of variantsToDelete) {
+                        if (variant.image) {
+                            await this.fileService.deleteFile(variant.image);
+                        }
+                    }
+
                     const idsToDelete = variantsToDelete.map(v => v.id);
                     await this.variantRepository.delete(idsToDelete);
                 }
@@ -113,10 +121,20 @@ export class ProductsService {
                         product: { id },
                     };
 
-                    // Assign image if new file uploaded
+
                     if (variantImages[i]?.filename) {
+                        if (existingVariant?.image) {
+                            await this.fileService.deleteFile(existingVariant.image);
+                        }
                         variantData.image = variantImages[i].filename;
-                    } else if (v.image) {
+                    }
+                    else if (v.image === null || v.image === '') {
+                        if (existingVariant?.image) {
+                            await this.fileService.deleteFile(existingVariant.image);
+                        }
+                        variantData.image = null;
+                    }
+                    else if (v.image) {
                         variantData.image = v.image;
                     }
 
@@ -126,6 +144,15 @@ export class ProductsService {
                     } else {
                         await this.variantRepository.save({ id: v.id, ...variantData });
                     }
+                }
+            } else {
+                if (product.variants && product.variants.length > 0) {
+                    for (const variant of product.variants) {
+                        if (variant.image) {
+                            await this.fileService.deleteFile(variant.image);
+                        }
+                    }
+                    await this.variantRepository.delete(product.variants.map(v => v.id));
                 }
             }
 
@@ -143,15 +170,33 @@ export class ProductsService {
         }
     }
 
-    // DELETE a product
     public async deleteProduct(id: string) {
         try {
-            const product = await this.productRepository.findOne({ where: { id }, relations: ['variants'] });
+            const product = await this.productRepository.findOne({
+                where: { id },
+                relations: ['variants']
+            });
+
             if (!product) throw new NotFoundException(`Product ${id} not found`);
+
+            for (const variant of product.variants) {
+                if (variant.image) {
+                    await this.fileService.deleteFile(variant.image);
+                }
+            }
+
             await this.productRepository.delete(id);
-            return { statusCode: 200, message: `Product ${id} deleted successfully` };
+
+            return {
+                statusCode: 200,
+                message: `Product ${id} and its images deleted successfully`
+            };
+
         } catch (error) {
-            throw new HttpException(`Could not delete product ${id}: ${error.message}`, HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new HttpException(
+                `Could not delete product ${id}: ${error.message}`,
+                HttpStatus.INTERNAL_SERVER_ERROR
+            );
         }
     }
 }
