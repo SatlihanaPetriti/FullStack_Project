@@ -30,7 +30,7 @@ export class AuthService {
             };
             //ruhet ne database duke thirrur userservise qe ben save ne database
             const user = await this.userService.registerUser(userData);
-            //gjenerohet token JWT lidhur me user id-në, dhe më vonë mund të përdoret për të verifikuar se cili user po bën request.
+            //gjenerohet token JWT lidhur me user id-ne, dhe me vone mund te perdoret per te verifikuar se cili user po ben request.
             const token = await this.jwtService.signAsync({id:user.id});
             return {user, token};
         }catch(error){

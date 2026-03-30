@@ -9,7 +9,7 @@ import { Response } from 'express';
 
 @Controller('auth')
 export class AuthController {
-    //Lejon të përdorim cookies response-objekti qe kontrollon cfare i kthehet clientit
+    //Lejon te perdorim cookies response-objekti qe kontrollon cfare i kthehet clientit
     constructor (private readonly authService: AuthService, private readonly userService:UsersService){}
     @Post('register')
     public async register(@Body() body: UserDto, @Res({ passthrough: true }) response: Response): Promise<UserEntity> {
