@@ -8,10 +8,10 @@ const ProtectedRoute = ({ children, requiredRole }) => {
     const { user } = useAuthContext();
     if (!user) {
         // ridrejton perdoruesin ne home nese nuk eshte i loguar
-        // replace- zevendeson historikun (nuk mund të kthehesh mbrapa <-)
+        // replace- zevendeson historikun (nuk mund të kthehesh mbrapa)
         return <Navigate to="/" replace />;
     }
-    // ndalon userin  te eshkoje ne admin /admin e rikthen ne home
+    // ndalon userin  te shkoje ne admin /admin e rikthen ne home
     if (requiredRole === 'admin' && user.role !== 'admin') {
         return <Navigate to="/" replace />;
     }

@@ -7,7 +7,7 @@ import {
     get_product_by_id_service
 } from "../Services/Product";
 
-//  1.  krijohet nje context global per produktet( ku do te shperndaje produktet, loading, error, dhe funksionet crud)
+//   krijohet nje context global per produktet( ku do te shperndaje produktet, loading, error, dhe funksionet crud)
 const ProductContext = createContext({});
 // komponenti qe do te mbeshtjelle te gjihthw aplikacionin (index.jsx)
 // roli i props  perdoret per te marre children (props.children) qe ti jape akses ne ProductContext 

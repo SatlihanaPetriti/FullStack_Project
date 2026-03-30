@@ -1,4 +1,3 @@
-import axios from "axios";
 import { authAxios, publicAxios } from "./axiosConfig";
 const URL = "http://localhost:3000/products";
 
