@@ -33,8 +33,8 @@ const UserProvider = (props) => {
                 setError(null);
                 result.data.role === "admin" ? navigate("/admin") : navigate("/");
             }
-        } catch {
-            setError("Registration failed. Please try again.");
+        } catch (error) {
+            setError(error.response?.data?.message);
         }
     };
 
@@ -47,7 +47,7 @@ const UserProvider = (props) => {
                 result.data.role === "admin" ? navigate("/admin") : navigate("/");
             }
         } catch (error) {
-            throw error.response?.data;
+            setError(error.response?.data?.message);
         }
     };
 

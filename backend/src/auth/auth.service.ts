@@ -17,7 +17,10 @@ export class AuthService {
         try {
             const checkUser = await this.userService.findByEmail(body.email);
             if (checkUser) {
-                throw new ErrorHandler("You are already registered", HttpStatus.FOUND);
+                throw new ErrorHandler(
+                    "User already exists with this email",
+                    HttpStatus.CONFLICT
+                );
             }
 
             const hashedPassword = await bcrypt.hash(body.password, 10);
@@ -42,11 +45,11 @@ export class AuthService {
         try {
             const user = await this.userService.findByEmail(body.email);
             if (!user) {
-                throw new ErrorHandler("user with this email was not found", HttpStatus.NOT_FOUND)
+                throw new ErrorHandler("User with this email was not found", HttpStatus.NOT_FOUND)
             }
             const password = await bcrypt.compare(body.password, user?.password)
             if (!password) {
-                throw new ErrorHandler("your password is incorrect", HttpStatus.NOT_FOUND)
+                throw new ErrorHandler("Your password is incorrect", HttpStatus.UNAUTHORIZED)
             }
             const token = await this.jwtService.signAsync({ id: user.id });
             return { user, token };
