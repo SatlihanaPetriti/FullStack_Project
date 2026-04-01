@@ -1,12 +1,12 @@
-import { authAxios, publicAxios } from "./axiosConfig";
+import axios from 'axios'; 
 const URL = "http://localhost:3000/products";
 
 export async function get_products_service() {
-    return await publicAxios.get(`${URL}`);
+    return await axios.get(`${URL}`);
 }
 
 export async function get_product_by_id_service(id) {
-    return await publicAxios.get(`${URL}/${id}`);
+    return await axios.get(`${URL}/${id}`);
 }
 
 export async function create_product_service(data, images = []) {
@@ -35,7 +35,7 @@ export async function create_product_service(data, images = []) {
         }
     });
 
-    return await authAxios.post(`${URL}`, formData, {
+    return await axios.post(`${URL}`, formData, {
         headers: { "Content-Type": "multipart/form-data" }
     });
 }
@@ -72,11 +72,11 @@ export async function update_product_service(id, data, images = []) {
         });
     }
 
-    return await authAxios.put(`${URL}/${id}`, formData, {
+    return await axios.put(`${URL}/${id}`, formData, {
         headers: { "Content-Type": "multipart/form-data" }
     });
 }
 
 export async function delete_product_service(id) {
-    return await authAxios.delete(`${URL}/${id}`);
+    return await axios.delete(`${URL}/${id}`);
 }

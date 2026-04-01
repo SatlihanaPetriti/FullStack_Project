@@ -29,8 +29,7 @@ export class AuthGuard implements CanActivate {
         try {
             const payload: any = this.jwtService.verify(jwt);
             // merr id nga payload (id) gjen perdoruesin ne database
-            const user = await this.userService.findbyId(payload.id);
-            if (!user) {
+            const user = await this.userService.findById(payload.id);            if (!user) {
                 throw new HttpException('User not found', HttpStatus.UNAUTHORIZED);
             }
             // vendos perdoruesin ne kerkese

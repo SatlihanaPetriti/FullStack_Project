@@ -2,10 +2,10 @@ import { Nav } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
 import './AdminLayout.css';
 import {UserRoundCog, LayoutDashboard, Package, Tag, ShoppingCart, Warehouse, LogOut} from 'lucide-react';
-import { useAuthContext } from '../../Context/Auth';
+import { useUserContext } from '../../Context/Auth';
 
 const AdminLayout = ({ children }) => {
-    const { user, logout } = useAuthContext();
+    const { user, logout } = useUserContext();
 
     return (
         <div className="admin-wrapper">

@@ -8,12 +8,12 @@ import FriendlyPlant from '../../assets/images/Home/friendly_plant.jpg';
 import { Link } from 'react-router-dom';
 import Login from '../Login/login';
 import { useState } from 'react';
-import { useAuthContext } from '../../Context/Auth';
+import { useUserContext } from '../../Context/Auth';
 
 const Header = () => {
     //state per te kontrolluar nese eshte i hapur(true) apo closed(false)
     const [showLogin, setShowLogin] = useState(false);
-    const { user, logout } = useAuthContext();
+    const { user, logout } = useUserContext();
 
     const handleLoginShow = () => setShowLogin(true);
     const handleLoginClose = () => setShowLogin(false);

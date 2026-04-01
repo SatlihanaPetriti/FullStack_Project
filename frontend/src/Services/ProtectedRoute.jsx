@@ -1,11 +1,11 @@
 import { Navigate } from "react-router-dom";
-import { useAuthContext } from "../Context/Auth.jsx";
+import { useUserContext } from "../Context/Auth.jsx";
 // protected route sherben per t embrojtur faqet qe kerkojne autentikim
 
 
 // children do t ejete komponenti qe do te mbrohet (AdminRouter)
 const ProtectedRoute = ({ children, requiredRole }) => {
-    const { user } = useAuthContext();
+    const { user } = useUserContext();
     if (!user) {
         // ridrejton perdoruesin ne home nese nuk eshte i loguar
         // replace- zevendeson historikun (nuk mund të kthehesh mbrapa)

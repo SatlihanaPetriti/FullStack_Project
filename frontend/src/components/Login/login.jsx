@@ -2,7 +2,8 @@ import { Modal, Row, Col, Form, Button } from "react-bootstrap";
 import "./login.css";
 import { EyeFill, EyeSlashFill, Google, Apple } from "react-bootstrap-icons";
 import { useState, useEffect } from "react";
-import { useAuthContext } from "../../Context/Auth";
+import { useUserContext } from "../../Context/Auth";
+
 
 const Login = ({ show, handleClose }) => {
   const [showPassword, setShowPassword] = useState(false);
@@ -15,7 +16,7 @@ const Login = ({ show, handleClose }) => {
     password: ""
   });
 
-  const { login, register, error, setError, user } = useAuthContext();
+  const { login, register, error, setError, user } = useUserContext();
 
   // Kur user vendoset në context (pas login ),
   // mbyll modal-in automatikisht
@@ -63,8 +64,7 @@ const Login = ({ show, handleClose }) => {
           <Col md={6} className="login-panel">
             <div className="login-container">
 
-              <button className="close-btn" onClick={handleClose}>✕</button>
-
+              <button className="close-btn" onClick={handleClose}>&times;</button>
               <h2>{isSignup ? "Create an Account" : "Welcome Back!"}</h2>
               <p className="login-subtitle">
                 {isSignup

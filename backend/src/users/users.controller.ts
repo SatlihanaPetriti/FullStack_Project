@@ -19,13 +19,11 @@ export class UserController {
     @Get('email/:email')
     @Roles('admin')
     findByEmail(@Param('email') email: string) {
-        return this.usersService.findbyemail(email);
-    }
+        return this.usersService.findByEmail(email);    }
 
     @Get(':id')
     findOne(@Param('id', ParseIntPipe) id: number) {
-        return this.usersService.findbyId(id);
-    }
+        return this.usersService.findById(id);    }
     //endpoint per admin per te krijuar user te rinj; ne sistem.
     // @Post()
     // @Roles('admin')
