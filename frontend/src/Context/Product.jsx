@@ -5,7 +5,7 @@ import {
     update_product_service,
     delete_product_service,
     get_product_by_id_service
-} from "../Services/Product";
+} from "../Services/Product.jsx";
 
 //   krijohet nje context global per produktet( ku do te shperndaje produktet, loading, error, dhe funksionet crud)
 const ProductContext = createContext({});

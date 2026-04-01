@@ -1,5 +1,5 @@
-import { Navigate } from "react-router-dom"; // perte ridrejtuar perdoruesin
-import { useAuthContext } from "../Context/Auth"
+import { Navigate } from "react-router-dom";
+import { useAuthContext } from "../Context/Auth.jsx";
 // protected route sherben per t embrojtur faqet qe kerkojne autentikim
 
 
