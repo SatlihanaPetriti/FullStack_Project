@@ -5,7 +5,7 @@ import * as path from 'path';
 @Injectable()
 export class FileService {
     // definimi i direktorise se imazheve
-    private readonly uploadsDir = './uploads';
+    private readonly uploadsDir = './uploads/variants';
     // filename- emri i imazhit qe do te delete
     deleteFile(filename: string): void {
         // nese file name eshte null apo undefined, nuk ka nevoje te vazhdojme me tej
@@ -19,13 +19,15 @@ export class FileService {
                 // fs.unlinkSync fshin file-in ne path-in e specifikuar
                 fs.unlinkSync(filePath);
             }
-        } catch (error) {
-            console.error(`Failed to delete ${filename}:`, error.message);
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                console.error(`Failed to delete ${filename}:`, error.message);
+            } else {
+                console.error(`Failed to delete ${filename}:`, error);
+            }
         }
     }
-// void nuk kthen asnje vlere, thjesht kryen nje veprim (ne kete rast, fshirjen e file-it) dhe perfundon
     deleteFiles(filenames: string[]): void {
-        // forEach iteron mbi listen e filenames dhe therrit deleteFile per secilin filename
         filenames.forEach(filename => this.deleteFile(filename));
     }
 }

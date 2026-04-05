@@ -1,62 +1,98 @@
 import { Form, Row, Col, Button } from "react-bootstrap";
 
-
-const VariantInput = ({ variantInput, previewUrl, onFieldChange, fileInputRef, onImageChange, onAdd }) => {
-
+const VariantInput = ({
+    variantInput,
+    previewUrl,
+    onFieldChange,
+    fileInputRef,
+    onImageChange,
+    onAdd
+}) => {
     return (
         <>
-            <h5 className="mb-3">Add Variants with Images</h5>
+            <h6
+                className="mb-3"
+                style={{
+                    textTransform: "uppercase",
+                    letterSpacing: "1px",
+                    fontWeight: 600,
+                    fontSize: 13
+                }}
+            >
+                Add Variants with Images
+            </h6>
 
-            <Row className="mb-3 text-start">
-                <Col md={2}>
-                    <Form.Group>
-                        <Form.Label >Variant ID *</Form.Label>
-                        <Form.Control
-                            type="text" name="id" placeholder="plant name"
-                            value={variantInput.id}
-                            onChange={onFieldChange}
-                        />
-                    </Form.Group>
-                </Col>
-                <Col md={2}>
+            <Row className="mb-3 align-items-end text-start g-3">
+
+                {/* TYPE */}
+                <Col md={3}>
                     <Form.Group>
                         <Form.Label>Type *</Form.Label>
                         <Form.Control
-                            type="text" name="type" placeholder="pot color"
+                            type="text"
+                            name="type"
+                            placeholder="pot color"
                             value={variantInput.type}
                             onChange={onFieldChange}
                         />
                     </Form.Group>
                 </Col>
-                <Col md={2}>
+
+                {/* STOCK */}
+                <Col style={{ maxWidth: 90 }}>
                     <Form.Group>
                         <Form.Label>Stock</Form.Label>
                         <Form.Control
-                            type="number" name="stock" placeholder="0"
+                            type="number"
+                            name="stock"
+                            placeholder="0"
                             value={variantInput.stock}
                             onChange={onFieldChange}
                         />
                     </Form.Group>
                 </Col>
+
+                {/* IMAGE */}
                 <Col md={4}>
                     <Form.Group>
                         <Form.Label>Image</Form.Label>
-                        <Form.Control
-                            type="file"
-                            onChange={onImageChange}
-                            ref={fileInputRef}
-                        />
-                        {previewUrl && (
-                            <img src={previewUrl} alt="preview"
-                                style={{ width: 60, height: 60, borderRadius: 6, marginTop: 6 }} />
-                        )}
+
+                        <div className="d-flex align-items-center gap-2">
+                            <Form.Control
+                                type="file"
+                                onChange={onImageChange}
+                                ref={fileInputRef}
+                            />
+
+                            {previewUrl && (
+                                <img
+                                    src={previewUrl}
+                                    alt="preview"
+                                    style={{
+                                        width: 36,
+                                        height: 36,
+                                        objectFit: "cover",
+                                        borderRadius: 6,
+                                        border: "1px solid #ddd"
+                                    }}
+                                />
+                            )}
+                        </div>
                     </Form.Group>
                 </Col>
+
+                {/* BUTTON */}
                 <Col md={2}>
-                    <Button variant="success" onClick={onAdd} className="w-100">
+                    <Button
+                        variant="success"
+                        onClick={onAdd}
+                        className="w-100"
+                        style={{ height: 38 }}
+                    >
                         Add
                     </Button>
                 </Col>
+
             </Row>
         </>
     );

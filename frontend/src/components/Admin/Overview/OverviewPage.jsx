@@ -5,7 +5,7 @@ import { IoWarning } from "react-icons/io5";
 import { AiOutlineStock } from "react-icons/ai";
 import { BiSolidPackage } from "react-icons/bi";
 import './OverviewPage.css';
-import '../AllProducts/ProductTable';
+import '../Products/Products.css';
 
 const OverviewPage = () => {
     const { products, loading, error, getAllProducts } = useProductContext();
@@ -82,15 +82,6 @@ const OverviewPage = () => {
                         </Card.Body>
                     </Card>
                 </Col>
-                {/* <Col xs={6} md={3}>
-                    <Card className="ov-card ov-card--orders">
-                        <Card.Body className="ov-card-body">
-                            <FaCartShopping size={52} color='#1b4332' className="ov-card-icon" />
-                            <div className="ov-card-num">{pendingOrders}</div>
-                            <div className="ov-card-label">Pending Orders</div>
-                        </Card.Body>
-                    </Card>
-                </Col> */}
                 <Col xs={6} md={3}>
                     <Card className="ov-card ov-card--low">
                         <Card.Body className="ov-card-body">
@@ -192,7 +183,7 @@ const OverviewPage = () => {
 
                                             {/* Category */}
                                             <td>
-                                                <span className="plant-category">{product.category}</span>
+                                                <span className="plant-category">{product.category?.name ?? "—"}</span>
                                             </td>
 
                                             {/* Size */}

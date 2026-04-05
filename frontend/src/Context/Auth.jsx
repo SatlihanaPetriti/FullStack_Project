@@ -11,11 +11,13 @@ const UserProvider = (props) => {
     const [isAuthChecked, setIsAuthChecked] = useState(false);
     const [trigger, setTrigger] = useState(false);
 
+ 
     const checkAuthUser = async () => {
         try {
             const result = await checkAuth_user_service();
-            if (result.status === 200) setUser(result.data);
-            else setUser(null);
+            if (result.status === 200 && result.data) {
+                setUser(result.data); // keep user if authenticated
+            }
         } catch {
             setUser(null);
         } finally {

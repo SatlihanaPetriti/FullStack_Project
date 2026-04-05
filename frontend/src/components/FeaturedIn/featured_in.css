@@ -92,3 +92,18 @@
   font-weight: 600;
 }
 
+.view-all-categories {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1e6b43;
+  cursor: pointer;
+  border-bottom: 1.5px solid #1e6b43;
+  padding-bottom: 2px;
+  transition: opacity 0.18s;
+}
+
+.view-all-categories:hover {
+  opacity: 0.7;
+}

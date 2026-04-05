@@ -1,7 +1,7 @@
 import { Nav } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
 import './AdminLayout.css';
-import {UserRoundCog, LayoutDashboard, Package, Tag, ShoppingCart, Warehouse, LogOut} from 'lucide-react';
+import { UserRoundCog, LayoutDashboard, Package, Layers, ShoppingCart, Warehouse, LogOut} from 'lucide-react';
 import { useUserContext } from '../../Context/Auth';
 
 const AdminLayout = ({ children }) => {
@@ -29,7 +29,7 @@ const AdminLayout = ({ children }) => {
                         <Package size={16} /> All Products
                     </NavLink>
                     <NavLink to="/admin/categories" className="admin-nav-link">
-                        <Tag size={16} /> Categories
+                        <Layers size={16} /> Categories
                     </NavLink>
                     <NavLink to="/admin/orders" className="admin-nav-link">
                         <ShoppingCart size={16} /> Orders

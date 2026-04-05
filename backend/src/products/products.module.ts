@@ -7,17 +7,17 @@ import { ProductsService } from './products.service';
 import { UsersModule } from '../users/users.module';
 import { AuthGuard } from '../guards/auth.guards';
 import { PermissionGuard } from '../guards/permission.guards';
-import { FileService } from '../products/file.service';
+import { FileService } from './file.service';
 @Module({
   imports: [
     TypeOrmModule.forFeature([Product, ProductVariant]),
-    UsersModule,   //UsersModule importohet sepse AuthGuard ka nevoje per UsersService
+    UsersModule,
   ],
   controllers: [ProductsController],
   providers: [
     ProductsService,
-    AuthGuard,       
-    PermissionGuard, 
+    AuthGuard,
+    PermissionGuard,
     FileService
   ]
 })

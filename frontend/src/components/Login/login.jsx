@@ -3,11 +3,13 @@ import "./login.css";
 import { EyeFill, EyeSlashFill, Google, Apple } from "react-bootstrap-icons";
 import { useState, useEffect } from "react";
 import { useUserContext } from "../../Context/Auth";
+import ForgotPassword from "../Login/ForgotPassword";
 
 
 const Login = ({ show, handleClose }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [isSignup, setIsSignup] = useState(false);
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
 
   const [data, setData] = useState({
     firstName: "",
@@ -18,8 +20,8 @@ const Login = ({ show, handleClose }) => {
 
   const { login, register, error, setError, user } = useUserContext();
 
-  // Kur user vendoset në context (pas login ),
-  // mbyll modal-in automatikisht
+  // Kur user vendoset ne context (pas login ),
+  // mbyll modal automatikisht
   useEffect(() => {
     if (user) {
       handleClose();
@@ -49,7 +51,7 @@ const Login = ({ show, handleClose }) => {
   };
 
   return (
-    <Modal
+    <><Modal
       show={show}
       onHide={handleClose}
       fullscreen
@@ -89,8 +91,7 @@ const Login = ({ show, handleClose }) => {
                         className="login-input"
                         value={data.firstName}
                         onChange={handleChange}
-                        required
-                      />
+                        required />
                     </Form.Group>
                     <Form.Group className="mb-3">
                       <Form.Control
@@ -100,8 +101,7 @@ const Login = ({ show, handleClose }) => {
                         className="login-input"
                         value={data.lastName}
                         onChange={handleChange}
-                        required
-                      />
+                        required />
                     </Form.Group>
                   </>
                 )}
@@ -114,8 +114,7 @@ const Login = ({ show, handleClose }) => {
                     className="login-input"
                     value={data.email}
                     onChange={handleChange}
-                    required
-                  />
+                    required />
                 </Form.Group>
 
                 <Form.Group className={`${isSignup ? "mb-3" : "mb-1"} position-relative`}>
@@ -126,8 +125,7 @@ const Login = ({ show, handleClose }) => {
                     className="login-input"
                     value={data.password}
                     onChange={handleChange}
-                    required
-                  />
+                    required />
                   <span
                     className="password-toggle"
                     onClick={() => setShowPassword(!showPassword)}
@@ -139,8 +137,9 @@ const Login = ({ show, handleClose }) => {
                 {!isSignup && (
                   <div className="login-options">
                     <Form.Check label="Remember me" />
-                    <a href="#">Forgot password?</a>
-                  </div>
+                    <a href="#" onClick={(e) => { e.preventDefault(); setShowForgotPassword(true); }}>
+                      Forgot password?
+                    </a>                  </div>
                 )}
 
                 <Button className="login-btn w-100" type="submit">
@@ -178,6 +177,11 @@ const Login = ({ show, handleClose }) => {
         </Row>
       </Modal.Body>
     </Modal>
+      <ForgotPassword
+        show={showForgotPassword}
+        handleClose={() => setShowForgotPassword(false)} />
+    </>
+
   );
 };
 

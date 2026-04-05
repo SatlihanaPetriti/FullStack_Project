@@ -4,15 +4,12 @@ import ProductInfo from "./ProductInfo";
 import VariantInput from "./VariantInput";
 import VariantList from "./VariantList";
 
+const IMAGE_BASE_URL = "http://localhost:3000/products/uploads/variants";
 
-const IMAGE_BASE_URL = "http://localhost:3000/products/uploads";
-
-// gjendja fillestare (per krijimin e produktiti te ri)
 const EMPTY_FORM = {
-    id: "",
     title: "",
     label: "",
-    category: "Indoor",
+    category_id: "",
     size: "SM",
     price: "",
     sale_price: "",
@@ -28,7 +25,7 @@ const EMPTY_VARIANT_INPUT = {
     stock: "",
     imageFile: null,
 };
-// konverton variiantin nga serveri ne formatin e formes
+
 const toFormVariant = (v) => ({
     id: v.id || "",
     type: v.type || "",
@@ -38,27 +35,19 @@ const toFormVariant = (v) => ({
     previewUrl: v.image ? `${IMAGE_BASE_URL}/${v.image}` : null,
 });
 
-
-// merren props nga prinderi
 const ProductForm = ({ show, onClose, product, onSave, allProducts = [] }) => {
-    // per te ruajtur te dhenat e plota
     const [formData, setFormData] = useState(EMPTY_FORM);
-    // ruhen te dhenat e variantit para se te shtohen ne liste 
     const [variantInput, setVariantInput] = useState(EMPTY_VARIANT_INPUT);
-    // shfaqja e imazhit
     const [variantPreview, setVariantPreview] = useState(null);
-    //gaabimet e validimit
     const [errors, setErrors] = useState({ id: "", title: "" });
-    // per te pastruar inputet e file pasi te shtohet nje variant 
     const fileInputRef = useRef(null);
 
-    // funk pastrim i inputeve(pas shtimit te nje varianti inputet duhen t ejen bosh per te shtuar nje tjt)
     const resetVariantInput = () => {
         setVariantInput(EMPTY_VARIANT_INPUT);
         setVariantPreview(null);
         if (fileInputRef.current) fileInputRef.current.value = "";
     };
-    // kontrollon nese eshte i perseritur
+
     const isUnique = (field, value) => {
         if (!value) return true;
         return !allProducts.some(p =>
@@ -66,14 +55,12 @@ const ProductForm = ({ show, onClose, product, onSave, allProducts = [] }) => {
         );
     };
 
-    // behet inicializimi i formes (ekzekutohet kur ndryshohet product ose show)
     useEffect(() => {
         if (product) {
             setFormData({
-                id: product.id || "",
                 title: product.title || "",
                 label: product.label || "",
-                category: product.category || "Indoor",
+                category_id: product.category_id || "",
                 size: product.size || "SM",
                 price: product.price ?? "",
                 sale_price: product.sale_price ?? "",
@@ -86,11 +73,9 @@ const ProductForm = ({ show, onClose, product, onSave, allProducts = [] }) => {
             setFormData(EMPTY_FORM);
         }
         resetVariantInput();
-        setErrors({ id: "", title: "" });
+        setErrors({ title: "" });
     }, [product, show]);
 
-
-    // validim ne kohe reale, ruan ate qe shkruhet dhe budle 
     const handleProductChange = (e) => {
         const { name, value, type, checked } = e.target;
 
@@ -113,37 +98,32 @@ const ProductForm = ({ show, onClose, product, onSave, allProducts = [] }) => {
         }));
     };
 
-    // perditesim i te dhenave te varianteve qe po shkruhet
     const handleVariantFieldChange = (e) => {
         const { name, value } = e.target;
         setVariantInput(prev => ({ ...prev, [name]: value }));
     };
-    // merr imazhin e ruan ne varaintInput dhe nj  url per te pare imazhin
+
     const handleVariantImageChange = (e) => {
         const file = e.target.files[0];
         if (!file) return;
         setVariantInput(prev => ({ ...prev, imageFile: file }));
         setVariantPreview(URL.createObjectURL(file));
     };
-    //shtohet varianti i ri ne listen e formData.variants
+
     const addVariant = () => {
-        if (!variantInput.id || !variantInput.type) {
-            alert("Variant ID and Type are required");
+        if (!variantInput.type) {
+            alert("Variant Type is required");
             return;
         }
         if (!variantInput.imageFile) {
             alert("Variant image is required");
             return;
         }
-        if (formData.variants.some(v => v.id === variantInput.id)) {
-            alert("Variant ID already exists in this product");
-            return;
-        }
 
         setFormData(prev => ({
             ...prev,
             variants: [...prev.variants, {
-                id: variantInput.id,
+                id: "", 
                 type: variantInput.type,
                 stock: Number(variantInput.stock) || 0,
                 imageName: null,
@@ -154,7 +134,7 @@ const ProductForm = ({ show, onClose, product, onSave, allProducts = [] }) => {
 
         resetVariantInput();
     };
-    // zevendesimi ii imazhit
+
     const replaceVariantImage = (index, e) => {
         const file = e.target.files[0];
         if (!file) return;
@@ -164,13 +144,13 @@ const ProductForm = ({ show, onClose, product, onSave, allProducts = [] }) => {
             updated[index] = {
                 ...updated[index],
                 imageFile: file,
-                imageName: null, // fshihet imazhi i vjeter
+                imageName: null,
                 previewUrl: URL.createObjectURL(file),
             };
             return { ...prev, variants: updated };
         });
     };
-    // fshirja e variantit me index nga lista
+
     const removeVariant = (index) => {
         setFormData(prev => ({
             ...prev,
@@ -178,29 +158,31 @@ const ProductForm = ({ show, onClose, product, onSave, allProducts = [] }) => {
         }));
     };
 
-    // DERGOHET FORMA
     const handleSubmit = (e) => {
         e.preventDefault();
 
         const cleanedData = {
-            ...formData,
+            title: formData.title,
+            label: formData.label,
+            category_id: formData.category_id,
+            size: formData.size,
             price: Number(formData.price),
             sale_price: formData.sale_price === "" ? null : Number(formData.sale_price),
             sale_percentage: formData.sale_percentage === "" ? null : Number(formData.sale_percentage),
+            is_bundle: formData.is_bundle,
+            date_added: formData.date_added,
             variants: formData.variants.map(v => ({
-                id: v.id,
+                ...(v.id ? { id: v.id } : {}),
                 type: v.type,
                 stock: Number(v.stock),
-                imageName: v.imageFile ? null : (v.imageName || null),
+                image: v.imageFile ? null : (v.imageName || null),
             })),
         };
-        //ndaj imazhet
+
         const imageFiles = formData.variants.map(v => v.imageFile || null);
-        //dergo te prindi
         onSave(cleanedData, imageFiles);
     };
 
-    // kontrolli i butonit aktivizohet(ka te pakten nje variant, nuk ka gabime dhe nuk ka gabim ne titull)
     const canSubmit = formData.variants.length > 0 && !errors.id && !errors.title;
 
     return (
@@ -213,7 +195,6 @@ const ProductForm = ({ show, onClose, product, onSave, allProducts = [] }) => {
 
             <Form onSubmit={handleSubmit}>
                 <Modal.Body>
-                    {/*te dhenat e produktit */}
                     <ProductInfo
                         formData={formData}
                         errors={errors}
@@ -222,7 +203,6 @@ const ProductForm = ({ show, onClose, product, onSave, allProducts = [] }) => {
 
                     <hr className="my-4" />
 
-                    {/* input per variantin e ri*/}
                     <VariantInput
                         variantInput={variantInput}
                         previewUrl={variantPreview}
@@ -232,7 +212,6 @@ const ProductForm = ({ show, onClose, product, onSave, allProducts = [] }) => {
                         fileInputRef={fileInputRef}
                     />
 
-                    {/* lista e varianteve*/}
                     <VariantList
                         variants={formData.variants}
                         onReplaceImage={replaceVariantImage}

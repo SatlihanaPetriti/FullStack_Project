@@ -1,19 +1,24 @@
-import { Entity, Column, PrimaryColumn, OneToMany } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToOne, JoinColumn } from 'typeorm';
 import { ProductVariant } from './product-variant.entity';
+import { CategoryEntity } from '../../Category/Entity/CategoryEntity';
 
 @Entity('products')
 export class Product {
-    @PrimaryColumn()
-    id: string;
+    @PrimaryGeneratedColumn()
+    id: number;
+
+    @ManyToOne(() => CategoryEntity, category => category.products)
+    @JoinColumn({ name: 'category_id' })
+    category: CategoryEntity;
+
+    @Column()
+    category_id: number;
 
     @Column()
     title: string;
 
     @Column({ nullable: true })
     label: string;
-
-    @Column()
-    category: string;
 
     @Column()
     size: string;
@@ -32,16 +37,7 @@ export class Product {
 
     @Column({ type: 'date', nullable: true })
     date_added: Date;
-    
+
     @OneToMany(() => ProductVariant, variant => variant.product)
     variants: ProductVariant[];
 }
-
-//OneToMany perdoret kur rows belong to one product(nuk krijo column its for navigation).
-//disa variants-> 1 product
-//OneToMany navigation
-
-
-// ManyToOne = child → parent → use @JoinColumn
-
-// OneToMany = parent → children → do NOT use @JoinColumn

@@ -1,10 +1,10 @@
-import { Entity, Column, PrimaryColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { Product } from './product.entity';
 
 @Entity('product_variants')
 export class ProductVariant {
-    @PrimaryColumn()
-    id: string;
+    @PrimaryGeneratedColumn()
+    id: number;
 
     @Column()
     type: string;
@@ -12,24 +12,13 @@ export class ProductVariant {
     @Column('int')
     stock: number;
 
-    @ManyToOne(() => Product, product => product.variants, {
-        onDelete: 'CASCADE',
-    })
-    @JoinColumn({ name: 'productId' })
+    @ManyToOne(() => Product, product => product.variants, { onDelete: 'CASCADE' })
+    @JoinColumn({ name: 'product_id' })
     product: Product;
 
-    @Column({ name: 'productId' })
-    productId: string;
+    @Column({ name: 'product_id' })
+    product_id: number;
 
-    @Column()
+    @Column({ nullable: true })
     image: string;
 }
-//JoinColumn its written always to one side to the owning side(ManyToOne)
-
-///Product:
-
-// I have many variants → OneToMany
-
-// ProductVariant:
-
-// I belong to one product → ManyToOne

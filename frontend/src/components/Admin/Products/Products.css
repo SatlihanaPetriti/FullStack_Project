@@ -1,0 +1,387 @@
+/* ===== MODAL FIXED (NO CONFLICT) ===== */
+
+.plant-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    /* SUPER IMPORTANT */
+}
+
+.plant-modal-container {
+    background: #ffffff;
+    border-radius: 14px;
+    width: 90%;
+    max-width: 700px;
+    max-height: 90vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    animation: fadeIn 0.2s ease;
+}
+
+.plant-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    border-bottom: 1px solid #eee;
+    font-weight: 600;
+}
+
+.plant-modal-close {
+    border: none;
+    background: none;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.plant-modal-body {
+    padding: 16px;
+    overflow-y: auto;
+}
+
+/* grid */
+.plant-images-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 12px;
+}
+
+.plant-image-item {
+    text-align: center;
+}
+
+.plant-image-item img {
+    width: 100%;
+    border-radius: 8px;
+}
+
+.plant-image-type {
+    font-size: 12px;
+    margin-bottom: 4px;
+    color: #555;
+}
+
+
+
+/* ===== RESET ONLY INSIDE COMPONENT ===== */
+.plant-table-wrap * {
+    box-sizing: border-box;
+}
+
+/* ===== WRAPPER ===== */
+.plant-table-wrap {
+    background: #f9faf4;
+    border-radius: 18px;
+    overflow: hidden;
+    border: 1.5px solid #daf3d3;
+    font-family: 'DM Sans', sans-serif;
+    position: relative;
+}
+
+/* ===== TOP BAR ===== */
+.plant-table-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 24px;
+    background: #1b4332;
+}
+
+.plant-table-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.15rem;
+    color: #ffffff;
+}
+
+.plant-table-topbar-stats {
+    display: flex;
+    gap: 10px;
+}
+
+.plant-stat {
+    font-size: 0.75rem;
+    color: #b7d9c6;
+    font-weight: 500;
+}
+
+.plant-stat-num {
+    color: #ffffff;
+    font-weight: 700;
+}
+
+.plant-stat--sale .plant-stat-num {
+    color: #fcd34d;
+}
+
+.plant-stat--warn .plant-stat-num {
+    color: #fca5a5;
+}
+
+/* ===== TOOLBAR ===== */
+.plant-toolbar {
+    background: #fff;
+    border-top: 1px solid #dde8da;
+    border-bottom: 1px solid #dde8da;
+    padding: 14px 20px;
+    display: flex;
+    gap: 10px;
+}
+
+/* SEARCH */
+.plant-search-wrap {
+    position: relative;
+    flex: 1;
+    max-width: 320px;
+}
+
+.plant-search-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #8fad95;
+}
+
+.plant-search-input {
+    width: 100%;
+    padding: 8px 12px 8px 32px;
+    border: 1px solid #dde8da;
+    border-radius: 8px;
+    background: #f9faf4;
+    font-size: 0.85rem;
+}
+
+.plant-search-input:focus {
+    outline: none;
+    border-color: #40916c;
+}
+
+/* ADD BUTTON */
+.plant-btn-add {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #1b4332;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.plant-btn-add:hover {
+    background: #2d6a4f;
+}
+
+/* ===== TABLE ===== */
+.plant-table-container {
+    overflow-x: auto;
+}
+
+.plant-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 900px;
+}
+
+/* HEAD */
+.plant-table thead {
+    background: #f0f5ec;
+}
+
+.plant-table th {
+    padding: 12px 14px;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    color: #4a7c59;
+    border-bottom: 2px solid #dde8da;
+}
+
+/* BODY */
+.plant-table td {
+    padding: 14px;
+    font-size: 0.8rem;
+    border-bottom: 1px solid #eef2ea;
+}
+
+/* ROWS */
+.plant-row:nth-child(even) {
+    background: #fafcf8;
+}
+
+.plant-row:hover {
+    background: #edf7f0;
+}
+
+/* STATES */
+.plant-row--low {
+    background: #fff7ed;
+}
+
+.plant-row--out {
+    background: #fff1f2;
+}
+
+/* ===== PRODUCT CELL ===== */
+.plant-product-title {
+    font-weight: 600;
+    color: #1b2a1e;
+}
+
+.plant-product-id {
+    font-size: 0.7rem;
+    color: #8fad95;
+}
+
+.plant-product-date {
+    font-size: 0.68rem;
+    color: #b0c4b4;
+}
+
+/* ===== BADGES ===== */
+.plant-badges {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.plant-badge {
+    font-size: 0.65rem;
+    padding: 3px 8px;
+    border-radius: 999px;
+    font-weight: 700;
+}
+
+.plant-badge--label {
+    background: #fef3c7;
+    color: #78350f;
+}
+
+.plant-badge--sale {
+    background: #fee2e2;
+    color: #7f1d1d;
+}
+
+.plant-badge--bundle {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+/* ===== PRICE ===== */
+.plant-price-final {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #166534;
+}
+
+.plant-price-original--struck {
+    text-decoration: line-through;
+    color: #9ca3af;
+    font-size: 0.75rem;
+}
+
+.plant-price-tag {
+    font-size: 0.6rem;
+    padding: 2px 6px;
+    border-radius: 999px;
+}
+
+.plant-price-tag--sale {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.plant-price-tag--pct {
+    background: #fef3c7;
+    color: #78350f;
+}
+
+/* ===== VARIANTS ===== */
+.plant-variants {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.plant-variant {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 0.7rem;
+}
+
+.plant-variant--ok {
+    border: 1px solid #22c55e;
+}
+
+.plant-variant--low {
+    background: #fef3c7;
+}
+
+.plant-variant--out {
+    background: #fee2e2;
+}
+
+/* ===== STOCK ===== */
+.plant-stock-badge {
+    font-weight: 700;
+}
+
+.plant-stock-badge--ok {
+    color: #166534;
+}
+
+.plant-stock-badge--low {
+    color: #92400e;
+}
+
+.plant-stock-badge--out {
+    color: #b91c1c;
+}
+
+/* ===== BUTTONS ===== */
+.plant-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.plant-btn {
+    border: none;
+    border-radius: 6px;
+    padding: 6px;
+    cursor: pointer;
+    font-size: 0.75rem;
+}
+
+.plant-btn--edit {
+    background: #2d6a4f;
+    color: #fff;
+}
+
+.plant-btn--delete {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+/* ===== IMAGE BUTTON ===== */
+.plant-btn-images {
+    background: #e8f4fd;
+    border: 1px solid #b5d4f4;
+    color: #185fa5;
+    padding: 4px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.plant-btn-images:hover {
+    background: #dbeafe;
+}

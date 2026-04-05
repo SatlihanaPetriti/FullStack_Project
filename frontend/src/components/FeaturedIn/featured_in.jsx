@@ -1,26 +1,19 @@
 import { Container, Row, Col } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
+import { useCategoryContext } from '../../Context/Category';
 import './featured_in.css';
-
-// 🌿 Category Images
-import IndoorImg from '../../assets/images/Home/gallery-plant-8.jpg';
-import OutdoorImg from '../../assets/images/Home/gallery-plant-2.jpg';
-import PetImg from '../../assets/images//Home/friendly_plant.jpg';
-import FloweryImg from '../../assets/images//Home/flower.jpg';
 
 const FeaturedSection = () => {
     const navigate = useNavigate();
+    const { categories, loading } = useCategoryContext();
 
-    const categories = [
-        { name: 'Indoor', img: IndoorImg, path: '/indoor-plants' },
-        { name: 'Outdoor', img: OutdoorImg, path: '/outdoor' },
-        { name: 'Pet Friendly', img: PetImg, path: '/pet-friendly' },
-        { name: 'Flowery', img: FloweryImg, path: '/flowery' },
-    ];
+    if (loading) return null;
+
+    const featured = categories.slice(0, 4);
+    const hasMore = categories.length > 4;
 
     return (
         <Container fluid className='text-center pt-5 pb-5'>
-
             <div className='plant-intro1 mb-5'>
                 <p className="plant-add1">Find your perfect plant</p>
                 <h2 className='plant-title1'>Discover Your Ideal Green Companion</h2>
@@ -29,28 +22,38 @@ const FeaturedSection = () => {
                 </p>
 
                 <Row className='justify-content-center mt-4 gx-4'>
-                    {categories.map((cat, index) => (
-                        <Col xs={12} sm={6} md={3} key={index} className='mb-4'>
+                    {featured.map((cat) => (
+                        <Col xs={12} sm={6} md={3} key={cat.id} className='mb-4'>
                             <div className='plant-card1'>
-                                <img src={cat.img} alt={cat.name} className='plant-img1' />
-
-                                {/* Bottom overlay with category name */}
+                                <img
+                                    src={cat.image_url}
+                                    alt={cat.name}
+                                    className='plant-img1'
+                                />
                                 <div className='plant-overlay1'>
                                     <h5>{cat.name}</h5>
                                 </div>
-
-                                {/* Centered hover "Shop Now" button */}
                                 <span
                                     className='shop-now1'
-                                    onClick={() => navigate(cat.path)}>
+                                    onClick={() => navigate(`/category/${cat.id}`)}>
                                     Shop Now
                                 </span>
                             </div>
                         </Col>
                     ))}
                 </Row>
-            </div>
 
+                {hasMore && (
+                    <div className='mt-3'>
+                        <span
+                            className='view-all-categories'
+                            onClick={() => navigate('/categories')}
+                        >
+                            View all {categories.length} categories →
+                        </span>
+                    </div>
+                )}
+            </div>
         </Container>
     );
 };

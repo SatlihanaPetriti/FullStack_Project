@@ -1,86 +1,57 @@
 import { useState } from 'react';
-import { Container, Button, Alert } from 'react-bootstrap';
+import { Container, Alert } from 'react-bootstrap';
 import { useProductContext } from '../../Context/Product';
 import ProductForm from './CreateEditModal/ProductForm';
-import ProductFilters from './AllProducts/ProductFilters';
+import Products from './Products';
 
 const AdminProductsPage = () => {
     const { products, loading, error, createProduct, updateProduct, deleteProduct } = useProductContext();
-    const [selectedProduct, setSelectedProduct] = useState(null);
+
+    const [selectedProductId, setSelectedProductId] = useState(null);
     const [showForm, setShowForm] = useState(false);
-    // state for image modal
-    const [showImages, setShowImages] = useState(false);
-    const [selectedProductForImages, setSelectedProductForImages] = useState(null);
+
+    const selectedProduct = products.find(p => p.id === selectedProductId) ?? null;
 
     const handleEdit = (product) => {
-        setSelectedProduct(product);
+        setSelectedProductId(product.id);
         setShowForm(true);
     };
 
     const handleAdd = () => {
-        setSelectedProduct(null);
+        setSelectedProductId(null);
         setShowForm(true);
     };
 
     const handleCloseForm = () => {
         setShowForm(false);
-        setSelectedProduct(null);
-    };
-
-    // function to handle showing images
-    const handleShowImages = (product) => {
-        setSelectedProductForImages(product);
-        setShowImages(true);
-    };
-
-    // function to handle closing images
-    const handleCloseImages = () => {
-        setShowImages(false);
-        setSelectedProductForImages(null);
+        setSelectedProductId(null);
     };
 
     const handleSave = async (productData, images) => {
         try {
-            const existingProduct = products.find(p => p.id === productData.id);
-
-            if (existingProduct) {
-                await updateProduct(productData.id, productData, images);
+            if (selectedProductId) {
+                await updateProduct(selectedProductId, productData, images);
             } else {
                 await createProduct(productData, images);
             }
-
             setShowForm(false);
-            setSelectedProduct(null);
-
+            setSelectedProductId(null);
         } catch (err) {
             alert(`Failed to save: ${err.message}`);
         }
     };
 
-    if (loading)
-        return <Container><Alert>Loading products...</Alert></Container>;
-    if (error)
-        return <Container><Alert>Error: {error}</Alert></Container>;
+    if (loading) return <Container className="py-4"><Alert variant="info">Loading products...</Alert></Container>;
+    if (error) return <Container className="py-4"><Alert variant="danger">Error: {error}</Alert></Container>;
 
     return (
         <Container fluid className="p-4">
-            <div className="d-flex justify-content-between align-items-center mb-4">
-                <h2 className="fw-bold mb-0">Products</h2>
-                <Button variant="success" onClick={handleAdd}>+ Add Product</Button>
-            </div>
-
-            {products.length === 0 ? (
-                <Alert variant="info">No products found. Click "Add Product" to create one.</Alert>
-            ) : (
-                <>
-                    <ProductFilters
-                        products={products}
-                        onEdit={handleEdit}
-                        onDelete={deleteProduct}
-                        onViewImages={handleShowImages}
-                    />
-                </>
-            )}
+            <Products
+                products={products}
+                onEdit={handleEdit}
+                onDelete={deleteProduct}
+                onAdd={handleAdd}
+            />
 
             {showForm && (
                 <ProductForm
