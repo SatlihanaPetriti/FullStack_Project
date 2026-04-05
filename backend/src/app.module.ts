@@ -9,6 +9,7 @@ import { UsersModule } from './users/users.module';
 import { UserEntity } from './users/Entity/user.entity';
 import { CategoryModule } from './Category/category.module';
 import { CategoryEntity } from './Category/Entity/CategoryEntity';
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { CategoryEntity } from './Category/Entity/CategoryEntity';
     AuthModule,
     UsersModule,
     CategoryModule,
+    MailModule,
   ],
 })
 export class AppModule { }

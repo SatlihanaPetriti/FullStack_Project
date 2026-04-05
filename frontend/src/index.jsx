@@ -10,12 +10,14 @@ import { CategoryProvider } from './Context/Category.jsx';
 import { UserProvider } from './Context/Auth.jsx';
 import ProtectedRoute from './Services/ProtectedRoute.jsx';
 import ResetPassword from "./components/Login/ResetPassword.jsx";
+import { NewsletterProvider } from "./Context/NewsletterContext.jsx";
 
 function App() {
   return (
     <UserProvider>
       <CategoryProvider>
         <ProductProvider>
+          <NewsletterProvider>
           <Routes>
             <Route path="/" element={
               <>
@@ -48,6 +50,7 @@ function App() {
             } />
             <Route path="/reset-password" element={<ResetPassword />} />
           </Routes>
+          </NewsletterProvider>
         </ProductProvider>
       </CategoryProvider>
     </UserProvider>

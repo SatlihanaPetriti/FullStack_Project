@@ -99,7 +99,6 @@
     color:#fff !important;
 }
 .modal.sub {
-    
     color: #214332; 
     font-weight: bold;
 }
@@ -119,4 +118,11 @@
     color:#214332 !important;
     font-weight: bold !important;
     border-color: transparent !important;
+}
+.modal-grow:disabled {
+    background-color: #214332 !important;
+    border-color: #214332 !important;
+    color: #fff !important;
+    opacity: 0.75;
+    transform: none;
 }
