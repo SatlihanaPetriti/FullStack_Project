@@ -63,7 +63,7 @@ const PlantCard = ({ product }) => {
         return labels;
     };
 
-    const IMAGE_BASE_URL = "http://localhost:3000/products/uploads";
+    const IMAGE_BASE_URL = "http://localhost:3000/products/uploads/variants";
 
     // Show real image if selected variant has one
     const holderImage = () => {

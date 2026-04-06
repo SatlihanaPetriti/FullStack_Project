@@ -93,7 +93,7 @@ const IndoorPlants = () => {
   }
 
   return (
-    <div className="indoor-plant">
+    <div className="indoor-plant py-5">
       <Container fluid>
         <Row className="align-items-center ms-4 mb-5 mt-5">
           <Col md={6}>

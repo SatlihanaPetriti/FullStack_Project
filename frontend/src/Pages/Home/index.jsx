@@ -4,6 +4,8 @@ import PaginationSlider from '../../components/pagination_slider/pagination';
 import FeaturedSection from '../../components/FeaturedIn/featured_in';
 // import TestimonialSection from '../../components/Testimonial/testimonial'
 import SubscribeModal from '../../components/newsletter/newsletter';
+import SaleSection from '../../components/salesection/salesection';
+
 
 const HomePage = () => {
     return (
@@ -13,6 +15,7 @@ const HomePage = () => {
             <CarouselBootstrap />
             <FeaturedSection />
             {/* <TestimonialSection /> */}
+                <SaleSection />
             <PaginationSlider />
             <FooterHome />
         </div>

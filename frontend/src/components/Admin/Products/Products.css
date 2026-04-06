@@ -257,6 +257,7 @@
     padding: 3px 8px;
     border-radius: 999px;
     font-weight: 700;
+    width: fit-content;
 }
 
 .plant-badge--label {

@@ -10,7 +10,7 @@ export class FileService {
     deleteFile(filename: string): void {
         // nese file name eshte null apo undefined, nuk ka nevoje te vazhdojme me tej
         if (!filename) return;
-        // krijojme path-in e plote te file-it duke bashkuar direktorine me emrin e file-it
+        // krijojme path-in e plote te file-it 
         const filePath = path.join(this.uploadsDir, filename);
         // kontrollojme nese file ekziston dhe nese po, e fshijme
         try {

@@ -1,0 +1,49 @@
+.sale-section {
+    background-size: cover;
+    background-position: center;
+    height: 450px;
+    display: flex;
+    align-items: flex-start;
+    /* text near top */
+    justify-content: center;
+    padding-top: 50px;
+    /* space from top */
+}
+
+.sale-content {
+    padding: 0 20px;
+    max-width: 500px;
+}
+
+.sale-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    line-height: 1.5;
+}
+
+.highlight {
+    font-family: "Uchen", serif;
+    font-size: 2.2rem;
+    color: #12431d;
+    background-color: white;
+    padding: 5px 12px;
+    border-radius: 12px;
+}
+.sale-description {
+    margin: 10px 0;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+.shop-btn {
+    font-weight: bold;
+    padding: 8px 20px;
+    font-size: 1rem;
+    margin-top: 30px;
+    color:#103118; 
+}
+.shop-btn:hover {
+    background-color: #0e3818;
+    color: white;
+    border: none;
+}

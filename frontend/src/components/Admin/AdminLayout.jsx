@@ -1,7 +1,6 @@
-import { Nav } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
 import './AdminLayout.css';
-import { UserRoundCog, LayoutDashboard, Package, Layers, ShoppingCart, Warehouse, LogOut} from 'lucide-react';
+import { UserRoundCog, LayoutDashboard, Package, Layers, ShoppingCart, Warehouse, LogOut, ExternalLink } from 'lucide-react';
 import { useUserContext } from '../../Context/Auth';
 
 const AdminLayout = ({ children }) => {
@@ -11,7 +10,6 @@ const AdminLayout = ({ children }) => {
         <div className="admin-wrapper">
             <aside className="admin-sidebar">
 
-                {/* Logo */}
                 <div className="admin-logo">
                     <UserRoundCog size={30} />
                     <span className="admin-logo-text">
@@ -20,8 +18,7 @@ const AdminLayout = ({ children }) => {
                     </span>
                 </div>
 
-                {/* Links */}
-                <Nav className="flex-column admin-nav">
+                <nav className="flex-column admin-nav">
                     <NavLink to="/admin/overview" className="admin-nav-link">
                         <LayoutDashboard size={16} /> Overview
                     </NavLink>
@@ -37,9 +34,12 @@ const AdminLayout = ({ children }) => {
                     <NavLink to="/admin/inventory" className="admin-nav-link">
                         <Warehouse size={16} /> Inventory
                     </NavLink>
-                </Nav>
+                    <hr className="admin-nav-divider" />
+                    <a href="/" target="_blank" rel="noopener noreferrer" className="admin-nav-link admin-visit-link">
+                        <ExternalLink size={16} /> Visit Shop
+                    </a>
+                </nav>
 
-                {/* Footer i sidebar — user info + logout */}
                 <div className="admin-sidebar-footer">
                     <div className="admin-user-info">
                         <div className="admin-avatar">

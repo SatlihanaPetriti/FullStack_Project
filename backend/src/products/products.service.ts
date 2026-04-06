@@ -59,7 +59,13 @@ export class ProductsService {
             const product = await this.getProductById(id);
             const { variants, ...productData } = dto;
 
-            Object.assign(product, productData);
+            delete (product as any).category;
+
+            Object.assign(product, {
+                ...productData,
+                category_id: Number(dto.category_id),
+            });
+
             await this.productRepo.save(product);
 
             if (variants) {

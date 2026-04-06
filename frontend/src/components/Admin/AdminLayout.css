@@ -155,3 +155,18 @@
     align-items: center;
     gap: 10px;
 }
+
+.admin-nav-divider {
+    border: none;
+    border-top: 0.5px solid rgba(255, 255, 255, 0.1);
+    margin: 6px 8px;
+}
+
+.admin-visit-link {
+    color: #7bc9a0 !important;
+    /* ose ngjyrën që përshtatet me temën tënde */
+}
+
+.admin-visit-link:hover {
+    opacity: 0.85;
+}

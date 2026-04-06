@@ -2,10 +2,11 @@ import { Injectable, BadRequestException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import * as nodemailer from 'nodemailer';
+import { SentMessageInfo, Options } from 'nodemailer/lib/smtp-transport';
 
 @Injectable()
 export class EmailService {
-    private transporter;
+    private transporter: nodemailer.Transporter<SentMessageInfo, Options>;
 
     constructor(
         private jwtService: JwtService,
@@ -39,8 +40,8 @@ export class EmailService {
     }
 
     async sendResetEmail(email: string, token: string): Promise<void> {
-        console.log('Duke dërguar email te:', email); // shto këtë
-        console.log('Token:', token); // shto këtë
+        console.log('Sending reset email to:', email);
+        console.log('Token:', token); 
         const frontendUrl = this.configService.get<string>('FRONTEND_URL');
         const resetLink = `${frontendUrl}/reset-password?token=${token}`;
 
