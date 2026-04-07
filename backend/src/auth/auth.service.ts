@@ -101,6 +101,7 @@ export class AuthService {
 
         // Ruaj token-in në database
         user.resetToken = token;
+        user.resetTokenExpires=new Date(Date.now() + 3600000)
         await this.userService.updateUser(user.id, user);
 
         // Dërgo email
@@ -122,6 +123,9 @@ export class AuthService {
         // Verifiko token-in në database
         if (user.resetToken !== token) {
             throw new BadRequestException('Invalid token');
+        }
+        if (!user.resetTokenExpires || user.resetTokenExpires < new Date()) {
+            throw new BadRequestException('Token Expires');
         }
 
         // Hasho password-in e ri

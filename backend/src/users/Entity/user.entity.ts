@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 
 @Entity('user')
-export class UserEntity{
+export class UserEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -20,7 +20,10 @@ export class UserEntity{
     @Column({ type: 'enum', enum: ['user', 'admin'], default: 'user' })
     role: string;
 
-    @Column({ type: 'varchar', nullable: true, default: null })
+    @Column({ type: 'varchar', nullable: true })
     resetToken?: string | null;
+
+    @Column({ type: 'timestamp', nullable: true })
+    resetTokenExpires?: Date | null;
 
 }
