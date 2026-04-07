@@ -99,9 +99,6 @@ export class AuthService {
         // Gjenero token
         const token = this.emailService.generateToken(email);
 
-        // Gjenero token
-        const token = this.emailService.generateToken(email);
-
         // Ruaj token + expiry në DB
         user.resetToken = token;
         user.resetTokenExpires = new Date(Date.now() + 3600000); // 1 orë
