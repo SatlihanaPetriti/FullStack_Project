@@ -1,0 +1,225 @@
+/* ── Loader ── */
+.cp-loader {
+    min-height: 60vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    color: #7a9e7e;
+    font-family: 'Georgia', serif;
+    font-size: 1rem;
+}
+
+.cp-loader__leaf {
+    width: 36px;
+    height: 36px;
+    border: 3px solid #c8ddc9;
+    border-top-color: #4a7c59;
+    border-radius: 50%;
+    animation: cp-spin 0.8s linear infinite;
+}
+
+@keyframes cp-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ── Hero ── */
+.cp-hero {
+    position: relative;
+    min-height: 320px;
+    background-color: #2d4a35;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: flex-end;
+    padding: 0;
+    overflow: hidden;
+}
+
+.cp-hero__overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom,
+            rgba(20, 40, 24, 0.25) 0%,
+            rgba(20, 40, 24, 0.75) 100%);
+}
+
+.cp-hero__content {
+    position: relative;
+    z-index: 1;
+    padding: 2.5rem 2rem 2.5rem;
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.cp-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #fff;
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
+    padding: 6px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    margin-bottom: 1.25rem;
+    transition: background 0.2s;
+}
+
+.cp-back:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+.cp-hero__eyebrow {
+    display: block;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: rgba(255, 255, 255, 0.65);
+    margin-bottom: 0.4rem;
+}
+
+.cp-hero__title {
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 400;
+    color: #fff;
+    margin: 0 0 0.5rem;
+    font-family: 'Georgia', serif;
+    line-height: 1.1;
+}
+
+.cp-hero__count {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.65);
+    margin: 0;
+    letter-spacing: 0.04em;
+}
+
+/* ── Category chips bar ── */
+.cp-cats-bar {
+    border-bottom: 1px solid #e8ede9;
+    background: #fafcfa;
+    padding: 0.75rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.cp-cats-bar__inner {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding: 0 0.5rem;
+}
+
+.cp-cats-bar__label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #8eaa90;
+    margin-right: 4px;
+    white-space: nowrap;
+}
+
+.cp-cats-bar__chip {
+    background: transparent;
+    border: 1px solid #c8ddc9;
+    color: #4a6b4e;
+    font-size: 0.8rem;
+    padding: 5px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background 0.18s, color 0.18s, border-color 0.18s;
+    white-space: nowrap;
+}
+
+.cp-cats-bar__chip:hover {
+    background: #e8f2e9;
+    border-color: #7aaa7e;
+}
+
+.cp-cats-bar__chip.active {
+    background: #3a6642;
+    border-color: #3a6642;
+    color: #fff;
+}
+
+/* ── Grid section ── */
+.cp-grid-section {
+    padding-top: 2.5rem;
+    padding-bottom: 4rem;
+}
+
+/* ── Empty state ── */
+.cp-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 5rem 1rem;
+    text-align: center;
+    color: #5a7a5e;
+}
+
+.cp-empty__icon {
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+}
+
+.cp-empty h3 {
+    font-family: 'Georgia', serif;
+    font-weight: 400;
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: #3a5a3e;
+}
+
+.cp-empty p {
+    font-size: 0.9rem;
+    color: #8eaa90;
+    margin-bottom: 1.5rem;
+}
+
+.cp-empty__btn {
+    background: #3a6642;
+    color: #fff;
+    border: none;
+    padding: 10px 28px;
+    border-radius: 24px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.cp-empty__btn:hover {
+    background: #2d5235;
+}
+
+/* ── Responsive ── */
+@media (max-width: 576px) {
+    .cp-hero {
+        min-height: 240px;
+    }
+
+    .cp-hero__content {
+        padding: 2rem 1.25rem 2rem;
+    }
+
+    .cp-cats-bar__inner {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+
+    .cp-cats-bar__inner::-webkit-scrollbar {
+        display: none;
+    }
+}

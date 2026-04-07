@@ -1,5 +1,5 @@
 import axios from "axios";
-
+import { get_product_by_id_service } from "./Product";
 const API_URL = "http://localhost:3000/categories";
 
 // GET ALL
@@ -36,3 +36,6 @@ export const update_category_service = (id, data, image) => {
 // DELETE
 export const delete_category_service = (id) =>
     axios.delete(`${API_URL}/${id}`);
+
+export const get_products_by_category_service = (categoryId) =>
+    axios.get(`${API_URL}/${categoryId}/all-products`);

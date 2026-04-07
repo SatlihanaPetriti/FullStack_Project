@@ -104,7 +104,7 @@ const PlantCard = ({ product }) => {
                 </div>
                 <div className="info-row">
                     <div className="color-buttons">
-                        {product.variants.map((variant) => (
+                        {(product.variants || []).map((variant) => (
                             <button
                                 key={variant.id}
                                 onClick={() => setSelectedVariant(variant)}

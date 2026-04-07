@@ -18,6 +18,21 @@ export class CategoryService {
             throw new Error('Error fetching categories');
         }
     }
+    async findOne(id: number) {
+        try {
+            const category = await this.categoryRepo.findOne({
+                where: { id }
+            });
+
+            if (!category) {
+                throw new NotFoundException('Category not found');
+            }
+
+            return category;
+        } catch (error) {
+            throw new NotFoundException('Category not found');
+        }
+    }
 
     async create(body: any, image: any) {
         const category = {
@@ -67,4 +82,20 @@ export class CategoryService {
         }
     }
 
+    public async findAllProductsByCategory(id: number) {
+        try {
+            const result = await this.categoryRepo.findOne({
+                where: { id },
+                relations: ['products', 'products.variants'],
+            });
+
+            if (!result) {
+                throw new NotFoundException('Category not found');
+            }
+
+            return result.products; 
+        } catch (error) {
+            throw new NotFoundException('Category not found');
+        }
+    }
 }

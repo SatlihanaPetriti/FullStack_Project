@@ -11,45 +11,55 @@ import { UserProvider } from './Context/Auth.jsx';
 import ProtectedRoute from './Services/ProtectedRoute.jsx';
 import ResetPassword from "./components/Login/ResetPassword.jsx";
 import { NewsletterProvider } from "./Context/NewsletterContext.jsx";
-
+import CategoryProducts from './components/FeaturedIn/ProductsByCategory.jsx';
 function App() {
   return (
     <UserProvider>
       <CategoryProvider>
         <ProductProvider>
           <NewsletterProvider>
-          <Routes>
-            <Route path="/" element={
-              <>
-                <Announcement />
-                <Header />
-                <HomePage />
-              </>
-            } />
-            <Route path="/indoor-plants" element={
-              <>
-                <Announcement />
-                <Header />
-                <IndoorPlants />
-              </>
-            } />
+            <Routes>
+              <Route path="/" element={
+                <>
+                  <Announcement />
+                  <Header />
+                  <HomePage />
+                </>
+              } />
 
+              <Route path="/indoor-plants" element={
+                <>
+                  <Announcement />
+                  <Header />
+                  <IndoorPlants />
+                </>
+              } />
 
-            <Route path="/admin/*" element={
-              <ProtectedRoute requiredRole="admin">
-                <AdminRouter />
-              </ProtectedRoute>
-            } />
+              {/* ✅ FIX këtu */}
+              <Route path="/category/:id" element={
+                <>
+                  <Announcement />
+                  <Header />
+                  <CategoryProducts />
+                </>
+              } />
 
-            <Route path="/productcart" element={
-              <>
-                <Announcement />
-                <Header />
-                <Productcart />
-              </>
-            } />
-            <Route path="/reset-password" element={<ResetPassword />} />
-          </Routes>
+              <Route path="/admin/*" element={
+                <ProtectedRoute requiredRole="admin">
+                  <AdminRouter />
+                </ProtectedRoute>
+              } />
+
+              <Route path="/productcart" element={
+                <>
+                  <Announcement />
+                  <Header />
+                  <Productcart />
+                </>
+              } />
+
+              <Route path="/reset-password" element={<ResetPassword />} />
+            </Routes>
           </NewsletterProvider>
         </ProductProvider>
       </CategoryProvider>

@@ -4,7 +4,8 @@ import {
     create_category_service,
     update_category_service,
     delete_category_service,
-    get_category_by_id_service
+    get_category_by_id_service,
+    get_products_by_category_service
 } from "../Services/CategoryService";
 
 // Context global
@@ -15,6 +16,10 @@ const CategoryProvider = (props) => {
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+
+    useEffect(() => {
+        getAllCategories();
+    }, []);
 
     // GET ALL
     const getAllCategories = async () => {
@@ -86,9 +91,19 @@ const CategoryProvider = (props) => {
         }
     };
 
-    useEffect(() => {
-        getAllCategories();
-    }, []);
+
+    const getAllProductsByCategory = async (id) => {
+        setLoading(true);
+        try {
+            const result = await get_products_by_category_service(id);
+            return result.data.products || result.data; 
+        } catch (error) {
+            setError("Failed to get category");
+        } finally {
+            setLoading(false);
+        }
+    };
+
 
     const values = {
         categories,
@@ -98,7 +113,8 @@ const CategoryProvider = (props) => {
         getCategoryById,
         createCategory,
         updateCategory,
-        deleteCategory
+        deleteCategory,
+        getAllProductsByCategory
     };
 
     return (
@@ -108,7 +124,6 @@ const CategoryProvider = (props) => {
     );
 };
 
-// Hook
 const useCategoryContext = () => {
     return useContext(CategoryContext);
 };

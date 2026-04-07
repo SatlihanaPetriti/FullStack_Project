@@ -1,4 +1,4 @@
-import {Controller,Get,Post,Put,Delete,Param,Body,UseInterceptors,UploadedFiles,Res} from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Param, Body, UseInterceptors, UploadedFiles, Res, ParseIntPipe } from '@nestjs/common';
 import express from 'express';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
@@ -9,8 +9,8 @@ import { CategoryDTO } from './DTO/Category.dto';
 @Controller('categories')
 export class CategoryController {
     constructor(private readonly categoriesService: CategoryService) { }
-    
-    @Get('uploads/:filename')         
+
+    @Get('uploads/:filename')
     serveImage(@Param('filename') filename: string, @Res() res: express.Response) {
         res.sendFile(filename, { root: './uploads/category' });
     }
@@ -18,7 +18,10 @@ export class CategoryController {
     public async findAll() {
         return await this.categoriesService.findAll();
     }
-
+    @Get(':id')
+    public async findOne(@Param('id', ParseIntPipe) id: number) {
+        return await this.categoriesService.findOne(id);
+    }
     @Post()
     @UseInterceptors(
         FileFieldsInterceptor(
@@ -70,4 +73,10 @@ export class CategoryController {
     public async remove(@Param('id') id: number) {
         return await this.categoriesService.remove(id);
     }
+
+    @Get(':id/all-products')
+    public async findAllProductsByCategory(@Param('id') id: number) {
+        return await this.categoriesService.findAllProductsByCategory(id);
+    }
+
 }

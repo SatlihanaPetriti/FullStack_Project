@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { useCategoryContext } from "../../../Context/Category";
-import { useProductContext } from "../../../Context/Product";
+import { useProductContext } from "../../../context/Product";
 import { Search, Plus, ImageIcon, X, Tag, Pencil, Trash2, Layers, Package } from "lucide-react";
 import "./index.css";
 
