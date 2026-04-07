@@ -125,7 +125,9 @@ export class AuthService {
         if (user.resetToken !== token) {
             throw new BadRequestException('Invalid token');
         }
-        if (user.resetTokenExpires < new Date()) {
+        const expires = user.resetTokenExpires;
+
+        if (!user.resetTokenExpires || user.resetTokenExpires < new Date()) {
         throw new BadRequestException('Token expired');
         }
 
