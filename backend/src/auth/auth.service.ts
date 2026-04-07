@@ -128,6 +128,9 @@ export class AuthService {
         if (user.resetToken !== token) {
             throw new BadRequestException('Invalid token');
         }
+        if (user.resetTokenExpires < new Date()) {
+        throw new BadRequestException('Token expired');
+        }
 
         // Hasho password-in e ri
         const hashedPassword = await bcrypt.hash(newPassword, 10);
