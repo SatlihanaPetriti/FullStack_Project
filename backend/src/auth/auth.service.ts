@@ -91,7 +91,7 @@ export class AuthService {
         // Gjej user-in
         const user = await this.userService.findByEmail(email);
 
-        // Nëse user-i nuk ekziston, kthe të njëjtin mesazh për siguri
+        // Nese user-i nuk ekziston, kthe të njëjtin mesazh për siguri
         if (!user) {
             return { message: 'If email exists, reset link will be sent' };
         }
@@ -99,11 +99,16 @@ export class AuthService {
         // Gjenero token
         const token = this.emailService.generateToken(email);
 
-        // Ruaj token-in në database
+        // Gjenero token
+        const token = this.emailService.generateToken(email);
+
+        // Ruaj token + expiry në DB
         user.resetToken = token;
+        user.resetTokenExpires = new Date(Date.now() + 3600000); // 1 orë
+
         await this.userService.updateUser(user.id, user);
 
-        // Dërgo email
+        // Dergo email
         await this.emailService.sendResetEmail(email, token);
 
         return { message: 'Reset link sent to your email' };
