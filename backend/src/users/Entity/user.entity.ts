@@ -20,7 +20,7 @@ export class UserEntity{
     @Column({ type: 'enum', enum: ['user', 'admin'], default: 'user' })
     role: string;
 
-    @Column({ type: 'varchar', nullable: true, default: null })
-    resetToken?: string | null;
+    @Column({ type: 'timestamp', nullable: true })
+    resetTokenExpires?: Date | null;
 
 }
