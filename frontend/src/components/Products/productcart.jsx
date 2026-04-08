@@ -44,18 +44,15 @@ const Productcart = () => {
     setQty((q) => Math.max(1, Math.min(10, q + delta)));
 
   return (
-    <Container fluid className="py-3">
+    <Container fluid className="product-cart-container">
 
-      {/* Breadcrumb */}
       <Breadcrumb className="mb-4 product-breadcrumb">
         <Breadcrumb.Item href="/">Home</Breadcrumb.Item>
         <Breadcrumb.Item href="/indoor-plants">Indoor Plants</Breadcrumb.Item>
         <Breadcrumb.Item active>{product.name}</Breadcrumb.Item>
       </Breadcrumb>
 
-      {/* Product Row */}
       <Row className="gx-0">
-        {/* LEFT SIDE: Thumbnails + Main Image */}
         <Col md={6} className="d-flex">
           <Row>
             {/* Thumbnails */}

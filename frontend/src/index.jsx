@@ -5,7 +5,7 @@ import Header from './components/Header/index.jsx';
 import Announcement from './components/Abar/Announcement.jsx';
 import AdminRouter from "./Pages/Admin/index.jsx";
 import Productcart from "./components/Products/productcart.jsx";
-import { ProductProvider } from './Context/Product';
+import { ProductProvider } from "./context/Product.jsx";
 import { CategoryProvider } from './Context/Category.jsx';
 import { UserProvider } from './Context/Auth.jsx';
 import ProtectedRoute from './Services/ProtectedRoute.jsx';
@@ -35,7 +35,7 @@ function App() {
                 </>
               } />
 
-              {/* ✅ FIX këtu */}
+            
               <Route path="/category/:id" element={
                 <>
                   <Announcement />

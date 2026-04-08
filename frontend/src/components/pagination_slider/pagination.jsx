@@ -33,7 +33,7 @@ const NewArrivalsSlider = () => {
   return (
     <div className='slider-container'>
       <Container fluid className='p-0 py-5 d-flex align-items-center justify-content-between'>
-        <h1 className='text-fp m-0 text-productonsale'>New Arrivals</h1>
+        <h1 className=' m-0 text-productonsale'>New Arrivals</h1>
         <div className='slider-arrows'>
           <button className='slider-arrow prev'><ChevronLeft size={22} /></button>
           <button className='slider-arrow next'><ChevronRight size={22} /></button>

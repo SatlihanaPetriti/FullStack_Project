@@ -5,7 +5,8 @@
 
 .text-productonsale {
   color: #214332;
-  font-weight: 700;
+  font-weight: 600;
+  padding-left: 30px;
 }
 
 .swiper-slide {
@@ -117,9 +118,10 @@
   text-align: center;
   margin-top: 15px;
 }
-.product-info h6{
+
+.product-info h6 {
   font-size: 20px;
-  color:#2d6a4f;
+  color: #2d6a4f;
   font-weight: 600;
 }
 
@@ -136,9 +138,9 @@
 
 .new-price {
   font-weight: 600;
-  color:#2d6a4f;
+  color: #2d6a4f;
   font-weight: 800;
-  font-size:18px;
+  font-size: 18px;
 }
 
 /* Header */

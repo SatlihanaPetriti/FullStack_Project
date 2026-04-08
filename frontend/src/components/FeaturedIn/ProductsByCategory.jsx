@@ -6,6 +6,7 @@ import PlantCard from '../IndoorPlants/plantcard';
 import './ProductsByCategory.css';
 
 const CategoryProducts = () => {
+    // perdoreet per dynamix routes id eshte dinamik dhe vjen nga url /category/:id
     const { id } = useParams();
     const navigate = useNavigate();
     const { getAllProductsByCategory, getCategoryById, categories } = useCategoryContext();

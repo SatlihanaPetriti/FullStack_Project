@@ -22,8 +22,6 @@ export class PermissionGuard implements CanActivate {
         //const user = request.user;
         
         const user = request.user;
-        console.log('USER IN GUARD:', user);        // ← shto këtë
-        console.log('USER ROLE:', user?.role);
 
         if (!roles) return true; // nuk ka role te vendosur ne users controller // pa role del  500 Error
 

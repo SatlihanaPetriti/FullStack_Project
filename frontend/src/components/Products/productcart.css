@@ -1,3 +1,7 @@
+.product-cart-container {
+  padding-top: 120px;
+}
+
 .product-breadcrumb {
   font-size: 17px;
   padding-left: 35px;
@@ -11,15 +15,12 @@
 .product-breadcrumb a:hover {
   font-weight: bold;
 }
+
 .product-breadcrumb .breadcrumb-item.active {
   color: #214332;
 }
-.thumbnail-column {
-  padding-left: 20px;      /* remove extra left padding */
-  padding-right: 10px;  /* small gap between thumbnails and main image */
-}
 
-/* Thumbnails style */
+/* Thumbnails */
 .product-thumb {
   width: 60px;
   height: 60px;
@@ -29,33 +30,32 @@
   transition: transform 0.2s ease;
 }
 
-/* Hover effect */
 .product-thumb:hover {
   transform: scale(1.05);
 }
 
-/* Selected thumbnail */
 .active-thumb {
   border-color: #214332 !important;
   border-width: 2px !important;
 }
 
-/* Optional: make main image responsive */
 .main-product-image {
   padding-left: 10px;
   max-width: 500px;
   height: auto;
 }
-.product-info{
-padding: 0px 45px;
+
+.product-info {
+  padding: 0px 45px;
 }
-.product-options-scroll {
-  max-height: 55vh;   /* controls where scrolling starts */
+
+/* Scroll area — emri u rregullua për t'u përputhur me JSX */
+.product-scroll {
+  max-height: 55vh;
   overflow-y: auto;
   padding-right: 10px;
 }
 
-/* optional clean scrollbar */
 .product-scroll::-webkit-scrollbar {
   width: 6px;
 }
@@ -64,100 +64,120 @@ padding: 0px 45px;
   background: #d6d6d6;
   border-radius: 10px;
 }
-.text-title{
-  color:#214332;
-  font-size: 35px;
 
+/* Typography */
+.text-title {
+  color: #214332;
+  font-size: 35px;
 }
-.text-price{
-  color:#256628;
+
+/* Çmimi — majtas */
+.text-price {
+  color: #256628;
   font-size: 30px;
   font-weight: bolder;
+  text-align: left;
+  /* u ndryshua nga default center */
 }
-.text-desc{
-  color:black;
-  font-size:17px;
+
+/* Përshkrimi — majtas */
+.text-desc {
+  color: black;
+  font-size: 17px;
+  text-align: left;
 }
-.text-pot{
-  color:#214332;
+
+/* Pot Color dhe Size labels — majtas */
+.text-pot,
+.text-size {
+  color: #214332;
   font-size: 15px;
   font-weight: bold;
-}
-.text-size{
-  color:#214332;
-  font-size: 15px;
-  font-weight: bold;
-}
-.color-option{
-display:flex;
-flex-direction:column;
-align-items:center;
-cursor:pointer;
+  text-align: left;
+  margin-bottom: 8px;
 }
 
-.color-label{
-font-size:13px;
-margin-top:6px;
-color:#555;
+/* Color picker */
+.color-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
 }
 
-.color-circle{
-width: 45px;
-height:45px;
-border-radius:50%;
-border: 0 solid transparent;
-cursor: pointer;
-transition: all 0.2s ease;
-position: relative;
-}
-.color-circle:hover{
-  border:4px solid white; 
-  box-shadow:0 0 0 2px #2e8132;
+.color-label {
+  font-size: 13px;
+  margin-top: 6px;
+  color: #555;
 }
 
-.active-color{
- border:2px solid white;
- box-shadow: 0 0 0 2px #214332;
+.color-circle {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  border: 0 solid transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
+
+.color-circle:hover {
+  border: 4px solid white;
+  box-shadow: 0 0 0 2px #2e8132;
+}
+
+.active-color {
+  border: 2px solid white;
+  box-shadow: 0 0 0 2px #214332;
+}
+
+/* Wishlist */
 .wishlist-icon {
   font-size: 30px;
   cursor: pointer;
   color: #c40518;
 }
+
+/* Size buttons — u shtua :focus override kundër Bootstrap */
 .size-btn {
-  border: 2px solid #214332; /* default border color */
-  background-color: transparent; /* default fill */
-  color: black; /* text color */
+  border: 2px solid #214332;
+  background-color: transparent;
+  color: black;
   font-weight: 500;
   padding: 6px 16px;
   transition: all 0.2s ease;
+  box-shadow: none !important;
+  /* heq glow-in Bootstrap */
 }
 
-/* Hover state */
 .size-btn:hover {
-  border-color: #256628; /* lighter green border */
-  background-color: #256628; /* light fill */
+  border-color: #256628;
+  background-color: #256628;
   color: white;
 }
 
-/* Active / Selected state */
-.size-btn.active {
-  border-color: #214332; /* dark green border */
-  background-color: #214332; /* green fill */
-  color: white; /* text color when active */
-}
-.size-btn:focus:active{
+.size-btn.active,
+.size-btn:focus.active,
+.size-btn:active {
   border-color: #214332 !important;
   background-color: #214332 !important;
+  color: white !important;
 }
-/* Disabled state */
+
+.size-btn:focus:not(.active) {
+  border-color: #214332;
+  background-color: transparent;
+  color: black;
+}
+
 .size-btn:disabled {
   border-color: #214332;
   color: black;
-  background-color: #F5F5F5;
+  background-color: #f5f5f5;
+  opacity: 1;
+  /* Bootstrap e ul opacity-n, kjo e mban */
 }
-/* remove bootstrap focus glow */
 
+/* Add to Cart button */
 .botton-cart {
   background-color: #214332;
   border: none;
@@ -166,6 +186,7 @@ position: relative;
   font-weight: 600;
   border-radius: 8px;
   transition: all 0.25s ease;
+  box-shadow: none !important;
 }
 
 .botton-cart:hover {
@@ -173,86 +194,85 @@ position: relative;
   transform: translateY(-2px);
 }
 
-/* when pressing */
-.botton-cart:active {
-  background-color: #17421b;
-  transform: translateY(0);
-}
-
-/* remove bootstrap blue effect */
-
-.botton-cart:focus:active{
-  box-shadow: none;
-  outline: none;
+.botton-cart:active,
+.botton-cart:focus:active {
   background-color: #17421b !important;
+  transform: translateY(0);
+  outline: none;
 }
-.text-note{
+
+/* Note */
+.text-note {
   font-size: 0.9rem;
-  color: #214332; /* red for warning */
+  color: #214332;
   font-weight: 600;
   margin-top: 10px;
   font-style: italic;
+  text-align: left;
 }
 
+/* Quantity buttons */
 .quantity {
-  border: 2px solid #214332; /* default border color */
-  background-color: transparent; /* default fill */
-  color: black; /* text color */
+  border: 2px solid #214332;
+  background-color: transparent;
+  color: black;
   font-weight: 500;
   width: 40px;
   height: 40px;
   transition: all 0.2s ease;
+  box-shadow: none !important;
 }
 
-.quantity:hover{
-  border-color: #214332; /* lighter green border */
-  background-color: #256628; /* light green fill */
-  color: white; /* darker text */
-}
-.quantity:active{
-  border-color: #214332; /* lighter green border */
-  background-color: #214332; /* light green fill */
-  color: white; /* darker text */
-}
-.quantity:disabled{
-  border-color: #BDBDBD;
-  color: #BDBDBD;
-  background-color: #F5F5F5;
-}
-
-.quantity:focus:active{
-  border-color: #214332; /* lighter green border */
-  background-color: #214332; /* light green fill */
+.quantity:hover {
+  border-color: #214332;
+  background-color: #256628;
   color: white;
 }
+
+.quantity:active,
+.quantity:focus:active {
+  border-color: #214332 !important;
+  background-color: #214332 !important;
+  color: white !important;
+}
+
+.quantity:disabled {
+  border-color: #bdbdbd;
+  color: #bdbdbd;
+  background-color: #f5f5f5;
+  opacity: 1;
+}
+
+/* Tabs */
 .product-tabs {
   max-width: 1100px;
   margin: auto;
 }
-.product-tabs-nav{
-  border-bottom:2px solid #214332;
-  display:flex !important;
+
+.product-tabs-nav {
+  border-bottom: 2px solid #214332;
+  display: flex !important;
   justify-content: space-around !important;
-  gap: 1px;
 }
+
 .product-tabs-nav .nav-link {
   color: #214332;
   font-weight: 500;
-  font-size:20px;
+  font-size: 20px;
   transition: color 0.2s;
   text-align: center;
-  
+  box-shadow: none !important;
 }
 
 .product-tabs-nav .nav-link:hover {
-  color:white;
-  font-weight:bold;
+  color: white;
+  font-weight: bold;
   border-bottom: none;
   background-color: #214332;
 }
 
 .product-tabs-nav .nav-link.active {
-  color:white;
+  color: white;
   border-bottom: none;
   background-color: #214332;
 }
