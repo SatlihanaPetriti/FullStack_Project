@@ -1,5 +1,5 @@
 import { Container, Row, Col, Card, Alert, Spinner, Button } from 'react-bootstrap';
-import { useProductContext } from '../../../Context/Product';
+import { useProductContext } from '../../../Context/Product.jsx';
 import { IoWarning } from "react-icons/io5";
 // import { FaCartShopping } from "react-icons/fa6";
 import { AiOutlineStock } from "react-icons/ai";

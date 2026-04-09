@@ -13,7 +13,7 @@ export async function get_product_by_id_service(id) {
 export async function create_product_service(data, images = []) {
     const formData = new FormData();
     formData.append('title', data.title);
-    formData.append('category_id', data.category_id);  // ← FIX
+    formData.append('category_id', data.category_id); 
     formData.append('size', data.size);
     formData.append('price', String(data.price));
 
@@ -37,7 +37,7 @@ export async function create_product_service(data, images = []) {
 export async function update_product_service(id, data, images = []) {
     const formData = new FormData();
     if (data.title) formData.append('title', data.title);
-    if (data.category_id) formData.append('category_id', data.category_id);  // ← FIX
+    if (data.category_id) formData.append('category_id', data.category_id); 
     if (data.size) formData.append('size', data.size);
     if (data.price) formData.append('price', String(data.price));
 
@@ -58,7 +58,7 @@ export async function update_product_service(id, data, images = []) {
         });
     }
 
-    return await axios.put(`${URL}/${id}`, formData, {  // ← FIX
+    return await axios.put(`${URL}/${id}`, formData, { 
         headers: { "Content-Type": "multipart/form-data" },
     });
 }
