@@ -1,17 +1,8 @@
 import { useState, useEffect } from "react";
 import "./productcart.css";
-import {
-  Container,
-  Row,
-  Col,
-  Image,
-  Button,
-  Breadcrumb,
-  Tabs,
-  Tab,
-} from "react-bootstrap";
+import { Container, Row, Col, Image, Button, Breadcrumb, Tabs, Tab } from "react-bootstrap";
 import { SuitHeart, SuitHeartFill } from "react-bootstrap-icons";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { useProductContext } from "../../Context/Product";
 
 const BASE_URL = "http://localhost:3000/products/uploads/variants";
@@ -29,7 +20,7 @@ const Productcart = () => {
     const load = async () => {
       const data = await getProductById(id);
       setProduct(data);
-      setSelectedImage(data?.variants?.[0]?.image || null);
+      setSelectedImage(data?.variants?.find(v => v.image)?.image || null);
     };
     load();
   }, [id]);
@@ -38,7 +29,8 @@ const Productcart = () => {
     return <p className="text-center mt-5">Loading...</p>;
   }
 
-  const stock = product.variants?.reduce((a, b) => a + b.stock, 0) || 0;
+  const stock = product.stock || 0;
+
   const changeQty = (delta) => {
     setQty((q) => Math.max(1, Math.min(stock, q + delta)));
   };
@@ -66,8 +58,11 @@ const Productcart = () => {
       {/* BREADCRUMB */}
       <Breadcrumb className="mb-4 product-breadcrumb">
         <Breadcrumb.Item href="/">Home</Breadcrumb.Item>
-        <Breadcrumb.Item>
-          {product.category?.name || "Category"}
+        <Breadcrumb.Item
+          linkAs={Link}
+          linkProps={{ to: `/category/${product.category?.id}` }}
+        >
+          {product.category?.name}
         </Breadcrumb.Item>
         <Breadcrumb.Item active>
           {product.title}
@@ -75,9 +70,12 @@ const Productcart = () => {
       </Breadcrumb>
 
       <Row className="gx-0">
+
         {/* LEFT SIDE */}
         <Col md={6} className="d-flex justify-content-center ps-3 py-2">
           <Row>
+
+            {/* THUMBNAILS */}
             <Col xs={2} className="d-flex flex-column gap-4 px-3">
               {product.variants?.map((variant) => (
                 <Image
@@ -90,24 +88,30 @@ const Productcart = () => {
               ))}
             </Col>
 
+            {/* MAIN IMAGE */}
             <Col xs={9}>
               <Image
-                src={`${BASE_URL}/${selectedImage}`}               
+                src={`${BASE_URL}/${selectedImage}`}
                 fluid
                 rounded
                 className="main-product-image"
               />
             </Col>
+
           </Row>
         </Col>
 
         {/* RIGHT SIDE */}
         <Col md={6} className="product-info d-flex flex-column gap-3">
-          {/* TITLE */}
+
+          {/* TITLE + WISHLIST */}
           <div className="d-flex justify-content-between align-items-center mb-3">
             <h3 className="mb-0 text-title">{product.title}</h3>
 
-            <span className="wishlist-icon" onClick={() => setWishlist(!wishlist)}>
+            <span
+              className="wishlist-icon"
+              onClick={() => setWishlist(!wishlist)}
+            >
               {wishlist ? <SuitHeartFill /> : <SuitHeart />}
             </span>
           </div>
@@ -132,7 +136,7 @@ const Productcart = () => {
             </div>
           )}
 
-
+          {/* STOCK (OPTIONAL DISPLAY) */}
           {/* <p className="text-muted">
             Stock available: {stock}
           </p> */}
@@ -176,16 +180,20 @@ const Productcart = () => {
       <Row className="product-tabs mt-5">
         <Col md={12}>
           <Tabs defaultActiveKey="about" className="product-tabs-nav">
-            <Tab className="tab-text" eventKey="about" title="Description">
+
+            <Tab eventKey="about" title="Description">
               {product.description || "No description available."}
             </Tab>
-            <Tab className="tab-text" eventKey="care" title="Care">
+
+            <Tab eventKey="care" title="Care">
               Water once a week.
             </Tab>
-            <Tab className="tab-text"  eventKey="shipment" title="Shipment">
+
+            <Tab eventKey="shipment" title="Shipment">
               3–5 days delivery.
             </Tab>
-            <Tab className="tab-text"  eventKey="guarantee" title="Guarantee">
+
+            <Tab eventKey="guarantee" title="Guarantee">
               Refund if damaged.
             </Tab>
 

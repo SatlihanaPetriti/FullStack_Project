@@ -91,6 +91,16 @@ const ProductInfo = ({ formData, errors, onChange }) => {
             <p style={{ fontSize: 13, fontWeight: 500, textTransform: 'uppercase'}}>
                 Pricing
             </p>
+            <Form.Group className="mb-3">
+                <Form.Label>Stock</Form.Label>
+                <Form.Control
+                    type="number"
+                    name="stock"
+                    value={formData.stock}
+                    onChange={onChange}
+                    min={0}
+                />
+            </Form.Group>
 
             <Row className="mb-3 text-start g-3">
                 <Col md={4}>

@@ -42,6 +42,12 @@ export class ProductDto {
     size?: string;
 
     @IsOptional()
+    @Transform(({ value }) => value === '' || value == null ? null : Number(value))
+    @IsNumber()
+    @Min(0)
+    stock?: number;
+
+    @IsOptional()
     @Transform(({ value }) => Number(value))
     @IsNumber()
     @IsPositive()

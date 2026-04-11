@@ -23,9 +23,13 @@ export class Product {
 
     @Column()
     size: string;
+    
+    @Column({ type: 'int', default: 0 })
+    stock: number;
 
     @Column('decimal', { precision: 10, scale: 2 })
     price: number;
+
 
     @Column('decimal', { precision: 10, scale: 2, nullable: true })
     sale_price: number;

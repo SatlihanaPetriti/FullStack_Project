@@ -16,7 +16,7 @@ export async function create_product_service(data, images = []) {
     formData.append('category_id', data.category_id); 
     formData.append('size', data.size);
     formData.append('price', String(data.price));
-
+    if (data.stock != null) { formData.append('stock', String(data.stock));}
     if (data.label) formData.append('label', data.label);
     if (data.sale_price) formData.append('sale_price', String(data.sale_price));
     if (data.sale_percentage) formData.append('sale_percentage', String(data.sale_percentage));
@@ -40,6 +40,7 @@ export async function update_product_service(id, data, images = []) {
     if (data.category_id) formData.append('category_id', data.category_id); 
     if (data.size) formData.append('size', data.size);
     if (data.price) formData.append('price', String(data.price));
+    if (data.stock != null) {formData.append('stock', String(data.stock));}
 
     formData.append('label', data.label != null ? data.label : '');
     formData.append('sale_price', data.sale_price != null ? String(data.sale_price) : '');
