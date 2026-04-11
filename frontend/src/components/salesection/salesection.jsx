@@ -1,5 +1,3 @@
-
-import React from "react";
 import { Button } from "react-bootstrap";
 import img1 from '../../assets/images/Home/saleimage.png';
 import './SaleSection.css';
