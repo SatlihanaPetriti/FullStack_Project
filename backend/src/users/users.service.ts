@@ -13,7 +13,7 @@ export class UsersService {
         try {
             return await this.userRepository.find();
         } catch (error) {
-            throw new ErrorHandler("error.message", HttpStatus.NOT_FOUND);
+            throw new ErrorHandler(error.message, HttpStatus.NOT_FOUND);
         }
     }
 
@@ -22,7 +22,7 @@ export class UsersService {
             const result = await this.userRepository.findOne({ where: { email } });
             return result;
         } catch (error) {
-            throw new ErrorHandler("error.message", HttpStatus.NOT_FOUND);
+            throw new ErrorHandler(error.message, HttpStatus.NOT_FOUND);
         }
     }
 
@@ -30,7 +30,7 @@ export class UsersService {
         try {
             return await this.userRepository.save(user);
         } catch (error) {
-            throw new ErrorHandler("error.message", HttpStatus.BAD_REQUEST);
+            throw new ErrorHandler(error.message, HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -39,7 +39,7 @@ export class UsersService {
             const result = await this.userRepository.findOne({ where: { id } });
             return result;
         } catch (error) {
-            throw new ErrorHandler("error.message", HttpStatus.NOT_FOUND);
+            throw new ErrorHandler(error.message, HttpStatus.NOT_FOUND);
         }
     }
 
@@ -54,7 +54,7 @@ export class UsersService {
 
             return updatedUser;
         } catch (error) {
-            throw new ErrorHandler("error.message", HttpStatus.BAD_REQUEST);
+            throw new ErrorHandler(error.message, HttpStatus.BAD_REQUEST);
         }
     }
 }

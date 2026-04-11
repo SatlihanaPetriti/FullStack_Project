@@ -1,71 +1,75 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./productcart.css";
-import "bootstrap/dist/css/bootstrap.min.css";
-import { Container, Row, Col, Image, Button, ButtonGroup, Breadcrumb, Tabs, Tab } from "react-bootstrap";
+import { Container, Row, Col, Image, Button, Breadcrumb, Tabs, Tab, ButtonGroup } from "react-bootstrap";
 import { SuitHeart, SuitHeartFill } from "react-bootstrap-icons";
+import { useParams } from "react-router-dom";
 
-import plant1 from "../../assets/images/IndoorPlants/bamboo_palm/charcoal_bamboo.jpg";
-import plant2 from "../../assets/images/IndoorPlants/bamboo_palm/clay_bamboo.jpg";
-import plant3 from "../../assets/images/IndoorPlants/bamboo_palm/indigo_bamboo.jpg";
-import plant4 from "../../assets/images/IndoorPlants/bamboo_palm/slate_bamboo.jpg";
-import plant5 from "../../assets/images/IndoorPlants/bamboo_palm/stone_bamboo.jpg";
-
-/* Images */
-const thumbnails = [plant1, plant2, plant3, plant4, plant5];
-
-/* Pot Colors */
-const COLORS = [
-  { label: "Charcoal", hex: "#3a3530" },
-  { label: "Clay", hex: "#b5694d" },
-  { label: "Indigo", hex: "#3b4a6b" },
-  { label: "Slate", hex: "#6b7c8c" },
-  { label: "Stone", hex: "#a8a090" },
-];
-
-/* Sizes */
-const SIZES = ["XS", "S", "M", "L", "XL"];
-const OUT_OF_STOCK = ["XS"];
-
-const product = {
-  name: "Monstera Plant",
-  price: "$29.99",
-  description:
-    "A beautiful indoor plant that brings freshness and style to your home.",
-};
+const BASE_URL = "http://localhost:3000/products/uploads/variants";
 
 const Productcart = () => {
-  const [activeImg, setActiveImg] = useState(0);
-  const [activeColor, setActiveColor] = useState(0);
-  const [activeSize, setActiveSize] = useState("M");
+  const { id } = useParams();
+  const [product, setProduct] = useState(null);
+  const [activeVariant, setActiveVariant] = useState(null);
   const [qty, setQty] = useState(1);
   const [wishlist, setWishlist] = useState(false);
+  const [activeSize, setActiveSize] = useState(null);
 
-  const changeQty = (delta) =>
+  useEffect(() => {
+    fetch(`http://localhost:3000/products/${id}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setProduct(data);
+        setActiveVariant(data.variants?.[0] ?? null);
+      });
+  }, [id]);
+
+  const changeQty = (delta) => {
     setQty((q) => Math.max(1, Math.min(10, q + delta)));
+  };
+
+  if (!product) return <p className="text-center mt-5">Loading...</p>;
+
+  const uniqueVariants = (product.variants ?? [])
+    .filter((v) => v.image)
+    .filter((v, i, arr) => arr.findIndex((x) => x.image === v.image) === i);
+
+  // Price logic
+  const getPrice = () => {
+    if (product.sale_price) return Number(product.sale_price).toFixed(2);
+    if (product.sale_percentage) {
+      return (
+        product.price -
+        (product.price * product.sale_percentage) / 100
+      ).toFixed(2);
+    }
+    return Number(product.price).toFixed(2);
+  };
+
+  const hasDiscount = !!product.sale_price || !!product.sale_percentage;
 
   return (
     <Container fluid className="product-cart-container">
-
       <Breadcrumb className="mb-4 product-breadcrumb">
         <Breadcrumb.Item href="/">Home</Breadcrumb.Item>
-        <Breadcrumb.Item href="/indoor-plants">Indoor Plants</Breadcrumb.Item>
-        <Breadcrumb.Item active>{product.name}</Breadcrumb.Item>
+        <Breadcrumb.Item href="#">
+          {product.category?.name || "Category"}
+        </Breadcrumb.Item>
+        <Breadcrumb.Item active>{product.title}</Breadcrumb.Item>
       </Breadcrumb>
 
       <Row className="gx-0">
-        <Col md={6} className="d-flex">
+        {/* LEFT SIDE — images */}
+        <Col md={6} className="d-flex justify-content-center ps-3 py-2">
           <Row>
-            {/* Thumbnails */}
-            <Col xs={2} className="d-flex flex-column gap-4 px-5">
-              {thumbnails.map((img, index) => (
+            <Col xs={2} className="d-flex flex-column gap-4 px-3">
+              {uniqueVariants.map((variant) => (
                 <Image
-                  key={index}
-                  src={img}
+                  key={variant.id}
+                  src={`${BASE_URL}/${variant.image}`}
                   roundedCircle
-                  className={`border product-thumb ${
-                    activeImg === index ? "active-thumb" : ""
-                  }`}
-                  onClick={() => setActiveImg(index)}
+                  className={`border product-thumb ${activeVariant?.id === variant.id ? "active-thumb" : ""
+                    }`}
+                  onClick={() => setActiveVariant(variant)}
                 />
               ))}
             </Col>
@@ -73,7 +77,7 @@ const Productcart = () => {
             {/* Main Image */}
             <Col xs={9}>
               <Image
-                src={thumbnails[activeImg]}
+                src={`${BASE_URL}/${activeVariant?.image}`}
                 fluid
                 rounded
                 className="main-product-image"
@@ -82,120 +86,104 @@ const Productcart = () => {
           </Row>
         </Col>
 
-        {/* RIGHT SIDE: Product Info */}
-        <Col md={6} className="product-info">
-
-          {/* Title + Heart */}
+        {/* RIGHT SIDE */}
+        <Col md={6} className="product-info d-flex flex-column gap-3">
+          {/* Title + Wishlist */}
           <div className="d-flex justify-content-between align-items-center mb-3">
-            <h3 className="mb-0 text-title">{product.name}</h3>
+            <h3 className="mb-0 text-title">{product.title}</h3>
             <span
               className="wishlist-icon"
               onClick={() => setWishlist(!wishlist)}
             >
-              {wishlist ? <SuitHeartFill/> : <SuitHeart/>}
+              {wishlist ? <SuitHeartFill /> : <SuitHeart />}
             </span>
           </div>
 
-          {/* Price + Description */}
-          <h4 className="text-price">{product.price}</h4>
-          <p className="text-desc">{product.description}</p>
+          {/* Price */}
+          <div className="d-flex align-items-center gap-3 mb-3">
+            {hasDiscount && (
+              <span className="old-price">€{Number(product.price).toFixed(2)}</span>
+            )}
+            <h4 className="text-price mb-0">€{getPrice()}</h4>
+          </div>
 
-          {/* Scrollable Options */}
-          <div className="product-scroll">
-
-            {/* COLORS */}
-            <div className="mb-4">
-              <p className="text-pot">Pot Color</p>
-              <div className="d-flex gap-4">
-                {COLORS.map((color, index) => (
-                  <div
-                    key={index}
-                    className="color-option text-center"
-                    onClick={() => {
-                      setActiveColor(index);
-                      setActiveImg(index);
-                    }}
-                  >
-                    <div
-                      className={`color-circle ${activeColor === index ? "active-color" : ""}`}
-                      style={{ background: color.hex }}
-                    />
-                    <span className="color-label">{color.label}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* SIZES */}
+          {product.size && (
             <div className="mb-4">
               <p className="text-size">Size</p>
-              <ButtonGroup>
-                {SIZES.map((size) => (
-                  <Button
-                    key={size}
-                    className={`size-btn ${activeSize === size ? "active" : ""}`}
-                    disabled={OUT_OF_STOCK.includes(size)}
-                    onClick={() => setActiveSize(size)}
-                  >
-                    {size}
-                  </Button>
-                ))}
-              </ButtonGroup>
-            </div>
-
-            {/* QUANTITY */}
-            <div className="d-flex align-items-center gap-3 mb-4 mt-3">
-              <Button className="quantity" onClick={() => changeQty(-1)}>-</Button>
-              <span>{qty}</span>
-              <Button className="quantity" onClick={() => changeQty(1)}>+</Button>
-            </div>
-
-            {/* ACTION BUTTON */}
-            <div className="d-flex gap-4 mb-4">
-              <Button size="lg" className="botton-cart mt-2">
-                Add To Cart
+              <Button
+                className=" size-btn single-size"
+                disabled
+                style={{ cursor: "default" }}
+              >
+                {product.size}
               </Button>
             </div>
-              <p className="text-note"> *Please note: this product cannot be cancelled after placing an order</p>
+          )}
+          {/* STOCK INFORMATION */}
+          {/* {activeVariant?.stock === 0 ? (
+            <p className="text-danger text-start mb-3">Out of stock</p>
+          ) : (
+            activeVariant?.stock && (
+              <p className="text-stock text-start mb-3">In stock: {activeVariant.stock}</p>
+            )
+          )} */}
+
+          {/* QUANTITY */}
+          <div className="d-flex align-items-center gap-3 mb-4 mt-3">
+            <Button className="quantity" onClick={() => changeQty(-1)}>-</Button>
+            <span>{qty}</span>
+            <Button className="quantity" onClick={() => changeQty(1)}>+</Button>
           </div>
+
+          {/* ADD TO CART */}
+          <div className="d-flex gap-4 mb-4">
+            <Button
+              size="lg"
+              className="botton-cart mt-2"
+              disabled={!activeVariant || activeVariant.stock === 0}
+              onClick={() => {
+                const item = {
+                  product_id: product.id,
+                  variant_id: activeVariant.id,
+                  quantity: qty,
+                  size: activeSize,
+                };
+                console.log("ADD TO CART:", item);
+              }}
+            >
+              Add To Cart
+            </Button>
+          </div>
+          <p className="text-note">
+            *Please note: this product cannot be cancelled after placing an order
+          </p>
         </Col>
       </Row>
-
-      {/* PRODUCT INFO TABS (Full Width) */}
+      {/* TABS */}
       <Row className="mt-5">
         <Col md={12}>
           <div className="product-tabs">
             <Tabs defaultActiveKey="about" className="product-tabs-nav">
               <Tab eventKey="about" title="About this product">
                 <p className="tab-text">
-                  This Monstera plant is perfect for indoor spaces. Its large green leaves
-                  add a tropical feeling to your home while helping purify the air.
-                  Ideal for living rooms, offices, and bright corners.
+                  {product.description || "No description available."}
                 </p>
               </Tab>
               <Tab eventKey="care" title="Care">
                 <p className="tab-text">
-                  Water once a week and keep the soil slightly moist. Place the plant in
-                  bright indirect sunlight. Avoid direct harsh sun and cold drafts.
+                  Water once a week and keep soil slightly moist. Keep in indirect sunlight.
                 </p>
               </Tab>
               <Tab eventKey="shipment" title="Shipment">
-                <p className="tab-text">
-                  Orders are processed within 24–48 hours. Plants are carefully packaged
-                  to ensure safe delivery and usually arrive within 3–5 business days.
-                </p>
+                <p className="tab-text">Delivered within 3–5 business days.</p>
               </Tab>
               <Tab eventKey="guarantee" title="Guarantee">
-                <p className="tab-text">
-                  If your plant arrives damaged, contact us within 48 hours and we will
-                  replace it free of charge or issue a refund.
-                </p>
+                <p className="tab-text">Replacement or refund within 48h if damaged.</p>
               </Tab>
             </Tabs>
           </div>
         </Col>
       </Row>
-
     </Container>
   );
 };

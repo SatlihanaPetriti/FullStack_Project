@@ -95,6 +95,7 @@
   font-weight: bold;
   text-align: left;
   margin-bottom: 8px;
+  
 }
 
 /* Color picker */
@@ -136,45 +137,22 @@
   cursor: pointer;
   color: #c40518;
 }
-
-/* Size buttons — u shtua :focus override kundër Bootstrap */
-.size-btn {
+.size-btn.single-size {
   border: 2px solid #214332;
   background-color: transparent;
-  color: black;
+  color: #214332;
   font-weight: 500;
-  padding: 6px 16px;
-  transition: all 0.2s ease;
-  box-shadow: none !important;
-  /* heq glow-in Bootstrap */
-}
-
-.size-btn:hover {
-  border-color: #256628;
-  background-color: #256628;
-  color: white;
-}
-
-.size-btn.active,
-.size-btn:focus.active,
-.size-btn:active {
-  border-color: #214332 !important;
-  background-color: #214332 !important;
-  color: white !important;
-}
-
-.size-btn:focus:not(.active) {
-  border-color: #214332;
-  background-color: transparent;
-  color: black;
-}
-
-.size-btn:disabled {
-  border-color: #214332;
-  color: black;
-  background-color: #f5f5f5;
   opacity: 1;
-  /* Bootstrap e ul opacity-n, kjo e mban */
+  display: block;
+  margin-left: 0;
+  margin-right: auto;
+}
+
+.size-btn.single-size:hover {
+  background-color: transparent;
+  color: #214332;
+  border-color: #214332;
+  transform: none;
 }
 
 /* Add to Cart button */

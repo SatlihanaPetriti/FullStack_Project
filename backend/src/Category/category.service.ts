@@ -10,7 +10,7 @@ export class CategoryService {
         private categoryRepo: Repository<CategoryEntity>
     ) { }
 
-    async findAll() {
+   public async findAll() {
         try {
             return await this.categoryRepo.find({
             });
@@ -18,7 +18,7 @@ export class CategoryService {
             throw new Error('Error fetching categories');
         }
     }
-    async findOne(id: number) {
+   public async findOne(id: number) {
         try {
             const category = await this.categoryRepo.findOne({
                 where: { id }
@@ -34,7 +34,7 @@ export class CategoryService {
         }
     }
 
-    async create(body: any, image: any) {
+   public async create(body: any, image: any) {
         const category = {
             name: body.name,
             image_url: image ? `http://localhost:3000/categories/uploads/${image}` : undefined,
@@ -42,7 +42,7 @@ export class CategoryService {
         return await this.categoryRepo.save(category);
     }
 
-    async update(id: number, body: any, image?: string) {
+    public async update(id: number, body: any, image?: string) {
         try {
             const category = await this.categoryRepo.findOne({
                 where: { id }
@@ -64,7 +64,7 @@ export class CategoryService {
         }
     }
 
-    async remove(id: number) {
+    public async remove(id: number) {
         try {
             const category = await this.categoryRepo.findOne({
                 where: { id }

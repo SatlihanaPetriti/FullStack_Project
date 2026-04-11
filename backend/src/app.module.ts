@@ -10,6 +10,8 @@ import { UserEntity } from './users/Entity/user.entity';
 import { CategoryModule } from './Category/category.module';
 import { CategoryEntity } from './Category/Entity/CategoryEntity';
 import { MailModule } from './mail/mail.module';
+import { FavoriteModule } from './favorite/favorite.module';
+import { Favorite } from './favorite/Entity/favorite.entity';
 
 @Module({
   imports: [
@@ -25,7 +27,7 @@ import { MailModule } from './mail/mail.module';
         username: configService.get<string>('DB_USERNAME'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_NAME'),
-        entities: [Product, CategoryEntity, ProductVariant, UserEntity],
+        entities: [Product, CategoryEntity, ProductVariant, UserEntity, Favorite],
         synchronize: true,
       }),
     }),
@@ -34,6 +36,7 @@ import { MailModule } from './mail/mail.module';
     UsersModule,
     CategoryModule,
     MailModule,
+    FavoriteModule,
   ],
 })
 export class AppModule { }

@@ -96,7 +96,7 @@ const CategoryProvider = (props) => {
         setLoading(true);
         try {
             const result = await get_products_by_category_service(id);
-            return result.data.products || result.data; 
+            return result.data;
         } catch (error) {
             setError("Failed to get category");
         } finally {

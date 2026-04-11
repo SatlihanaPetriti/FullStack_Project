@@ -1,6 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToOne, JoinColumn } from 'typeorm';
 import { ProductVariant } from './product-variant.entity';
 import { CategoryEntity } from '../../Category/Entity/CategoryEntity';
+import { Favorite } from '../../favorite/Entity/favorite.entity';
 
 @Entity('products')
 export class Product {
@@ -40,4 +41,8 @@ export class Product {
 
     @OneToMany(() => ProductVariant, variant => variant.product)
     variants: ProductVariant[];
+
+    @OneToMany(() => Favorite, favorite => favorite.product)
+    favorites: Favorite[];
+
 }

@@ -50,7 +50,7 @@ function App() {
                 </ProtectedRoute>
               } />
 
-              <Route path="/productcart" element={
+              <Route path="/product/:id" element={
                 <>
                   <Announcement />
                   <Header />
