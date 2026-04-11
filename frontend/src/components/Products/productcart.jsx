@@ -18,46 +18,52 @@ const BASE_URL = "http://localhost:3000/products/uploads/variants";
 
 const Productcart = () => {
   const { id } = useParams();
-
   const { getProductById } = useProductContext();
 
-  const [product, setProduct] = useState([]);
-  const [activeVariant, setActiveVariant] = useState([]);
+  const [product, setProduct] = useState(null);
   const [qty, setQty] = useState(1);
   const [wishlist, setWishlist] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
 
   useEffect(() => {
     const load = async () => {
       const data = await getProductById(id);
       setProduct(data);
-      setActiveVariant(data?.variants?.[0] || null);
+      setSelectedImage(data?.variants?.[0]?.image || null);
     };
     load();
   }, [id]);
 
-  const maxQTY = activeVariant.stock;
+  if (!product) {
+    return <p className="text-center mt-5">Loading...</p>;
+  }
+
+  const stock = product.variants?.reduce((a, b) => a + b.stock, 0) || 0;
   const changeQty = (delta) => {
-    setQty((q) => Math.max(1, Math.min(maxQTY, q + delta)));
+    setQty((q) => Math.max(1, Math.min(stock, q + delta)));
   };
-  useEffect(() => {
-    setQty(1);
-  }, [activeVariant]);
-  
+
   const getPrice = () => {
     if (product.sale_price)
       return Number(product.sale_price).toFixed(2);
 
     if (product.sale_percentage) {
       return (
-        product.price - (product.price * product.sale_percentage) / 100).toFixed(2);
+        product.price -
+        (product.price * product.sale_percentage) / 100
+      ).toFixed(2);
     }
+
     return Number(product.price).toFixed(2);
   };
-  const hasDiscount = !!product.sale_price || !!product.sale_percentage;
-  const stock = activeVariant?.stock ?? 0;
+
+  const hasDiscount =
+    !!product.sale_price || !!product.sale_percentage;
 
   return (
     <Container fluid className="product-cart-container">
+
+      {/* BREADCRUMB */}
       <Breadcrumb className="mb-4 product-breadcrumb">
         <Breadcrumb.Item href="/">Home</Breadcrumb.Item>
         <Breadcrumb.Item>
@@ -69,46 +75,39 @@ const Productcart = () => {
       </Breadcrumb>
 
       <Row className="gx-0">
-
         {/* LEFT SIDE */}
         <Col md={6} className="d-flex justify-content-center ps-3 py-2">
           <Row>
-
-            {/* THUMBS */}
             <Col xs={2} className="d-flex flex-column gap-4 px-3">
               {product.variants?.map((variant) => (
                 <Image
                   key={variant.id}
                   src={`${BASE_URL}/${variant.image}`}
                   roundedCircle
-                  className={`border product-thumb ${activeVariant?.id === variant.id ? "active-thumb" : ""
-                    }`}
-                  onClick={() => setActiveVariant(variant)}
+                  className="border product-thumb"
+                  onClick={() => setSelectedImage(variant.image)}
                 />
               ))}
             </Col>
 
-            {/* MAIN IMAGE */}
             <Col xs={9}>
               <Image
-                src={`${BASE_URL}/${activeVariant?.image}`}
+                src={`${BASE_URL}/${selectedImage}`}               
                 fluid
                 rounded
                 className="main-product-image"
               />
             </Col>
-
           </Row>
         </Col>
 
         {/* RIGHT SIDE */}
         <Col md={6} className="product-info d-flex flex-column gap-3">
-
-          {/* TITLE + WISHLIST */}
+          {/* TITLE */}
           <div className="d-flex justify-content-between align-items-center mb-3">
             <h3 className="mb-0 text-title">{product.title}</h3>
 
-            <span onClick={() => setWishlist(!wishlist)}>
+            <span className="wishlist-icon" onClick={() => setWishlist(!wishlist)}>
               {wishlist ? <SuitHeartFill /> : <SuitHeart />}
             </span>
           </div>
@@ -133,12 +132,19 @@ const Productcart = () => {
             </div>
           )}
 
+
+          {/* <p className="text-muted">
+            Stock available: {stock}
+          </p> */}
+
           {/* QUANTITY */}
           <div className="d-flex align-items-center gap-3 mb-4 mt-3">
             <Button className="quantity" onClick={() => changeQty(-1)}>
               -
             </Button>
+
             <span>{qty}</span>
+
             <Button className="quantity" onClick={() => changeQty(1)}>
               +
             </Button>
@@ -148,7 +154,13 @@ const Productcart = () => {
           <Button
             size="lg"
             className="botton-cart mt-2"
-            disabled={stock <= 0}            
+            disabled={stock <= 0}
+            onClick={() => {
+              console.log({
+                product_id: product.id,
+                quantity: qty,
+              });
+            }}
           >
             Add To Cart
           </Button>
@@ -156,37 +168,28 @@ const Productcart = () => {
           <p className="text-note">
             *Please note: this product cannot be cancelled after placing an order
           </p>
+
         </Col>
       </Row>
 
       {/* TABS */}
-      <Row className="mt-5">
+      <Row className="product-tabs mt-5">
         <Col md={12}>
-          <div className="product-tabs">
-            <Tabs defaultActiveKey="about" className="product-tabs-nav">
+          <Tabs defaultActiveKey="about" className="product-tabs-nav">
+            <Tab className="tab-text" eventKey="about" title="Description">
+              {product.description || "No description available."}
+            </Tab>
+            <Tab className="tab-text" eventKey="care" title="Care">
+              Water once a week.
+            </Tab>
+            <Tab className="tab-text"  eventKey="shipment" title="Shipment">
+              3–5 days delivery.
+            </Tab>
+            <Tab className="tab-text"  eventKey="guarantee" title="Guarantee">
+              Refund if damaged.
+            </Tab>
 
-              <Tab eventKey="about" title="About this product">
-                <p className="tab-text">
-                  {product.description || "No description available."}
-                </p>
-              </Tab>
-
-              <Tab eventKey="care" title="Care">
-                <p className="tab-text">
-                  Water once a week and keep soil slightly moist.
-                </p>
-              </Tab>
-
-              <Tab eventKey="shipment" title="Shipment">
-                <p className="tab-text">Delivered within 3–5 business days.</p>
-              </Tab>
-
-              <Tab eventKey="guarantee" title="Guarantee">
-                <p className="tab-text">Refund within 48h if damaged.</p>
-              </Tab>
-
-            </Tabs>
-          </div>
+          </Tabs>
         </Col>
       </Row>
 
