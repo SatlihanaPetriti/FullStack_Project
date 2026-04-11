@@ -2,12 +2,14 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import PlantCard from '../IndoorPlants/plantcard';
 import { Container, Row, Col } from 'react-bootstrap';
-import './ProductsByCategory.css';
 import { useCategoryContext } from '../../Context/Category';
+import './ProductsByCategory.css';
+
 
 const CategoryProducts = () => {
     const { id } = useParams();
     const navigate = useNavigate();
+
     const { getAllProductsByCategory, getCategoryById, categories } = useCategoryContext();
 
     const [products, setProducts] = useState([]);
@@ -76,7 +78,6 @@ const CategoryProducts = () => {
                     <div className="cp-empty">
                         <h3>No plants here yet</h3>
                         <p>Check back soon — more greenery is on the way.</p>
-
                         <button
                             className="cp-empty__btn"
                             onClick={() => navigate('/')}
