@@ -41,24 +41,6 @@ export class ProductsController {
         res.sendFile(filename, { root: 'uploads/variants' });
     }
 
-    @Post('check-stock')
-    @IsPublic()
-    checkStock(@Body() body: CheckStockDto) {
-        return this.productService.checkStock(
-            body.product_id,
-            body.quantity
-        );
-    }
-
-    @Post('check-out')
-    @IsPublic()
-    decreaseStock(@Body() body: CheckStockDto) {
-        return this.productService.checkOut(
-            body.product_id,
-            body.quantity
-        );
-    }
-
     @Get()
     @IsPublic()
     getAllProducts() {

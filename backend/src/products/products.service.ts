@@ -126,38 +126,6 @@ export class ProductsService {
         }
     }
 
-    public async checkStock(productId: number, quantity: number) {
-        const product = await this.productRepo.findOne({
-            where: { id: productId }
-        });
-        if (!product) {
-            throw new NotFoundException("Product not found")
-        }
-        if (product.stock < quantity) {
-            throw new BadRequestException(
-                `Only ${product.stock} items available in stock`
-            );
-        }
-        return product;
-    }
-
-    public async checkOut(productId: number, quantity: number) {
-        const product = await this.productRepo.findOne({
-            where: { id: productId }
-        });
-
-        if (!product) {
-            throw new NotFoundException("Product not found");
-        }
-        if (product.stock < quantity) {
-            throw new BadRequestException(
-                `Only ${product.stock} items available in stock`
-            );
-        }
-        product.stock = product.stock - quantity;
-        const updatedProduct = await this.productRepo.save(product);
-        return updatedProduct;
-    }
 
     public async deleteProduct(id: number) {
         const product = await this.getProductById(id);
