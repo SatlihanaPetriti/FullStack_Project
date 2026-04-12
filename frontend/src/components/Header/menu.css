@@ -76,7 +76,24 @@
   cursor: pointer;
   transition: all 0.3s ease;
 }
+.icon-box {
+  position: relative;
+}
 
+.bag-count {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: green;
+  color: white;
+  font-size: 11px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
 
 /* HOVER EFFECT */

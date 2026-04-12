@@ -13,10 +13,10 @@ export async function get_product_by_id_service(id) {
 export async function create_product_service(data, images = []) {
     const formData = new FormData();
     formData.append('title', data.title);
-    formData.append('category_id', data.category_id); 
+    formData.append('category_id', data.category_id);
     formData.append('size', data.size);
     formData.append('price', String(data.price));
-    if (data.stock != null) { formData.append('stock', String(data.stock));}
+    if (data.stock != null) { formData.append('stock', String(data.stock)); }
     if (data.label) formData.append('label', data.label);
     if (data.sale_price) formData.append('sale_price', String(data.sale_price));
     if (data.sale_percentage) formData.append('sale_percentage', String(data.sale_percentage));
@@ -37,10 +37,10 @@ export async function create_product_service(data, images = []) {
 export async function update_product_service(id, data, images = []) {
     const formData = new FormData();
     if (data.title) formData.append('title', data.title);
-    if (data.category_id) formData.append('category_id', data.category_id); 
+    if (data.category_id) formData.append('category_id', data.category_id);
     if (data.size) formData.append('size', data.size);
     if (data.price) formData.append('price', String(data.price));
-    if (data.stock != null) {formData.append('stock', String(data.stock));}
+    if (data.stock != null) { formData.append('stock', String(data.stock)); }
 
     formData.append('label', data.label != null ? data.label : '');
     formData.append('sale_price', data.sale_price != null ? String(data.sale_price) : '');
@@ -59,9 +59,24 @@ export async function update_product_service(id, data, images = []) {
         });
     }
 
-    return await axios.put(`${URL}/${id}`, formData, { 
+    return await axios.put(`${URL}/${id}`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
     });
+}
+
+export async function check_stock_service(product_id, quantity) {
+    return await axios.post(`${URL}/check-stock`, {
+        product_id, quantity
+    });
+}
+
+export async function check_out_service(product_id, quantity) {
+    const result = await axios.post(`${URL}/check-out`, {
+        product_id,
+        quantity
+    });
+
+    return result.data;
 }
 
 export async function delete_product_service(id) {

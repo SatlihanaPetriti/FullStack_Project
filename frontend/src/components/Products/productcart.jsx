@@ -4,12 +4,15 @@ import { Container, Row, Col, Image, Button, Breadcrumb, Tabs, Tab } from "react
 import { SuitHeart, SuitHeartFill } from "react-bootstrap-icons";
 import { useParams, Link } from "react-router-dom";
 import { useProductContext } from "../../Context/Product";
+import { check_stock_service } from "../../Services/Product";
+import { useCart } from "../../Context/CartContext";
 
 const BASE_URL = "http://localhost:3000/products/uploads/variants";
 
 const Productcart = () => {
   const { id } = useParams();
   const { getProductById } = useProductContext();
+  const { addToCart } = useCart();
 
   const [product, setProduct] = useState(null);
   const [qty, setQty] = useState(1);
@@ -29,28 +32,51 @@ const Productcart = () => {
     return <p className="text-center mt-5">Loading...</p>;
   }
 
-  const stock = product.stock || 0;
 
-  const changeQty = (delta) => {
-    setQty((q) => Math.max(1, Math.min(stock, q + delta)));
+  const handleAddToCart = () => {
+    const item = {
+      product_id: product.id,
+      title: product.title,
+      price: getPrice(),
+      image: product.variants?.find(v => v.image)?.image,
+      quantity: qty
+    };
+    addToCart(item);
+    console.log("add to cart", item);
+  };
+
+
+  const handleCheckStock = async (quantity) => {
+    try {
+      await check_stock_service(product.id, quantity);
+      return true;
+    } catch (err) {
+      console.log(err.response?.data?.message || "Stock error");
+      return false;
+    }
+  };
+
+  const changeQty = async (delta) => {
+    const newQty = qty + delta;
+    if (newQty < 1) return;
+    const ok = await handleCheckStock(newQty);
+    if (!ok) return;
+    setQty(newQty);
   };
 
   const getPrice = () => {
     if (product.sale_price)
       return Number(product.sale_price).toFixed(2);
-
     if (product.sale_percentage) {
       return (
         product.price -
         (product.price * product.sale_percentage) / 100
       ).toFixed(2);
     }
-
     return Number(product.price).toFixed(2);
   };
 
-  const hasDiscount =
-    !!product.sale_price || !!product.sale_percentage;
+  const hasDiscount = !!product.sale_price || !!product.sale_percentage;
 
   return (
     <Container fluid className="product-cart-container">
@@ -158,13 +184,8 @@ const Productcart = () => {
           <Button
             size="lg"
             className="botton-cart mt-2"
-            disabled={stock <= 0}
-            onClick={() => {
-              console.log({
-                product_id: product.id,
-                quantity: qty,
-              });
-            }}
+            disabled={product.stock <= 0}
+            onClick={handleAddToCart}
           >
             Add To Cart
           </Button>
@@ -181,19 +202,19 @@ const Productcart = () => {
         <Col md={12}>
           <Tabs defaultActiveKey="about" className="product-tabs-nav">
 
-            <Tab eventKey="about" title="Description">
+            <Tab className= "tab-text" eventKey="about" title="Description">
               {product.description || "No description available."}
             </Tab>
 
-            <Tab eventKey="care" title="Care">
+            <Tab className="tab-text"  eventKey="care" title="Care">
               Water once a week.
             </Tab>
 
-            <Tab eventKey="shipment" title="Shipment">
+            <Tab className="tab-text"  eventKey="shipment" title="Shipment">
               3–5 days delivery.
             </Tab>
 
-            <Tab eventKey="guarantee" title="Guarantee">
+            <Tab className="tab-text"  eventKey="guarantee" title="Guarantee">
               Refund if damaged.
             </Tab>
 

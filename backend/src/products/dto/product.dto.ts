@@ -42,7 +42,7 @@ export class ProductDto {
     size?: string;
 
     @IsOptional()
-    @Transform(({ value }) => value === '' || value == null ? null : Number(value))
+    @Transform(({ value }) => value === '' || value == null ? undefined : Number(value))
     @IsNumber()
     @Min(0)
     stock?: number;

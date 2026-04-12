@@ -4,6 +4,7 @@ import { AnyFilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { ProductsService } from './products.service';
 import { ProductDto } from './dto/product.dto';
+import { CheckStockDto } from './dto/stock.dto';
 import type { Response } from 'express';
 import { FormatDateImage } from '../Helper/FormatDateImage';
 import { AuthGuard } from '../guards/auth.guards';
@@ -40,6 +41,24 @@ export class ProductsController {
         res.sendFile(filename, { root: 'uploads/variants' });
     }
 
+    @Post('check-stock')
+    @IsPublic()
+    checkStock(@Body() body: CheckStockDto) {
+        return this.productService.checkStock(
+            body.product_id,
+            body.quantity
+        );
+    }
+
+    @Post('check-out')
+    @IsPublic()
+    decreaseStock(@Body() body: CheckStockDto) {
+        return this.productService.checkOut(
+            body.product_id,
+            body.quantity
+        );
+    }
+
     @Get()
     @IsPublic()
     getAllProducts() {
@@ -72,7 +91,7 @@ export class ProductsController {
     ) {
         return this.productService.updateProduct(id, dto, matchFilesToVariants(files ?? []));
     }
-
+    
     @Delete(':id')
     @Roles('admin')
     deleteProduct(@Param('id') id: number) {

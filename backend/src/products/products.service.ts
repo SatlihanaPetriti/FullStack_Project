@@ -1,4 +1,4 @@
-import { Injectable, HttpException, HttpStatus, NotFoundException } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Product } from './Entity/product.entity';
@@ -23,7 +23,7 @@ export class ProductsService {
     public async getProductById(id: number) {
         const product = await this.productRepo.findOne({
             where: { id },
-            relations: ['variants', 'category'], 
+            relations: ['variants', 'category'],
         });
         if (!product) throw new NotFoundException(`Product ${id} not found`);
         return product;
@@ -119,11 +119,44 @@ export class ProductsService {
 
             return this.productRepo.findOne({
                 where: { id },
-                relations: ['variants', 'category'], 
+                relations: ['variants', 'category'],
             });
         } catch (error) {
             throw new HttpException(`Failed to update: ${(error as Error).message}`, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    public async checkStock(productId: number, quantity: number) {
+        const product = await this.productRepo.findOne({
+            where: { id: productId }
+        });
+        if (!product) {
+            throw new NotFoundException("Product not found")
+        }
+        if (product.stock < quantity) {
+            throw new BadRequestException(
+                `Only ${product.stock} items available in stock`
+            );
+        }
+        return product;
+    }
+
+    public async checkOut(productId: number, quantity: number) {
+        const product = await this.productRepo.findOne({
+            where: { id: productId }
+        });
+
+        if (!product) {
+            throw new NotFoundException("Product not found");
+        }
+        if (product.stock < quantity) {
+            throw new BadRequestException(
+                `Only ${product.stock} items available in stock`
+            );
+        }
+        product.stock = product.stock - quantity;
+        const updatedProduct = await this.productRepo.save(product);
+        return updatedProduct;
     }
 
     public async deleteProduct(id: number) {

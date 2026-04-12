@@ -6,11 +6,15 @@ import { Link } from 'react-router-dom';
 import Login from '../Login/login';
 import { useState } from 'react';
 import { useUserContext } from '../../Context/Auth';
+import CartDrawer from "../Cart/index";
+import { useCart } from "../../Context/CartContext";
 
 const Header = () => {
-  const [showLogin, setShowLogin] = useState(false);
   const { user, logout } = useUserContext();
+  const { cartCount } = useCart();
 
+  const [showLogin, setShowLogin] = useState(false);
+  const [showCart, setShowCart] = useState(false);
   const handleLoginShow = () => setShowLogin(true);
   const handleLoginClose = () => setShowLogin(false);
 
@@ -74,9 +78,20 @@ const Header = () => {
                 <Heart />
               </div>
 
-              <div className="icon-box">
+              <div className="icon-box" onClick={() => setShowCart(true)}>
                 <Bag />
+
+                {cartCount > 0 && (
+                  <span className="bag-count">
+                    {cartCount}
+                  </span>
+                )}
               </div>
+
+              <CartDrawer
+                show={showCart}
+                onClose={() => setShowCart(false)}
+              />
 
             </div>
 

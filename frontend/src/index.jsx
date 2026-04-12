@@ -12,12 +12,14 @@ import ProtectedRoute from './Services/ProtectedRoute.jsx';
 import ResetPassword from "./components/Login/ResetPassword.jsx";
 import { NewsletterProvider } from "./Context/NewsletterContext.jsx";
 import CategoryProducts from './components/FeaturedIn/ProductsByCategory.jsx';
+import { CartProvider } from "./Context/CartContext";
 function App() {
   return (
     <UserProvider>
       <CategoryProvider>
         <ProductProvider>
           <NewsletterProvider>
+            <CartProvider>
             <Routes>
               <Route path="/" element={
                 <>
@@ -57,9 +59,10 @@ function App() {
                   <Productcart />
                 </>
               } />
-
+                
               <Route path="/reset-password" element={<ResetPassword />} />
             </Routes>
+          </CartProvider>
           </NewsletterProvider>
         </ProductProvider>
       </CategoryProvider>
