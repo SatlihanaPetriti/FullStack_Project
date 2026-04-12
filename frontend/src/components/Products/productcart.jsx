@@ -4,7 +4,6 @@ import { Container, Row, Col, Image, Button, Breadcrumb, Tabs, Tab } from "react
 import { SuitHeart, SuitHeartFill } from "react-bootstrap-icons";
 import { useParams, Link } from "react-router-dom";
 import { useProductContext } from "../../Context/Product";
-import { check_stock_service } from "../../Services/Product";
 import { useCart } from "../../Context/CartContext";
 
 const BASE_URL = "http://localhost:3000/products/uploads/variants";

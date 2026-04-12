@@ -64,20 +64,6 @@ export async function update_product_service(id, data, images = []) {
     });
 }
 
-export async function check_stock_service(product_id, quantity) {
-    return await axios.post(`${URL}/check-stock`, {
-        product_id, quantity
-    });
-}
-
-export async function check_out_service(product_id, quantity) {
-    const result = await axios.post(`${URL}/check-out`, {
-        product_id,
-        quantity
-    });
-
-    return result.data;
-}
 
 export async function delete_product_service(id) {
     return await axios.delete(`${URL}/${id}`);

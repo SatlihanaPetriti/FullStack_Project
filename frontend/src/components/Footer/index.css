@@ -1,37 +1,92 @@
 .footer-container {
-  background-color: #214332;
-  padding: 30px 50px;
+  position: relative;
+  background-image: url('../../assets/images/Home/footer2.png');
+  background-size: cover;
+  background-position: center 70%;
+  background-repeat: no-repeat;
+  overflow: hidden;
+  
 }
 
+/* Overlay */
+.footer-container::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+}
+
+/* Content */
+.footer-content {
+  position: relative;
+  z-index: 2;
+  padding: 50px 40px;
+  color: #a8bab1;
+}
+
+.footer-left {
+  padding-bottom: 20px;
+}
+
+/* Logo */
+.footer-logo {
+  max-width: 200px;
+  height: auto;
+  display: block;
+}
+
+/* Description */
+.footer-description {
+  padding-left: 20px;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* Links */
 .footer-container a {
-  color: white;
+  color: #a8bab1;
   text-decoration: none;
-  transition: color 0.2s;
 }
 
+.footer-container a:hover {
+  color:white;
+}
+
+/* Titles */
 .footer-container h5 {
   margin-bottom: 15px;
   font-weight: 600;
-  color: white;
 }
 
+/* List */
 .footer-container ul li {
   margin-bottom: 8px;
 }
 
-.sign-up {
+.social-icons a {
+  padding-left: 20px;
+  color: #a8bab1;
+  transition: 0.2s;  
+}
+
+.social-icons a:hover {
+  color:white;
+}
+
+.site-map {
+  padding-top: 48px;
+  padding-left: 167px;
+}
+
+.legal {
+  padding-top: 48px;
+  padding-left: 187px;
+}
+
+/* Bottom copyright container */
+.footer-bottom {
+  position: relative;
+  padding: 12px;
   color: white;
-}
-
-.copy-rights {
-  color: white;
-}
-
-.footer-payment-icons img {
-  height: 30px;
-  margin-right: 5px;
-}
-
-.footer-payment-icons img:last-child {
-  margin-right: 0;
 }
