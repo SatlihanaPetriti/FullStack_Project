@@ -181,9 +181,9 @@
    display: block;
    top: 8px;
    left: 8px;
-   padding: 4px 12px;
+   padding: 4px 5px;
    border-radius: 20px;
-   font-size: 0.85rem;
+   font-size: 12px;
    font-weight: 600;
    text-transform: uppercase;
    color: white;
@@ -378,4 +378,11 @@
    border-color: #214332;
    box-shadow: none;
    outline: none;
+ }
+ .fav-icon {
+   position: absolute;
+   top: 10px;
+   right: 10px;
+   cursor: pointer;
+   z-index: 5;
  }

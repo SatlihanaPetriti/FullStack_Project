@@ -1,16 +1,21 @@
 import { useState } from 'react';
 import { Card, Button } from 'react-bootstrap';
+import { Heart, HeartFill } from "react-bootstrap-icons";
+import { useFavorites } from "../../Context/Favorite";
 import './indoor_plants.css';
 
 const PlantCard = ({ product }) => {
     // Safety check: if no variants, don't try to select one
     const hasVariants = product.variants && product.variants.length > 0;
-
+    const { favorites, addFavorite, removeFavorite } = useFavorites();
     //tracks variant of pots user has selected - with fallback
     const [selectedVariant, setSelectedVariant] = useState(
         hasVariants ? product.variants[0] : { type: 'Default', id: 'default' }
     );
-
+    
+    const isFavorite = favorites.some(
+        (f) => f.product_id === product.id
+    );
     //show/hide cart "add to cart"
     const [showCartButton, setShowCartButton] = useState(false);
 
@@ -81,6 +86,8 @@ const PlantCard = ({ product }) => {
         );
     };
     return (
+
+
         <Card className="plant-card">
             <div
                 className="image-wrapper"
@@ -95,7 +102,22 @@ const PlantCard = ({ product }) => {
                     className={`cart-btn ${showCartButton ? 'show' : ''}`}>
                     Add to Cart
                 </Button>
+                <div
+                    className="fav-icon"
+                    onClick={() =>
+                        isFavorite
+                            ? removeFavorite(product.id)
+                            : addFavorite(product.id)
+                    }
+                >
+                    {isFavorite ? (
+                        <HeartFill size={25} color="red" />
+                    ) : (
+                        <Heart size={25} />
+                    )}
+                </div>
             </div>
+            
 
             <Card.Body className="details">
                 <div className="title-row">

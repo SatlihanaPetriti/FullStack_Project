@@ -34,8 +34,4 @@ export class FavoritesService {
         await this.favoriteRepo.remove(favorite);
     }
 
-    public async isFavorite(user_id: number, product_id: number): Promise<boolean> {
-        const favorite = await this.favoriteRepo.findOne({ where: { user_id, product_id } });
-        return !!favorite;
-    }
 }

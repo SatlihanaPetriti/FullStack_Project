@@ -4,6 +4,7 @@ import IndoorPlants from './components/IndoorPlants/indoor_plants.jsx';
 import Header from './components/Header/index.jsx';
 import Announcement from './components/Abar/Announcement.jsx';
 import AdminRouter from "./Pages/Admin/index.jsx";
+import FooterHome from "./components/Footer/index.jsx";
 import Productcart from "./components/Products/productcart.jsx";
 import { ProductProvider } from "./context/Product.jsx";
 import { CategoryProvider } from './Context/Category.jsx';
@@ -12,7 +13,11 @@ import ProtectedRoute from './Services/ProtectedRoute.jsx';
 import ResetPassword from "./components/Login/ResetPassword.jsx";
 import { NewsletterProvider } from "./Context/NewsletterContext.jsx";
 import CategoryProducts from './components/FeaturedIn/ProductsByCategory.jsx';
-import { CartProvider } from "./Context/CartContext";
+import { CartProvider } from './Context/CartContext';
+import CheckOut from './components/Cart/CheckOut/checkout.jsx'
+import FavoritesList from "./components/Favorite/favorite.jsx";
+import { FavoritesProvider } from './Context/Favorite.jsx';
+
 function App() {
   return (
     <UserProvider>
@@ -20,49 +25,63 @@ function App() {
         <ProductProvider>
           <NewsletterProvider>
             <CartProvider>
-            <Routes>
-              <Route path="/" element={
-                <>
-                  <Announcement />
-                  <Header />
-                  <HomePage />
-                </>
-              } />
+              <FavoritesProvider>
+                <Routes>
+                  <Route path="/" element={
+                    <>
+                      <Announcement />
+                      <Header />
+                      <HomePage />
+                    </>
+                  } />
 
-              <Route path="/indoor-plants" element={
-                <>
-                  <Announcement />
-                  <Header />
-                  <IndoorPlants />
-                </>
-              } />
+                  <Route path="/indoor-plants" element={
+                    <>
+                      <Announcement />
+                      <Header />
+                      <IndoorPlants />
+                    </>
+                  } />
 
-            
-              <Route path="/category/:id" element={
-                <>
-                  <Announcement />
-                  <Header />
-                  <CategoryProducts />
-                </>
-              } />
 
-              <Route path="/admin/*" element={
-                <ProtectedRoute requiredRole="admin">
-                  <AdminRouter />
-                </ProtectedRoute>
-              } />
+                  <Route path="/category/:id" element={
+                    <>
+                      <Announcement />
+                      <Header />
+                      <CategoryProducts />
+                    </>
+                  } />
 
-              <Route path="/product/:id" element={
-                <>
-                  <Announcement />
-                  <Header />
-                  <Productcart />
-                </>
-              } />
-                
-              <Route path="/reset-password" element={<ResetPassword />} />
-            </Routes>
-          </CartProvider>
+                  <Route path="/admin/*" element={
+                    <ProtectedRoute requiredRole="admin">
+                      <AdminRouter />
+                    </ProtectedRoute>
+                  } />
+
+                  <Route path="/product/:id" element={
+                    <>
+                      <Announcement />
+                      <Header />
+                      <Productcart />
+                    </>
+                  } />
+                  <Route path="/checkout" element={
+                    <>
+                      <Announcement />
+                      <Header />
+                      <CheckOut />
+                      <FooterHome />
+                    </>
+                  } />
+                  <Route path="/favorite" element={
+                    <>
+                      <FavoritesList />
+                    </>
+                  } />
+                  <Route path="/reset-password" element={<ResetPassword />} />
+                </Routes>
+              </FavoritesProvider>
+            </CartProvider>
           </NewsletterProvider>
         </ProductProvider>
       </CategoryProvider>

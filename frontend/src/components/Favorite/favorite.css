@@ -1,0 +1,334 @@
+/* ── Dropdown container ─────────────────────────────── */
+.fav-dropdown {
+    position: absolute;
+    top: calc(100% + 14px);
+    right: 0;
+    width: 320px;
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow:
+        0 4px 6px rgba(33, 67, 50, 0.06),
+        0 12px 40px rgba(33, 67, 50, 0.18);
+    z-index: 999;
+    overflow: hidden;
+    animation: fav-slide-in 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    border: 1px solid rgba(33, 67, 50, 0.1);
+}
+
+@keyframes fav-slide-in {
+    from {
+        opacity: 0;
+        transform: translateY(-10px) scale(0.97);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* ── Header ─────────────────────────────────────────── */
+.fav-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 18px 12px;
+    background: #214332;
+    position: relative;
+    overflow: hidden;
+}
+
+.fav-header::before {
+    content: "";
+    position: absolute;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.05);
+    top: -40px;
+    right: -20px;
+    pointer-events: none;
+}
+
+.fav-header-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.fav-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: 0.02em;
+}
+
+.fav-pill {
+    background: rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 99px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.fav-subtitle {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.55);
+    letter-spacing: 0.03em;
+}
+
+/* ── Scrollable list ────────────────────────────────── */
+.fav-list {
+    list-style: none;
+    margin: 0;
+    padding: 8px 0;
+    max-height: 272px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(33, 67, 50, 0.2) transparent;
+}
+
+.fav-list::-webkit-scrollbar {
+    width: 4px;
+}
+
+.fav-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.fav-list::-webkit-scrollbar-thumb {
+    background: rgba(33, 67, 50, 0.2);
+    border-radius: 99px;
+}
+
+/* ── Item ───────────────────────────────────────────── */
+.fav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 14px 9px 18px;
+    border-bottom: 1px solid #f3f3f3;
+    cursor: default;
+    transition: background 0.15s;
+    animation: fav-item-in 0.25s ease both;
+}
+
+@keyframes fav-item-in {
+    from {
+        opacity: 0;
+        transform: translateX(-6px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.fav-item:last-child {
+    border-bottom: none;
+}
+
+.fav-item:hover {
+    background: #f5f9f7;
+}
+
+.fav-item:hover .fav-name {
+    color: #214332;
+}
+
+.fav-item--removing {
+    opacity: 0;
+    transform: translateX(20px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+
+.fav-image {
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+    overflow: hidden;
+    flex-shrink: 0;
+    background: #f5f5f5;
+}
+
+.fav-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.fav-image-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    font-weight: 600;
+    font-size: 14px;
+    text-transform: uppercase;
+}
+
+/* Përditëso fav-item për të akomoduar imazhin */
+.fav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+    animation: slideIn 0.3s ease;
+}
+
+/* Përditëso fav-empty-icon */
+.fav-empty-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+    color: #999;
+}
+/* ── Info ───────────────────────────────────────────── */
+.fav-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.fav-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin: 0 0 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: color 0.15s;
+}
+
+.fav-category {
+    font-size: 10.5px;
+    color: #999;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 500;
+}
+
+/* ── Price ──────────────────────────────────────────── */
+.fav-price {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #214332;
+    flex-shrink: 0;
+    background: #eef4f1;
+    padding: 3px 7px;
+    border-radius: 6px;
+}
+
+/* ── Action buttons ─────────────────────────────────── */
+.fav-actions {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    flex-shrink: 0;
+}
+
+.fav-action-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    border: none;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.12s, color 0.15s;
+    padding: 0;
+}
+
+.fav-action-btn:active {
+    transform: scale(0.85);
+}
+
+/* Cart — grey by default, green when active (in cart) */
+.fav-cart-btn {
+    color: #bbb;
+}
+
+.fav-cart-btn:hover {
+    color: #214332;
+}
+
+.fav-cart-btn.active {
+    color: #214332;
+}
+
+/* Heart — always red (filled) */
+.fav-heart-btn {
+    color: #e24b4a;
+}
+
+.fav-heart-btn:hover {
+    color: #c0392b;
+    transform: scale(1.15);
+}
+
+/* ── Empty state ────────────────────────────────────── */
+.fav-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 36px 20px;
+    text-align: center;
+}
+
+.fav-empty-icon {
+    font-size: 32px;
+    opacity: 0.4;
+    margin-bottom: 4px;
+}
+
+.fav-empty p {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+}
+
+.fav-empty span {
+    font-size: 12px;
+    color: #aaa;
+}
+
+/* ── Scroll hint ────────────────────────────────────── */
+.fav-scroll-hint {
+    text-align: center;
+    font-size: 10.5px;
+    color: rgba(33, 67, 50, 0.5);
+    padding: 7px 0 9px;
+    letter-spacing: 0.04em;
+    border-top: 1px solid #f0f0f0;
+    background: #fafafa;
+}
+ .fav-price-wrap {
+     display: flex;
+     flex-direction: column;
+     align-items: flex-end;
+     flex-shrink: 0;
+     gap: 1px;
+ }
+
+ .fav-price-old {
+     font-size: 10px;
+     color: #aaa;
+     text-decoration: line-through;
+ }

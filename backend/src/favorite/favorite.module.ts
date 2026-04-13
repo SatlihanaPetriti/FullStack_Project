@@ -8,8 +8,8 @@ import { ProductsModule } from 'src/products/products.module';
 import { JwtModule } from '@nestjs/jwt';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Favorite]), UsersModule, ProductsModule, JwtModule],
+  imports: [TypeOrmModule.forFeature([Favorite]), UsersModule, JwtModule, ProductsModule],
   controllers: [FavoritesController],
   providers: [FavoritesService]
 })
-export class FavoriteModule {}
+export class FavoriteModule { }

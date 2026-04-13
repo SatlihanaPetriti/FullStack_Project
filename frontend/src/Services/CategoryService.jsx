@@ -1,5 +1,4 @@
 import axios from "axios";
-import { get_product_by_id_service } from "./Product";
 const API_URL = "http://localhost:3000/categories";
 
 // GET ALL

@@ -1,8 +1,9 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, Unique, JoinColumn } from 'typeorm';
+import {Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn,} from 'typeorm';
+
 import { Product } from '../../products/Entity/product.entity';
 
+
 @Entity('favorites')
-@Unique(['user_id', 'product_id'])
 export class Favorite {
     @PrimaryGeneratedColumn()
     id: number;
@@ -13,8 +14,7 @@ export class Favorite {
     @Column()
     product_id: number;
 
-    @ManyToOne(() => Product, product => product.favorites, { onDelete: 'CASCADE' })
-    @JoinColumn({ name: 'product_qsfsid' })
+    @ManyToOne(() => Product, (product) => product.favorites, {onDelete: 'CASCADE',})
+    @JoinColumn({ name: 'product_id' })
     product: Product;
-
 }

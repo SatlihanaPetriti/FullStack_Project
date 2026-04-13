@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "./index.css";
+import { useNavigate } from "react-router-dom";
 
 const mockCart = [
     { product_id: 1, title: "Celosia", category: "OUTDOOR", price: 87, quantity: 1, emoji: "🪴" },
@@ -13,6 +14,8 @@ const ITEM_HEIGHT = 88;
 const MAX_VISIBLE = 4;
 
 const CartDrawer = ({ show, onClose }) => {
+    const navigate = useNavigate();
+
     const [cart, setCart] = useState(mockCart);
     const [atBottom, setAtBottom] = useState(false);
 
@@ -116,7 +119,8 @@ const CartDrawer = ({ show, onClose }) => {
                 {/* ── Checkout ── */}
                 {cart.length > 0 && (
                     <div className="checkout-area">
-                        <button className="checkout-btn">
+                        <button className="checkout-btn-cart" 
+                        onClick={() => navigate("/checkout")}>
                             <div className="co-left">
                                 <span className="co-sub">Proceed to payment</span>
                                 <span className="co-main">Checkout</span>

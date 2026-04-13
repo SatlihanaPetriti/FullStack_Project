@@ -4,36 +4,49 @@ import logo from '../../assets/images/Home/logo-green.png';
 import './menu.css';
 import { Link } from 'react-router-dom';
 import Login from '../Login/login';
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useUserContext } from '../../Context/Auth';
 import CartDrawer from "../Cart/index";
 import { useCart } from "../../Context/CartContext";
+import FavoritesDropdown from "../Favorite/favorite"; 
+import { useFavorites } from '../../Context/Favorite';
 
 const Header = () => {
   const { user, logout } = useUserContext();
   const { cartCount } = useCart();
+  const { favorites } = useFavorites();
 
   const [showLogin, setShowLogin] = useState(false);
   const [showCart, setShowCart] = useState(false);
+  const [showFavorites, setShowFavorites] = useState(false);
+
+  const heartWrapperRef = useRef(null);
+
   const handleLoginShow = () => setShowLogin(true);
   const handleLoginClose = () => setShowLogin(false);
+
+  // Close the favorites dropdown when clicking anywhere outside the heart wrapper
+  useEffect(() => {
+    if (!showFavorites) return;
+
+    function handleOutsideClick(e) {
+      if (heartWrapperRef.current && !heartWrapperRef.current.contains(e.target)) {
+        setShowFavorites(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleOutsideClick);
+    return () => document.removeEventListener("mousedown", handleOutsideClick);
+  }, [showFavorites]);
 
   const renderUserIcon = () => {
     if (!user) {
       return (
-        <Person
-          size={16}
-          onClick={handleLoginShow}
-          title="Log In"
-        />
+        <Person size={16} onClick={handleLoginShow} title="Log In" style={{ cursor: "pointer" }} />
       );
     }
-
     return (
-      <NavDropdown
-        title={<Person size={16} />}
-        align="end"
-      >
+      <NavDropdown title={<Person size={16} />} align="end">
         <NavDropdown.Item onClick={logout}>
           <BoxArrowRight size={14} /> Log Out
         </NavDropdown.Item>
@@ -74,32 +87,42 @@ const Header = () => {
                 {renderUserIcon()}
               </div>
 
-              <div className="icon-box">
-                <Heart />
-              </div>
+            
+              <div
+                className="icon-box"
+                ref={heartWrapperRef}
+                style={{ position: "relative" }}
+              >
+                <Heart
+                  size={16}
+                  style={{ cursor: "pointer" }}
+                  onClick={() => setShowFavorites(prev => !prev)}
+                />
 
-              <div className="icon-box" onClick={() => setShowCart(true)}>
-                <Bag />
+                {favorites.length > 0 && (
+                  <span className="bag-count">{favorites.length}</span>
+                )}
 
-                {cartCount > 0 && (
-                  <span className="bag-count">
-                    {cartCount}
-                  </span>
+                {showFavorites && (
+                  <FavoritesDropdown onClose={() => setShowFavorites(false)} />
                 )}
               </div>
 
-              <CartDrawer
-                show={showCart}
-                onClose={() => setShowCart(false)}
-              />
+              {/* CART */}
+              <div className="icon-box" onClick={() => setShowCart(true)}>
+                <Bag />
+                {cartCount > 0 && (
+                  <span className="bag-count">{cartCount}</span>
+                )}
+              </div>
+
+              <CartDrawer show={showCart} onClose={() => setShowCart(false)} />
 
             </div>
-
           </Navbar.Collapse>
         </Container>
       </Navbar>
 
-      {/* LOGIN MODAL */}
       {!user && (
         <Login show={showLogin} handleClose={handleLoginClose} />
       )}
