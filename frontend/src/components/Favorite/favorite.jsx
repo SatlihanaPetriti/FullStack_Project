@@ -6,9 +6,7 @@ import "./favorite.css";
 const BASE_URL = "http://localhost:3000/products/uploads/variants";
 
 const FavoritesList = () => {
-    
     const { favorites, removeFavorite } = useFavorites();
-    
     const [removingId, setRemovingId] = useState(null);
 
     // const [cartItems, setCartItems] = useState({});

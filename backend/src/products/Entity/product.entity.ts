@@ -2,7 +2,7 @@ import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToOne, JoinColum
 import { ProductVariant } from './product-variant.entity';
 import { CategoryEntity } from '../../Category/Entity/CategoryEntity';
 import { Favorite } from '../../favorite/Entity/favorite.entity';
-
+import { CartItem } from 'src/Cart/Entity/CartItem';
 @Entity('products')
 export class Product {
     @PrimaryGeneratedColumn()
@@ -48,5 +48,8 @@ export class Product {
 
     @OneToMany(() => Favorite, favorite => favorite.product)
     favorites: Favorite[];
+
+    @OneToMany(() => CartItem, (cartItem) => cartItem.product)
+    cartItems: CartItem[];
 
 }

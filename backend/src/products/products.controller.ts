@@ -4,7 +4,6 @@ import { AnyFilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { ProductsService } from './products.service';
 import { ProductDto } from './dto/product.dto';
-import { CheckStockDto } from './dto/stock.dto';
 import type { Response } from 'express';
 import { FormatDateImage } from '../Helper/FormatDateImage';
 import { AuthGuard } from '../guards/auth.guards';

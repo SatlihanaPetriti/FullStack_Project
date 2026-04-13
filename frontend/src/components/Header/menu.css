@@ -1,16 +1,14 @@
 /* NAVBAR */
 .navbar.dropdown-container {
   background-color: rgba(255, 255, 255, 0.55);
-  /* soft white */
   backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  position: absolute;
+  position: sticky;
+  top:0;
   width: 100%;
-  z-index: 1000;
+  z-index: 4;
   border-bottom: 1px solid rgba(23, 46, 34, 0.08);
-  /* subtle green-gray line */
-}
 
+}
 /* CENTER MENU */
 .center-menu {
   font-family: "Poppins", sans-serif;
