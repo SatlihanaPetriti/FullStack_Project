@@ -67,7 +67,7 @@ export class CartService {
     }
 
 
-  
+
     public async removeFromCart(userId: number, cartItemId: number): Promise<{ message: string }> {
         const item = await this.cartRepository.findOne({
             where: { id: cartItemId, user_id: userId },
@@ -82,7 +82,7 @@ export class CartService {
     }
 
 
-    public async updateQuantity( userId: number, cartItemId: number, quantity: number): Promise<CartItem> {
+    public async updateQuantity(userId: number, cartItemId: number, quantity: number): Promise<CartItem> {
         const item = await this.cartRepository.findOne({
             where: { id: cartItemId, user_id: userId },
             relations: ['product'],
