@@ -1,48 +1,52 @@
-import { Controller, Get, Post, Delete, Patch, Param, ParseIntPipe, Req, UseGuards, Body } from '@nestjs/common';
+import { Controller, Get, Post, Delete, Put, Param, ParseIntPipe, Req, UseGuards, Body } from '@nestjs/common';
 import { CartService } from './cart.service';
 import { AuthGuard } from '../guards/auth.guards';
+import { AddToCartDto } from './DTO/cart.dto';
 
 @Controller('cart')
 @UseGuards(AuthGuard)
 export class CartController {
     constructor(private readonly cartService: CartService) { }
 
-    // GET /cart → shiko cart-in
     @Get()
     public async getCart(@Req() req: any) {
-        const user_id = req.user.id;
-        return this.cartService.getCart(user_id);
+        const userId = req.user.id;
+        return await this.cartService.getCart(userId);
     }
 
-    // POST /cart/:productId → shto produkt
-    @Post(':productId')
+    @Post('add')
     public async addToCart(
         @Req() req: any,
-        @Param('productId', ParseIntPipe) productId: number,
-        @Body('quantity') quantity?: number,
+        @Body() dto: AddToCartDto,
     ) {
-        const user_id = req.user.id;
-        return this.cartService.addToCart(user_id, productId, quantity);
+        const userId = req.user.id;
+        return await this.cartService.addToCart(userId, dto);
     }
 
-    // PATCH /cart/:productId → ndrysho quantity
-    @Patch(':productId')
+    @Put(':id')
     public async updateQuantity(
         @Req() req: any,
-        @Param('productId', ParseIntPipe) productId: number,
+        @Param('id', ParseIntPipe) cartItemId: number,
         @Body('quantity', ParseIntPipe) quantity: number,
     ) {
-        const user_id = req.user.id;
-        return this.cartService.updateQuantity(user_id, productId, quantity);
+        const userId = req.user.id;
+        return await this.cartService.updateQuantity(userId, cartItemId, quantity);
     }
 
-    // DELETE /cart/:productId → hiq produkt
-    @Delete(':productId')
+    @Delete('clear')
+    public async clearCart(@Req() req: any) {
+        const userId = req.user.id;
+        return await this.cartService.clearCart(userId);
+    }
+
+    @Delete(':id')
     public async removeFromCart(
         @Req() req: any,
-        @Param('productId', ParseIntPipe) productId: number,
+        @Param('id', ParseIntPipe) cartItemId: number,
     ) {
-        const user_id = req.user.id;
-        return this.cartService.removeFromCart(user_id, productId);
+        const userId = req.user.id;
+        return await this.cartService.removeFromCart(userId, cartItemId);
     }
+
+
 }

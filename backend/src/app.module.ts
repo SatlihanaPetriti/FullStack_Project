@@ -13,8 +13,7 @@ import { MailModule } from './mail/mail.module';
 import { FavoriteModule } from './favorite/favorite.module';
 import { Favorite } from './favorite/Entity/favorite.entity';
 import { CartModule } from './Cart/cart.module';
-import { Cart } from './Cart/Entity/Cart';
-import { CartItem } from './Cart/Entity/CartItem';
+import { CartItem } from './Cart/Entity/Cart';
 
 @Module({
   imports: [
@@ -30,7 +29,7 @@ import { CartItem } from './Cart/Entity/CartItem';
         username: configService.get<string>('DB_USERNAME'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_NAME'),
-        entities: [Product, CategoryEntity, ProductVariant, UserEntity, Favorite, Cart, CartItem],
+        entities: [Product, CategoryEntity, ProductVariant, UserEntity, Favorite,CartItem],
         synchronize: true,
       }),
     }),

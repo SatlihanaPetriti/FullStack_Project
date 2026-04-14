@@ -2,14 +2,14 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm/dist/typeorm.module';
 import { CartController } from './cart.controller';
 import { CartService } from './cart.service';
-import { Cart } from './Entity/Cart';
-import { CartItem } from './Entity/CartItem';
+import { CartItem } from './Entity/Cart';
 import { UsersModule } from 'src/users/users.module';
 import { ProductsModule } from 'src/products/products.module';
 import { JwtModule } from '@nestjs/jwt';
+import { Product } from 'src/products/Entity/product.entity';
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Cart, CartItem]),
+    TypeOrmModule.forFeature([CartItem, Product]),
     UsersModule,
     ProductsModule,
     JwtModule,
@@ -18,4 +18,4 @@ import { JwtModule } from '@nestjs/jwt';
   providers: [CartService],
   exports: [CartService],
 })
-export class CartModule {}
+export class CartModule { }
