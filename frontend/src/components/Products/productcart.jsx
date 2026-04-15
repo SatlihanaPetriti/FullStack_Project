@@ -4,7 +4,7 @@ import { Container, Row, Col, Image, Button, Breadcrumb, Tabs, Tab } from "react
 import { SuitHeart, SuitHeartFill } from "react-bootstrap-icons";
 import { useParams, Link } from "react-router-dom";
 import { useProductContext } from "../../Context/Product";
-import { useCart } from "../../Context/CartContext";
+// import { useCart } from "../../Context/CartContext";
 import { useFavorites } from "../../Context/Favorite";
 
 const BASE_URL = "http://localhost:3000/products/uploads/variants";
@@ -12,7 +12,7 @@ const BASE_URL = "http://localhost:3000/products/uploads/variants";
 const Productcart = () => {
   const { id } = useParams();
   const { getProductById } = useProductContext();
-  const { addToCart } = useCart();
+  // const { addToCart } = useCart();
   const { addFavorite, removeFavorite, favorites } = useFavorites();
 
   const [product, setProduct] = useState(null);

@@ -13,7 +13,6 @@ import ProtectedRoute from './Services/ProtectedRoute.jsx';
 import ResetPassword from "./components/Login/ResetPassword.jsx";
 import { NewsletterProvider } from "./Context/NewsletterContext.jsx";
 import CategoryProducts from './components/FeaturedIn/ProductsByCategory.jsx';
-import { CartProvider } from './Context/CartContext';
 import CheckOut from './components/Cart/CheckOut/checkout.jsx'
 import FavoritesList from "./components/Favorite/favorite.jsx";
 import { FavoritesProvider } from './Context/Favorite.jsx';
@@ -24,7 +23,6 @@ function App() {
       <CategoryProvider>
         <ProductProvider>
           <NewsletterProvider>
-            <CartProvider>
               <FavoritesProvider>
                 <Routes>
                   <Route path="/" element={
@@ -81,7 +79,6 @@ function App() {
                   <Route path="/reset-password" element={<ResetPassword />} />
                 </Routes>
               </FavoritesProvider>
-            </CartProvider>
           </NewsletterProvider>
         </ProductProvider>
       </CategoryProvider>

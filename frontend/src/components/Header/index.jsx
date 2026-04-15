@@ -7,13 +7,13 @@ import Login from '../Login/login';
 import { useState, useRef, useEffect } from 'react';
 import { useUserContext } from '../../Context/Auth';
 import CartDrawer from "../Cart/index";
-import { useCart } from "../../Context/CartContext";
-import FavoritesDropdown from "../Favorite/favorite"; 
+// import { useCart } from "../../Context/CartContext";
+import FavoritesDropdown from "../Favorite/favorite";
 import { useFavorites } from '../../Context/Favorite';
 
 const Header = () => {
   const { user, logout } = useUserContext();
-  const { cartCount } = useCart();
+  // const { cartCount } = useCart();
   const { favorites } = useFavorites();
 
   const [showLogin, setShowLogin] = useState(false);
@@ -87,7 +87,7 @@ const Header = () => {
                 {renderUserIcon()}
               </div>
 
-            
+
               <div
                 className="icon-box"
                 ref={heartWrapperRef}
@@ -111,9 +111,9 @@ const Header = () => {
               {/* CART */}
               <div className="icon-box" onClick={() => setShowCart(true)}>
                 <Bag />
-                {cartCount > 0 && (
+                {/* {cartCount > 0 && (
                   <span className="bag-count">{cartCount}</span>
-                )}
+                )} */}
               </div>
 
               <CartDrawer show={showCart} onClose={() => setShowCart(false)} />
@@ -127,7 +127,7 @@ const Header = () => {
         <Login show={showLogin} handleClose={handleLoginClose} />
       )}
     </>
-  );
+  )
 };
 
 export default Header;
