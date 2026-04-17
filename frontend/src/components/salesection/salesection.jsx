@@ -1,6 +1,6 @@
 import { Button } from "react-bootstrap";
 import img1 from '../../assets/images/Home/saleimage.png';
-import './SaleSection.css';
+import './salesection.css';
 
 const SaleSection = () => {
     return (

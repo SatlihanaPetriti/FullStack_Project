@@ -2,109 +2,138 @@ import { Injectable, NotFoundException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ErrorHandler } from '../ErrorHandler/ErrorHandler';
 import { Repository } from 'typeorm';
-import { order_items } from './Entity/order';
-import { Product } from '../products/Entity/product.entity';
+import { Order } from './Entity/order';
+import { OrderItem } from './Entity/order-items';
+import { Product } from 'src/products/Entity/product.entity';
 
 @Injectable()
-export class CartService {
+export class OrdersService {
     constructor(
-        @InjectRepository(CartItem) private readonly cartRepository: Repository<CartItem>,
-        @InjectRepository(Product) private readonly productRepository: Repository<Product>,
+        @InjectRepository(Order) private orderRepo: Repository<Order>,
+        @InjectRepository(OrderItem) private orderItemRepo: Repository<OrderItem>,
+        @InjectRepository(Product) private productRepo: Repository<Product>,
     ) { }
 
-
     // shfaq cartin e userit
-    public async getCart(userId: number): Promise<CartItem[]> {
-        return await this.cartRepository.find({
-            where: { user_id: userId },
-            relations: ['product'],
-        });
-    }
+    // public async getCart(userId: number): Promise<CartItem[]> {
+    //     return await this.cartRepository.find({
+    //         where: { user_id: userId },
+    //         relations: ['product'],
+    //     });
+    // }
 
     // shto ne cart
-    public async addToCart(userId: number, dto: AddToCartDto): Promise<CartItem> {
-        const product = await this.productRepository.findOne({
-            where: { id: dto.productId },
-        });
-        if (!product) {
-            throw new ErrorHandler('Product not found', HttpStatus.NOT_FOUND);
-        }
-        //kontrollohet sasia me stock 
-        if (product.stock < dto.quantity) {
-            throw new ErrorHandler(
-                `Not enough stock. Available: ${product.stock}`,
-                HttpStatus.BAD_REQUEST,
-            );
-        }
-        //kontrollohet nese useri e ka produktin ne cart,
-        const existingItem = await this.cartRepository.findOne({
-            where: { user_id: userId, product_id: dto.productId },
+    public async addToOrder(
+        user_id: number,
+        body: {
+            products: { id: number; quantity: number }[];
+        },
+    ): Promise<Order> {
+
+        // 1. Merr produktet dhe validimi
+        const validatedProducts = await Promise.all(
+            body.products.map(async (p) => {
+
+                const product = await this.productRepo.findOne({
+                    where: { id: p.id },
+                });
+
+                if (!product) {
+                    throw new Error(`Product ${p.id} not found`);
+                }
+
+                if (product.stock < p.quantity) {
+                    throw new Error(`Not enough stock for product ${p.id}`);
+                }
+
+                return {
+                    product,
+                    quantity: p.quantity,
+                };
+            })
+        );
+
+        // 2. Llogarit total nga DB
+        const totalQuantity = validatedProducts.reduce(
+            (sum, item) => sum + item.quantity,
+            0
+        );
+
+        const totalPrice = validatedProducts.reduce(
+            (sum, item) => sum + item.quantity * item.product.price,
+            0
+        );
+
+        // 3. Krijo Order
+        const order = this.orderRepo.create({
+            user_id,
+            quantity: totalQuantity,
+            total: totalPrice,
         });
 
-        if (existingItem) {
-            //  Produkt ekziston -shto sasine
-            const newQuantity = existingItem.quantity + dto.quantity;
-            //kontrollohet stock pas shtimit te sasise
-            if (product.stock < newQuantity) {
-                throw new ErrorHandler(
-                    `Not enough stock. Available: ${product.stock}`,
-                    HttpStatus.BAD_REQUEST,
-                );
-            }
-            // behet llogaritja e quantity ne db me request
-            existingItem.quantity = newQuantity;
-            return await this.cartRepository.save(existingItem);
-        }
-        // nese item nuk ekziston create
-        const newItem = this.cartRepository.create({
-            user_id: userId,
-            product_id: dto.productId,
-            quantity: dto.quantity,
-        });
+        const savedOrder = await this.orderRepo.save(order);
 
-        return await this.cartRepository.save(newItem);
+        // 4. Krijo Order Items (map + Promise.all)
+        const items = await Promise.all(
+            validatedProducts.map((item) => {
+
+                const orderItem = this.orderItemRepo.create({
+                    order_id: savedOrder.id,
+                    product_id: item.product.id,
+                    product_quantity: item.quantity,
+                    product_price: item.product.price, 
+                });
+
+                return this.orderItemRepo.save(orderItem);
+            })
+        );
+
+        // 5. Return final result
+        return {
+            ...savedOrder,
+            items,
+        };
     }
 
 
+//     public async removeFromCart(userId: number, cartItemId: number): Promise<{ message: string }> {
+//         const item = await this.cartRepository.findOne({
+//             where: { id: cartItemId, user_id: userId },
+//         });
 
-    public async removeFromCart(userId: number, cartItemId: number): Promise<{ message: string }> {
-        const item = await this.cartRepository.findOne({
-            where: { id: cartItemId, user_id: userId },
-        });
+//         if (!item) {
+//             throw new ErrorHandler('Cart item not found', HttpStatus.NOT_FOUND);
+//         }
 
-        if (!item) {
-            throw new ErrorHandler('Cart item not found', HttpStatus.NOT_FOUND);
-        }
-
-        await this.cartRepository.remove(item);
-        return { message: 'Item removed from cart' };
-    }
+//         await this.cartRepository.remove(item);
+//         return { message: 'Item removed from cart' };
+//     }
 
 
-    public async updateQuantity(userId: number, cartItemId: number, quantity: number): Promise<CartItem> {
-        const item = await this.cartRepository.findOne({
-            where: { id: cartItemId, user_id: userId },
-            relations: ['product'],
-        });
+//     public async updateQuantity(userId: number, cartItemId: number, quantity: number): Promise<CartItem> {
+//         const item = await this.cartRepository.findOne({
+//             where: { id: cartItemId, user_id: userId },
+//             relations: ['product'],
+//         });
 
-        if (!item) {
-            throw new ErrorHandler('Cart item not found', HttpStatus.NOT_FOUND);
-        }
-        // kontrollohet nese quantity e kerkuar eshte me e madhe se stock
-        if (item.product.stock < quantity) {
-            throw new ErrorHandler(
-                `Not enough stock. Available: ${item.product.stock}`,
-                HttpStatus.BAD_REQUEST,
-            );
-        }
-        // perditeson sasine e produktit ne cart sasine aktuale ne db me vleren e re nga request
-        item.quantity = quantity;
-        return await this.cartRepository.save(item);
-    }
+//         if (!item) {
+//             throw new ErrorHandler('Cart item not found', HttpStatus.NOT_FOUND);
+//         }
+//         // kontrollohet nese quantity e kerkuar eshte me e madhe se stock
+//         if (item.product.stock < quantity) {
+//             throw new ErrorHandler(
+//                 `Not enough stock. Available: ${item.product.stock}`,
+//                 HttpStatus.BAD_REQUEST,
+//             );
+//         }
+//         // perditeson sasine e produktit ne cart sasine aktuale ne db me vleren e re nga request
+//         item.quantity = quantity;
+//         return await this.cartRepository.save(item);
+//     }
 
-    public async clearCart(userId: number): Promise<{ message: string }> {
-        await this.cartRepository.delete({ user_id: userId });
-        return { message: 'Cart cleared' };
-    }
-}
+//     public async clearCart(userId: number): Promise<{ message: string }> {
+//         await this.cartRepository.delete({ user_id: userId });
+//         return { message: 'Cart cleared' };
+//     }
+// }
 
