@@ -3,7 +3,7 @@ import { FreeMode, Navigation } from 'swiper/modules';
 import { Container } from 'react-bootstrap';
 import { ChevronLeft, ChevronRight, Heart, HeartFill, Bag, BagFill } from 'react-bootstrap-icons';
 import { useState } from 'react';
-import { useProductContext } from '../../context/Product.jsx';
+import { useProductContext } from '../../Context/Product';
 import { useNavigate } from 'react-router-dom';
 import { useFavorites } from '../../Context/Favorite';
 import 'swiper/css';
@@ -12,12 +12,10 @@ import './pagination.css';
 
 const BASE_URL = "http://localhost:3000/products/uploads/variants";
 
-// ✅ SHTO FUNKSIONIN KËTU
 const isFavoriteProduct = (favorites, productId) => {
   return favorites.some(fav => fav.product_id === productId);
 };
 
-// Funksioni për çmimin (duhet të jetë i definuar)
 const getDisplayPrice = (product) => {
   if (product.sale_price) return Number(product.sale_price).toFixed(2);
   if (product.sale_percentage) {
@@ -50,7 +48,6 @@ const ProductCard = ({ product }) => {
 
   const [activeVariant, setActiveVariant] = useState(uniqueVariants[0] ?? null);
 
-  // ✅ Tani kjo punon sepse funksioni ekziston
   const isFavorite = isFavoriteProduct(favorites, product.id);
 
   const handleFavorite = async (e) => {
