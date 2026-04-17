@@ -13,7 +13,7 @@ import { MailModule } from './mail/mail.module';
 import { FavoriteModule } from './favorite/favorite.module';
 import { Favorite } from './favorite/Entity/favorite.entity';
 import { CartModule } from './Cart/cart.module';
-import { CartItem } from './Cart/Entity/Cart';
+import { CartItem } from './Cart/Entity/order';
 
 @Module({
     imports: [

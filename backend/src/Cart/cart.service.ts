@@ -2,8 +2,7 @@ import { Injectable, NotFoundException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ErrorHandler } from '../ErrorHandler/ErrorHandler';
 import { Repository } from 'typeorm';
-import { AddToCartDto } from './DTO/cart.dto';
-import { CartItem } from './Entity/Cart';
+import { order_items } from './Entity/order';
 import { Product } from '../products/Entity/product.entity';
 
 @Injectable()

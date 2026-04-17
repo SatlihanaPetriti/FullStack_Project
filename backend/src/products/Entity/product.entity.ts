@@ -2,7 +2,7 @@ import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToOne, JoinColum
 import { ProductVariant } from './product-variant.entity';
 import { CategoryEntity } from '../../Category/Entity/CategoryEntity';
 import { Favorite } from '../../favorite/Entity/favorite.entity';
-import { CartItem } from 'src/Cart/Entity/Cart';
+import { CartItem } from 'src/Cart/Entity/order';
 @Entity('products')
 export class Product {
     @PrimaryGeneratedColumn()
@@ -23,7 +23,7 @@ export class Product {
 
     @Column()
     size: string;
-    
+
     @Column({ type: 'int', default: 0 })
     stock: number;
 

@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm/dist/typeorm.module';
 import { CartController } from './cart.controller';
 import { CartService } from './cart.service';
-import { CartItem } from './Entity/Cart';
+import { CartItem } from './Entity/order';
 import { UsersModule } from 'src/users/users.module';
 import { ProductsModule } from 'src/products/products.module';
 import { JwtModule } from '@nestjs/jwt';
