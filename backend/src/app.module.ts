@@ -12,8 +12,9 @@ import { CategoryEntity } from './Category/Entity/CategoryEntity';
 import { MailModule } from './mail/mail.module';
 import { FavoriteModule } from './favorite/favorite.module';
 import { Favorite } from './favorite/Entity/favorite.entity';
-// import { CartModule } from './Cart/cart.module';
-// import { CartItem } from './Cart/Entity/order';
+import { CartModule } from './Cart/cart.module';
+import { Cart } from './Cart/Entity/cart';
+import { CartItem } from './Cart/Entity/cart-items';
 
 @Module({
     imports: [
@@ -29,7 +30,7 @@ import { Favorite } from './favorite/Entity/favorite.entity';
                 username: configService.get<string>('DB_USERNAME'),
                 password: configService.get<string>('DB_PASSWORD'),
                 database: configService.get<string>('DB_NAME'),
-                entities: [Product, CategoryEntity, ProductVariant, UserEntity, Favorite],
+                entities: [Product, CategoryEntity, ProductVariant, UserEntity, Favorite, CartItem, Cart],
                 synchronize: true,
             }),
         }),
@@ -39,7 +40,7 @@ import { Favorite } from './favorite/Entity/favorite.entity';
         CategoryModule,
         MailModule,
         FavoriteModule,
-
+        CartModule
     ],
 })
 export class AppModule { }
