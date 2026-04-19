@@ -40,15 +40,15 @@ export class CheckoutService {
 
         const paymentIntent = await this.stripe.paymentIntents.create({
             amount: Math.round(cart.total_price * 100),
-            currency: 'eur',
-            payment_method_types: ['card'], // ← shto këtë
+            currency: 'usd',
+            payment_method_types: ['card'],
             metadata: { userId: String(userId) },
         });
 
         return { clientSecret: paymentIntent.client_secret };
     }
 
-    // STEP 2 — Verifiko pagesen + ul stock + pastro cart
+    //  verifikpagesen + ul stock + pastro cart
     async confirmOrder(userId: number, paymentIntentId: string) {
         const intent = await this.stripe.paymentIntents.retrieve(paymentIntentId);
 
