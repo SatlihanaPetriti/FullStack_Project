@@ -6,15 +6,15 @@ import { useState } from 'react';
 import { useProductContext } from '../../Context/Product';
 import { useNavigate } from 'react-router-dom';
 import { useFavorites } from '../../Context/Favorite';
+import { useCartContext } from '../../Context/CartContext';
 import 'swiper/css';
 import 'swiper/css/free-mode';
 import './pagination.css';
 
 const BASE_URL = "http://localhost:3000/products/uploads/variants";
 
-const isFavoriteProduct = (favorites, productId) => {
-  return favorites.some(fav => fav.product_id === productId);
-};
+const isFavoriteProduct = (favorites, productId) =>
+  favorites.some(fav => fav.product_id === productId);
 
 const getDisplayPrice = (product) => {
   if (product.sale_price) return Number(product.sale_price).toFixed(2);
@@ -27,19 +27,16 @@ const getDisplayPrice = (product) => {
 
 const isNewArrival = (product) => {
   const isLabelNew = product.label === "NEW";
-  const isRecent = (() => {
-    if (!product.date_added) return false;
-    const diffDays = (Date.now() - new Date(product.date_added).getTime()) / (1000 * 60 * 60 * 24);
-    return diffDays <= 30;
-  })();
+  const isRecent = !product.date_added ? false :
+    (Date.now() - new Date(product.date_added).getTime()) / (1000 * 60 * 60 * 24) <= 30;
   return isLabelNew || isRecent;
 };
 
 const ProductCard = ({ product }) => {
   const navigate = useNavigate();
   const { addFavorite, removeFavorite, favorites } = useFavorites();
+  const { addToCart, removeFromCart, cart } = useCartContext();
 
-  const [added, setAdded] = useState(false);
   const [favLoading, setFavLoading] = useState(false);
 
   const uniqueVariants = (product.variants ?? [])
@@ -49,18 +46,13 @@ const ProductCard = ({ product }) => {
   const [activeVariant, setActiveVariant] = useState(uniqueVariants[0] ?? null);
 
   const isFavorite = isFavoriteProduct(favorites, product.id);
+  const added = cart?.items?.some(item => item.product_id === product.id) ?? false;
 
   const handleFavorite = async (e) => {
-    e.stopPropagation();
     if (favLoading) return;
-
     setFavLoading(true);
     try {
-      if (isFavorite) {
-        await removeFavorite(product.id);
-      } else {
-        await addFavorite(product.id);
-      }
+      isFavorite ? await removeFavorite(product.id) : await addFavorite(product.id);
     } catch (err) {
       console.error(err);
     } finally {
@@ -68,23 +60,26 @@ const ProductCard = ({ product }) => {
     }
   };
 
+  const handleAddToCart = async (e) => {
+    try {
+      if (added) {
+        const cartItem = cart?.items?.find(item => item.product_id === product.id);
+        if (cartItem) await removeFromCart(cartItem.id);
+      } else {
+        await addToCart(product.id, 1);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <div className="collection-card">
       <div className="image-wrapper">
-        <img
-          src={`${BASE_URL}/${activeVariant?.image}`}
-          alt={product.title}
-        />
+        <img src={`${BASE_URL}/${activeVariant?.image}`} alt={product.title} />
 
-        <button
-          className="heart-bag"
-          onClick={handleFavorite}
-          disabled={favLoading}
-        >
-          {isFavorite
-            ? <HeartFill size={25} color="red" />
-            : <Heart size={25} />
-          }
+        <button className="heart-bag" onClick={handleFavorite} disabled={favLoading}>
+          {isFavorite ? <HeartFill size={25} color="red" /> : <Heart size={25} />}
         </button>
 
         {uniqueVariants.length > 1 && (
@@ -102,17 +97,11 @@ const ProductCard = ({ product }) => {
         )}
 
         <div className="bottom-buttons">
-          <button
-            className="order-now"
-            onClick={() => navigate(`/product/${product.id}`)}
-          >
+          <button className="order-now" onClick={() => navigate(`/product/${product.id}`)}>
             Order Now
           </button>
 
-          <button
-            className="cart-bag"
-            onClick={() => setAdded(prev => !prev)}
-          >
+          <button className="cart-bag" onClick={handleAddToCart}>
             {added ? <BagFill size={18} /> : <Bag size={18} />}
           </button>
         </div>
@@ -122,13 +111,9 @@ const ProductCard = ({ product }) => {
         <h6>{product.title}</h6>
         <div className="price-wrapper">
           {(product.sale_price || product.sale_percentage) && (
-            <span className="old-price">
-              €{Number(product.price).toFixed(2)}
-            </span>
+            <span className="old-price">€{Number(product.price).toFixed(2)}</span>
           )}
-          <span className="new-price">
-            €{getDisplayPrice(product)}
-          </span>
+          <span className="new-price">€{getDisplayPrice(product)}</span>
         </div>
       </div>
     </div>

@@ -14,7 +14,7 @@ export class CartController {
         return await this.cartService.getCart(userId);
     }
 
-    // ADD TO CART (bulk items)
+    // ADD TO CART
     @Post('add')
     public async addToCart(
         @Req() req: any,

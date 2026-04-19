@@ -1,137 +1,184 @@
 import { useState } from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
+import { useNavigate } from "react-router-dom";
+import { useCartContext } from "../../../Context/CartContext";
+import { useProductContext } from "../../../Context/Product";
+import { useCategoryContext } from "../../../Context/Category";
 import "./checkout.css";
 
-const initialProducts = [
-    {
-        id: 1,
-        title: "Simply Soluble Elev8 Doll CBD Bath Bomb",
-        category: "Mint",
-        size: "100 mg",
-        price: 50,
-        qty: 1,
-        image: "https://placehold.co/80x80/e8e8e8/888?text=Bath",
-    },
-    {
-        id: 2,
-        title: "Water Soluble CBD Powder",
-        category: "Natural",
-        size: "100 mg",
-        price: 50,
-        qty: 1,
-        image: "https://placehold.co/80x80/e8e8e8/888?text=Powder",
-    },
-];
+const BASE_URL = "http://localhost:3000/products/uploads/variants";
 
-const CheckOut=()=> {
-    const [products, setProducts] = useState(initialProducts);
-    const [coupon, setCoupon] = useState("");
-    const [couponApplied, setCouponApplied] = useState(false);
+const CheckOut = () => {
+    const navigate = useNavigate();
+    const { cart, updateQuantity, removeFromCart, clearCart } = useCartContext();
+    const { products } = useProductContext();
+    const { categories } = useCategoryContext();
 
-    const removeItem = (id) =>
-        setProducts((prev) => prev.filter((p) => p.id !== id));
+    const [ordered, setOrdered] = useState(false);
 
-    const changeQty = (id, delta) =>
-        setProducts((prev) =>
-            prev.map((p) =>
-                p.id === id ? { ...p, qty: Math.max(1, p.qty + delta) } : p
-            )
-        );
+    const items = cart?.items ?? [];
+    const subtotal = Number(cart?.total_price ?? 0);
+    const total = subtotal;
+    const count = cart?.total_quantity ?? 0;
 
-    const subtotal = products.reduce((sum, p) => sum + p.price * p.qty, 0);
-    const discount = couponApplied ? subtotal * 0.1 : 0;
-    const total = subtotal - discount;
+    const getFullProduct = (item) =>
+        products.find((p) => p.id === item.product_id) ?? item.product;
 
-    const applyCoupon = () => {
-        if (coupon.trim()) setCouponApplied(true);
+    const getImage = (item) => {
+        const product = getFullProduct(item);
+        const image = product?.variants?.find((v) => v.image)?.image;
+        return image ? `${BASE_URL}/${image}` : null;
     };
 
-    return (
-        <div className="cart-page">
-            <div className="container" style={{ maxWidth: 1100 }}>
-                <a href="#" className="back-link">&#8249; Back</a>
-                <h1 className="cart-title mb-4">Your Cart</h1>
+    const getCategoryName = (item) => {
+        const product = getFullProduct(item);
+        const catId = product?.category_id;
+        const found = categories.find((c) => c.id === catId);
+        return found?.name ?? "";
+    };
 
-                <div className="row g-4">
-                    {/* LEFT: Products */}
-                    <div className="col-lg-8">
-                        {products.length === 0 ? (
-                            <div className="empty-cart">
-                                <div className="empty-cart-icon">🛒</div>
+    const getSize = (item) => getFullProduct(item)?.size ?? null;
+
+    const handleMinus = (item) => {
+        if (item.quantity === 1) removeFromCart(item.id);
+        else updateQuantity(item.id, item.quantity - 1);
+    };
+
+    const handlePlaceOrder = async () => {
+        await clearCart();
+        setOrdered(true);
+    };
+
+    // ── ORDER CONFIRMED ──────────────────────────────────────────────
+    if (ordered) {
+        return (
+            <div className="co-page">
+                <div className="co-confirmed">
+                    <div className="co-confirmed__icon">✓</div>
+                    <h2 className="co-confirmed__title">Order Confirmed!</h2>
+                    <p className="co-confirmed__sub">
+                        Thank you for your purchase. Your plants are on their way.
+                    </p>
+                    <button className="co-btn-primary" onClick={() => navigate("/")}>
+                        Continue Shopping
+                    </button>
+                </div>
+            </div>
+        );
+    }
+
+    // ── MAIN CHECKOUT ────────────────────────────────────────────────
+    return (
+        <div className="co-page">
+            <div className="co-container">
+                <button className="co-back" onClick={() => navigate(-1)}>
+                    &#8249; Back
+                </button>
+                <h1 className="co-title">Your Cart</h1>
+
+                <div className="co-layout">
+                    {/* LEFT */}
+                    <div className="co-left">
+                        {items.length === 0 ? (
+                            <div className="co-empty">
                                 <p>Your cart is empty.</p>
-                                <a href="#" style={{ color: "#111", fontSize: 13 }}>Continue shopping ›</a>
+                                <button className="co-link" onClick={() => navigate("/")}>
+                                    Continue shopping ›
+                                </button>
                             </div>
                         ) : (
                             <>
-                                {products.map((p) => (
-                                    <div className="cart-item-row" key={p.id}>
-                                        <button className="remove-btn" onClick={() => removeItem(p.id)} title="Remove">&#215;</button>
-                                        <img src={p.image} alt={p.title} className="item-image" />
-                                        <div>
-                                            <p className="item-title">{p.title}</p>
-                                            <p className="item-meta">{p.category} / {p.size}</p>
-                                        </div>
-                                        <div className="qty-control">
-                                            <button className="qty-btn" onClick={() => changeQty(p.id, -1)}>−</button>
-                                            <span className="qty-val">{p.qty}</span>
-                                            <button className="qty-btn" onClick={() => changeQty(p.id, 1)}>+</button>
-                                        </div>
-                                        <div className="item-price">${(p.price * p.qty).toFixed(2)}</div>
-                                    </div>
-                                ))}
+                                <div className="co-items">
+                                    {items.map((item) => {
+                                        const image = getImage(item);
+                                        const cat = getCategoryName(item);
+                                        const size = getSize(item);
+                                        const product = getFullProduct(item);
+                                        return (
+                                            <div className="co-item" key={item.id}>
+                                                <div className="co-item__img-wrap">
+                                                    {image ? (
+                                                        <img src={image} alt={product?.title} className="co-item__img" />
+                                                    ) : (
+                                                        <div className="co-item__img co-item__img--placeholder" />
+                                                    )}
+                                                </div>
 
-                                <div className="coupon-box mt-4">
-                                    <p className="coupon-label">Have a coupon? Enter your code.</p>
-                                    <div className="coupon-row">
-                                        <input
-                                            type="text"
-                                            className="coupon-input"
-                                            placeholder="Coupon code"
-                                            value={coupon}
-                                            onChange={(e) => { setCoupon(e.target.value); setCouponApplied(false); }}
-                                        />
-                                        <button className="coupon-apply-btn" onClick={applyCoupon}>APPLY</button>
-                                    </div>
-                                    {couponApplied && <p className="coupon-success">✓ Coupon applied — 10% discount</p>}
+                                                <div className="co-item__body ms-4">
+                                                    <p className="co-item__name">{product?.title}</p>
+                                                    <p className="co-item__meta">{cat}</p>
+                                                    {size && <p className="co-item__size">{size}</p>}
+                                                </div>
+
+                                                <div className="co-qty ms-5">
+                                                    <button className="co-qty__btn" onClick={() => handleMinus(item)}>−</button>
+                                                    <span className="co-qty__val">{item.quantity}</span>
+                                                    <button className="co-qty__btn" onClick={() => updateQuantity(item.id, item.quantity + 1)}>+</button>
+                                                </div>
+
+                                                <p className="co-item__price ms-5">
+                                                    ${(Number(item.price) * item.quantity).toFixed(2)}
+                                                </p>
+
+                                                <button
+                                                    className="co-item__remove"
+                                                    onClick={() => removeFromCart(item.id)}
+                                                    title="Remove"
+                                                >
+                                                    &#215;
+                                                </button>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+
+                                {/* Clear Cart */}
+                                <div className="co-clear ">
+                                    <button className="co-clear__btn" onClick={clearCart}>
+                                        Clear your shopping cart
+                                    </button>
                                 </div>
                             </>
                         )}
                     </div>
 
-                    {/* RIGHT: Cart Totals */}
-                    <div className="col-lg-4">
-                        <div className="totals-card">
-                            <div className="totals-title">Cart Totals</div>
-                            <div className="totals-row">
-                                <span>Shipping</span>
-                                <span className="totals-free">Free</span>
-                            </div>
-                            <div className="totals-row">
-                                <span>Tax (US estimated)</span>
-                                <span>$0.00</span>
-                            </div>
-                            <div className="totals-row">
-                                <span>Subtotal</span>
-                                <span>${subtotal.toFixed(2)}</span>
-                            </div>
-                            {couponApplied && (
-                                <div className="discount-row">
-                                    <span>Discount (10%)</span>
-                                    <span>−${discount.toFixed(2)}</span>
+                    {/* RIGHT — Totals */}
+                    {items.length > 0 && (
+                        <div className="co-right">
+                            <div className="co-totals">
+                                <h3 className="co-totals__title">Order Summary</h3>
+
+                                <div className="co-totals__row">
+                                    <span>Items ({count})</span>
+                                    <span>${subtotal.toFixed(2)}</span>
                                 </div>
-                            )}
-                            <hr className="totals-divider" />
-                            <div className="totals-total">
-                                <span>Total</span>
-                                <span>${total.toFixed(2)}</span>
+                                <div className="co-totals__row">
+                                    <span>Shipping</span>
+                                    <span className="co-totals__free">Free</span>
+                                </div>
+                                <div className="co-totals__row">
+                                    <span>Tax</span>
+                                    <span>$0.00</span>
+                                </div>
+                                <div className="co-totals__divider" />
+
+                                <div className="co-totals__total">
+                                    <span>Total</span>
+                                    <span>${total.toFixed(2)}</span>
+                                </div>
+
+                                <button className="co-btn-primary" onClick={handlePlaceOrder}>
+                                    Place Order
+                                </button>
+                                <button className="co-btn-secondary" onClick={() => navigate("/")}>
+                                    &#8249; Continue Shopping
+                                </button>
                             </div>
-                            <button className="checkout-btn">Proceed to Checkout</button>
-                            <button className="continue-btn">&#8249; Continue Shopping</button>
                         </div>
-                    </div>
+                    )}
                 </div>
             </div>
         </div>
     );
-}
+};
+
 export default CheckOut;

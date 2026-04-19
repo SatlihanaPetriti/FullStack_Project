@@ -16,12 +16,14 @@ import CategoryProducts from './components/FeaturedIn/ProductsByCategory.jsx';
 import CheckOut from './components/Cart/CheckOut/checkout.jsx'
 import FavoritesList from "./components/Favorite/favorite.jsx";
 import { FavoritesProvider } from './Context/Favorite.jsx';
+import {CartProvider } from './Context/CartContext.jsx'
 
 function App() {
   return (
     <UserProvider>
       <CategoryProvider>
         <ProductProvider>
+          <CartProvider>
           <NewsletterProvider>
               <FavoritesProvider>
                 <Routes>
@@ -80,6 +82,7 @@ function App() {
                 </Routes>
               </FavoritesProvider>
           </NewsletterProvider>
+          </CartProvider>
         </ProductProvider>
       </CategoryProvider>
     </UserProvider>

@@ -1,61 +1,72 @@
 import { useState } from "react";
 import "./index.css";
 import { useNavigate } from "react-router-dom";
-
-const mockCart = [
-    { product_id: 1, title: "Celosia", category: "OUTDOOR", price: 87, quantity: 1, emoji: "🪴" },
-    { product_id: 2, title: "Heliconia", category: "OUTDOOR", price: 47, quantity: 1, emoji: "🌸" },
-    { product_id: 3, title: "Stromanthe", category: "OUTDOOR", price: 150, quantity: 1, emoji: "🌿" },
-    { product_id: 4, title: "Anthurium", category: "INDOOR", price: 65, quantity: 1, emoji: "🌺" },
-    { product_id: 5, title: "Lucky Bamboo", category: "INDOOR", price: 132, quantity: 1, emoji: "🎋" },
-];
+import { useCartContext } from "../../Context/CartContext";
+import { useProductContext } from "../../Context/Product";
+import { useCategoryContext } from "../../Context/Category";
 
 const ITEM_HEIGHT = 88;
 const MAX_VISIBLE = 4;
+const BASE_URL = "http://localhost:3000/products/uploads/variants";
 
 const CartDrawer = ({ show, onClose }) => {
     const navigate = useNavigate();
-
-    const [cart, setCart] = useState(mockCart);
+    const { cart, updateQuantity, removeFromCart } = useCartContext();
+    const { products } = useProductContext();
+    const { categories } = useCategoryContext();
     const [atBottom, setAtBottom] = useState(false);
 
     if (!show) return null;
 
-    const total = cart.reduce((s, i) => s + i.price * i.quantity, 0);
-    const count = cart.reduce((s, i) => s + i.quantity, 0);
-    const needsScroll = cart.length > MAX_VISIBLE;
-    const maxHeight = needsScroll ? `${ITEM_HEIGHT * MAX_VISIBLE}px` : "none";
+    const items = cart?.items ?? [];
+    const total = cart?.total_price ?? 0;
+    const count = cart?.total_quantity ?? 0;
+    const needsScroll = items.length > MAX_VISIBLE;
 
-    const updateQty = (id, delta) =>
-        setCart(prev =>
-            prev
-                .map(i => i.product_id === id ? { ...i, quantity: i.quantity + delta } : i)
-                .filter(i => i.quantity > 0)
-        );
+    const getFullProduct = (item) => {
+        return products.find(p => p.id === item.product_id) ?? item.product;
+    };
+
+    const getImage = (item) => {
+        const product = getFullProduct(item);
+        const image = product?.variants?.find(v => v.image)?.image;
+        return image ? `${BASE_URL}/${image}` : null;
+    };
+
+    const getCategoryName = (item) => {
+        const product = getFullProduct(item);
+        const catId = product?.category_id;
+        const found = categories.find(c => c.id === catId);
+        return found?.name ?? "";
+    };
+
+    const getSize = (item) => {
+        const product = getFullProduct(item);
+        return product?.size ?? null;
+    };
 
     const handleScroll = (e) => {
         const el = e.currentTarget;
         setAtBottom(el.scrollTop + el.clientHeight >= el.scrollHeight - 4);
     };
 
+    const handleMinus = (item) => {
+        if (item.quantity === 1) removeFromCart(item.id);
+        else updateQuantity(item.id, item.quantity - 1);
+    };
+
     return (
         <div className="cart-overlay" onClick={onClose}>
-            <div className="cart-drawer" onClick={e => e.stopPropagation()}>
+            <div className="cart-drawer">
 
-                {/* ── Header ── */}
+                {/* Header */}
                 <div className="drw-head">
                     <div className="drw-top-row">
                         <div>
                             <p className="drw-brand">Plant Shop</p>
                             <h2 className="drw-name">Cart</h2>
                         </div>
-                        <button className="close-x" onClick={onClose} aria-label="Close cart">
-                            <svg viewBox="0 0 11 11" width="11" height="11"
-                                stroke="#fff" strokeWidth="2.2" strokeLinecap="round" fill="none">
-                                <line x1="1.5" y1="1.5" x2="9.5" y2="9.5" />
-                                <line x1="9.5" y1="1.5" x2="1.5" y2="9.5" />
-                            </svg>
-                        </button>
+                        <button className="close-x" onClick={onClose}>✕</button>
                     </div>
                     <div className="draw-divider" />
                     <div className="draw-totrow">
@@ -63,80 +74,68 @@ const CartDrawer = ({ show, onClose }) => {
                             <p className="draw-tot-lbl">Total</p>
                             <span className="draw-count">{count} item{count !== 1 ? "s" : ""}</span>
                         </div>
-                        <p className="draw-tot-val">$ {total}</p>
+                        <p className="draw-tot-val">$ {Number(total).toFixed(2)}</p>
                     </div>
                 </div>
 
-                {/* ── Scrollable item list ── */}
+                {/* Items */}
                 <div
                     className="items-scroll"
-                    style={{ maxHeight }}
+                    style={{ maxHeight: needsScroll ? `${ITEM_HEIGHT * MAX_VISIBLE}px` : "none" }}
                     onScroll={handleScroll}
                 >
-                    <div className="items">
-                        {cart.length === 0 ? (
-                            <div className="empty-state">
-                                <p>Your cart is empty</p>
-                            </div>
-                        ) : (
-                            cart.map(item => (
-                                <div key={item.product_id} className="item">
+                    {items.length === 0 ? (
+                        <p className="empty-state">Your cart is empty</p>
+                    ) : (
+                        items.map(item => {
+                            const image = getImage(item);
+                            const categoryName = getCategoryName(item);
+                            const size = getSize(item);
+
+                            return (
+                                <div key={item.id} className="item">
                                     <div className="img-wrap">
-                                        <div className="item-img">{item.emoji}</div>
-                                        <button
-                                            className="rm-btn"
-                                            aria-label={`Remove ${item.title}`}
-                                            onClick={() => updateQty(item.product_id, -item.quantity)}
-                                        >
-                                            ✕
-                                        </button>
+                                        {image
+                                            ? <img className="item-img" src={image} alt={getFullProduct(item)?.title} />
+                                            : <div className="item-img item-img--placeholder" />
+                                        }
+                                        <button className="rm-btn" onClick={() => removeFromCart(item.id)}>✕</button>
                                     </div>
                                     <div className="item-body">
-                                        <span className="item-cat">{item.category}</span>
+                                        <span className="item-cat">
+                                            {categoryName}{size ? ` / ${size}` : ""}
+                                        </span>
                                         <div className="item-name-row">
-                                            <p className="item-name">{item.title}</p>
-                                            <p className="item-price">$ {item.price}</p>
+                                            <p className="item-name">{getFullProduct(item)?.title}</p>
+                                            <p className="item-price">$ {Number(item.price).toFixed(2)}</p>
                                         </div>
                                         <div className="qty-row">
-                                            <button className="qb" onClick={() => updateQty(item.product_id, -1)}>−</button>
+                                            <button className="qb" onClick={() => handleMinus(item)}>−</button>
                                             <span className="qn">{item.quantity}</span>
-                                            <button className="qb" onClick={() => updateQty(item.product_id, 1)}>+</button>
+                                            <button className="qb" onClick={() => updateQuantity(item.id, item.quantity + 1)}>+</button>
                                         </div>
                                     </div>
                                 </div>
-                            ))
-                        )}
-                    </div>
+                            );
+                        })
+                    )}
                 </div>
 
-                {/* ── Scroll hint ── */}
-                {needsScroll && (
-                    <div className={`scroll-hint ${atBottom ? "hidden" : ""}`}>
-                        ↓ scroll to see more
-                    </div>
+                {needsScroll && !atBottom && (
+                    <div className="scroll-hint">↓ scroll to see more</div>
                 )}
 
-                {/* ── Checkout ── */}
-                {cart.length > 0 && (
+                {items.length > 0 && (
                     <div className="checkout-area">
-                        <button className="checkout-btn-cart" 
-                        onClick={() => navigate("/checkout")}>
+                        <button className="checkout-btn-cart" onClick={() => { navigate("/checkout"); onClose(); }}>
                             <div className="co-left">
                                 <span className="co-sub">Proceed to payment</span>
                                 <span className="co-main">Checkout</span>
                             </div>
-                            <div className="co-arrow">
-                                <svg viewBox="0 0 14 14" width="14" height="14"
-                                    stroke="#fff" strokeWidth="2" strokeLinecap="round"
-                                    strokeLinejoin="round" fill="none">
-                                    <line x1="2" y1="7" x2="12" y2="7" />
-                                    <polyline points="7,2 12,7 7,12" />
-                                </svg>
-                            </div>
+                            <div className="co-arrow">→</div>
                         </button>
                     </div>
                 )}
-
             </div>
         </div>
     );

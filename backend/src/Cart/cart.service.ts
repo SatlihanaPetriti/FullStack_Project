@@ -16,7 +16,7 @@ export class CartService {
     public async getCart(user_id: number): Promise<Cart> {
         const cart = await this.cartRepo.findOne({
             where: { user_id },
-            relations: ['items'],
+            relations: ['items', 'items.product', 'items.product.variants'],
         });
         if (!cart) {
             throw new NotFoundException('No cart found');
@@ -64,6 +64,9 @@ export class CartService {
 
                     existing.quantity = newQuantity;
                     return await this.cartItemRepo.save(existing);
+                }
+                if (product.stock < quantity) {
+                    throw new BadRequestException(`Not enough stock. Available: ${product.stock}`);
                 }
 
                 const cartItem = this.cartItemRepo.create({

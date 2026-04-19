@@ -7,13 +7,13 @@ import Login from '../Login/login';
 import { useState, useRef, useEffect } from 'react';
 import { useUserContext } from '../../Context/Auth';
 import CartDrawer from "../Cart/index";
-// import { useCart } from "../../Context/CartContext";
+import { useCartContext } from "../../Context/CartContext";
 import FavoritesDropdown from "../Favorite/favorite";
 import { useFavorites } from '../../Context/Favorite';
 
 const Header = () => {
   const { user, logout } = useUserContext();
-  // const { cartCount } = useCart();
+  const { cart } = useCartContext();
   const { favorites } = useFavorites();
 
   const [showLogin, setShowLogin] = useState(false);
@@ -24,6 +24,7 @@ const Header = () => {
 
   const handleLoginShow = () => setShowLogin(true);
   const handleLoginClose = () => setShowLogin(false);
+  const cartCount = cart?.items?.length ?? 0;
 
   // Close the favorites dropdown when clicking anywhere outside the heart wrapper
   useEffect(() => {
@@ -111,9 +112,9 @@ const Header = () => {
               {/* CART */}
               <div className="icon-box" onClick={() => setShowCart(true)}>
                 <Bag />
-                {/* {cartCount > 0 && (
+                {cartCount > 0 && (
                   <span className="bag-count">{cartCount}</span>
-                )} */}
+                )}
               </div>
 
               <CartDrawer show={showCart} onClose={() => setShowCart(false)} />

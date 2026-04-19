@@ -6,34 +6,44 @@ import {
     remove_from_cart_service,
     clear_cart_service,
 } from "../Services/CartService";
-
+import { useUserContext } from "./Auth";
 
 const CartContext = createContext({});
 
 const CartProvider = (props) => {
-    const [cart, setCart] = useState([]);
+    const [cart, setCart] = useState(null);
     const [error, setError] = useState(null);
+    const { user } = useUserContext();
 
     useEffect(() => {
-        getCart();
-    }, []);
+        if(user){
+            getCart();
+        }else{
+            setCart(null);
+        }
+    }, [user]);
 
     // GET CART
     const getCart = async () => {
         try {
             const result = await get_cart_service();
-            if (result.status === 200) {
-                setCart(result.data);
-            }
+            setCart(result.data);
+            setError(null);
         } catch (error) {
             setError("Failed to load cart");
-        } 
+        }
     };
 
     // ADD TO CART
     const addToCart = async (productId, quantity) => {
         try {
-            const result = await add_to_cart_service(productId, quantity);
+            const result = await add_to_cart_service([
+                {
+                    product_id: productId,
+                    quantity,
+                },
+            ]);
+
             await getCart();
             return result;
         } catch (error) {
@@ -45,54 +55,76 @@ const CartProvider = (props) => {
     const updateQuantity = async (cartItemId, quantity) => {
         try {
             const result = await update_cart_quantity_service(cartItemId, quantity);
-            await getCart();
+
+            setCart((prev) => {
+                const updatedItems = prev.items.map((item) =>
+                    item.id === result.data.id
+                        ? { ...item, quantity: result.data.quantity }
+                        : item
+                );
+
+                const total_quantity = updatedItems.reduce(
+                    (sum, i) => sum + i.quantity,
+                    0
+                );
+
+                const total_price = updatedItems.reduce(
+                    (sum, i) => sum + i.quantity * Number(i.price),
+                    0
+                );
+
+                return {
+                    ...prev,
+                    items: updatedItems,
+                    total_quantity,
+                    total_price,
+                };
+            });
+
             return result;
         } catch (error) {
             setError("Failed to update quantity");
-        } 
+        }
     };
 
-    // REMOVE ONE ITEM
+    // REMOVE ITEM
     const removeFromCart = async (cartItemId) => {
         try {
-            const result = await remove_from_cart_service(cartItemId);
+            await remove_from_cart_service(cartItemId);
             await getCart();
-            return result;
         } catch (error) {
             setError("Failed to remove item");
         }
     };
 
-    // CLEAR ENTIRE CART
+    // CLEAR CART
     const clearCart = async () => {
         try {
-            const result = await clear_cart_service();
-            await getCart();
-            return result;
+            await clear_cart_service();
+            setCart(null);
         } catch (error) {
             setError("Failed to clear cart");
-        } 
-    };
-
-    const values = {
-        cart,
-        error,
-        getCart,
-        addToCart,
-        updateQuantity,
-        removeFromCart,
-        clearCart,
+        }
     };
 
     return (
-        <CartContext.Provider value={values}>
+        <CartContext.Provider
+            value={{
+                user,
+                cart,
+                error,
+                getCart,
+                addToCart,
+                updateQuantity,
+                removeFromCart,
+                clearCart,
+            }}
+        >
             {props.children}
         </CartContext.Provider>
     );
 };
 
-const useCartContext = () => {
-    return useContext(CartContext);
-};
+const useCartContext = () => useContext(CartContext);
 
 export { CartProvider, useCartContext };

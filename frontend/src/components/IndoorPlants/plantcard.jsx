@@ -1,25 +1,37 @@
 import { useState } from 'react';
 import { Card, Button } from 'react-bootstrap';
-import { Heart, HeartFill } from "react-bootstrap-icons";
+import { Heart, HeartFill, Bag, BagFill } from "react-bootstrap-icons";
 import { useFavorites } from "../../Context/Favorite";
+import { useCartContext } from "../../Context/CartContext";
 import './indoor_plants.css';
 
 const PlantCard = ({ product }) => {
-    // Safety check: if no variants, don't try to select one
     const hasVariants = product.variants && product.variants.length > 0;
     const { favorites, addFavorite, removeFavorite } = useFavorites();
-    //tracks variant of pots user has selected - with fallback
+    const { addToCart, removeFromCart, cart } = useCartContext();
+
     const [selectedVariant, setSelectedVariant] = useState(
         hasVariants ? product.variants[0] : { type: 'Default', id: 'default' }
     );
-    
-    const isFavorite = favorites.some(
-        (f) => f.product_id === product.id
-    );
-    //show/hide cart "add to cart"
+
     const [showCartButton, setShowCartButton] = useState(false);
 
-    //show original and sale price (if it has)
+    const isFavorite = favorites.some(f => f.product_id === product.id);
+    const cartItem = cart?.items?.find(item => item.product_id === product.id);
+    const added = !!cartItem;
+
+    const handleCartClick = async () => {
+        try {
+            if (added) {
+                await removeFromCart(cartItem.id);
+            } else {
+                await addToCart(product.id, 1);
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
     const getPrice = () => {
         if (product.sale_price) {
             return (
@@ -29,16 +41,12 @@ const PlantCard = ({ product }) => {
                 </>
             );
         }
-
-        //calculate the discount (if no % show regular price)
         if (product.sale_percentage) {
             const calculatedSale = product.price - (product.price * product.sale_percentage / 100);
             return (
                 <>
                     <span className="old-price">${product.price}</span>
-                    <span className="sale-price">
-                        ${calculatedSale.toFixed(2)}
-                    </span>
+                    <span className="sale-price">${calculatedSale.toFixed(2)}</span>
                 </>
             );
         }
@@ -47,7 +55,6 @@ const PlantCard = ({ product }) => {
 
     const renderLabels = () => {
         const labels = [];
-        // Add label from API
         if (product.label) {
             labels.push(
                 <span key="label" className={`label ${product.label.toLowerCase()}`}>
@@ -55,8 +62,6 @@ const PlantCard = ({ product }) => {
                 </span>
             );
         }
-
-        // Add SALE label if sale_percentage exists
         if (product.sale_percentage) {
             labels.push(
                 <span key="sale" className="label sale">
@@ -64,60 +69,55 @@ const PlantCard = ({ product }) => {
                 </span>
             );
         }
-
         return labels;
     };
 
     const IMAGE_BASE_URL = "http://localhost:3000/products/uploads/variants";
 
-    // Show real image if selected variant has one
     const holderImage = () => {
         const imageName = selectedVariant?.image;
         if (!imageName) return null;
-
-        const imageUrl = `${IMAGE_BASE_URL}/${imageName}`;
-
         return (
             <img
-                src={imageUrl}
+                src={`${IMAGE_BASE_URL}/${imageName}`}
                 alt={selectedVariant?.type || product.title}
                 className="plant-image"
             />
         );
     };
+
     return (
-
-
         <Card className="plant-card">
             <div
                 className="image-wrapper"
                 onMouseEnter={() => setShowCartButton(true)}
-                onMouseLeave={() => setShowCartButton(false)}>
+                onMouseLeave={() => setShowCartButton(false)}
+            >
                 <div className="labels-container">
                     {renderLabels()}
                 </div>
+
                 {holderImage()}
+
                 <Button
-                    variant="dark"
-                    className={`cart-btn ${showCartButton ? 'show' : ''}`}>
-                    Add to Cart
+                    variant={added ? "success" : "dark"}
+                    className={`cart-btn ${showCartButton ? 'show' : ''}`}
+                    onClick={handleCartClick}
+                >
+                    {added ? (
+                        <><BagFill size={15} className="me-1 mb-1" /> Remove</>
+                    ) : (
+                        <><Bag size={15} className="me-1 mb-1" /> Add to Cart</>
+                    )}
                 </Button>
+
                 <div
                     className="fav-icon"
-                    onClick={() =>
-                        isFavorite
-                            ? removeFavorite(product.id)
-                            : addFavorite(product.id)
-                    }
+                    onClick={() => isFavorite ? removeFavorite(product.id) : addFavorite(product.id)}
                 >
-                    {isFavorite ? (
-                        <HeartFill size={25} color="red" />
-                    ) : (
-                        <Heart size={25} />
-                    )}
+                    {isFavorite ? <HeartFill size={25} color="red" /> : <Heart size={25} />}
                 </div>
             </div>
-            
 
             <Card.Body className="details">
                 <div className="title-row">
@@ -139,7 +139,6 @@ const PlantCard = ({ product }) => {
                             />
                         ))}
                     </div>
-
                     <span className="size-badge">{product.size}</span>
                 </div>
             </Card.Body>
