@@ -8,6 +8,8 @@ import { Cart } from './Entity/cart';
 import { CartItem } from './Entity/cart-items';
 import { Product } from 'src/products/Entity/product.entity';
 import { CartService } from './cart.service';
+import { CheckoutService } from './checkout.service';
+import { CheckoutController } from './checkout.controller';
 @Module({
   imports: [
     TypeOrmModule.forFeature([Cart, CartItem, Product]),
@@ -15,7 +17,7 @@ import { CartService } from './cart.service';
     ProductsModule,
     JwtModule,
   ],
-  controllers: [CartController],
-  providers: [CartService],
+  controllers: [CartController, CheckoutController],
+  providers: [CartService, CheckoutService],
 })
 export class CartModule { }

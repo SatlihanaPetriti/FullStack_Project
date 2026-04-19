@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { HeartFill, Bag, BagFill } from "react-bootstrap-icons";
 import { useFavorites } from "../../Context/Favorite";
 import "./favorite.css";
@@ -8,12 +9,16 @@ const BASE_URL = "http://localhost:3000/products/uploads/variants";
 const FavoritesList = () => {
     const { favorites, removeFavorite } = useFavorites();
     const [removingId, setRemovingId] = useState(null);
+    const navigate = useNavigate();
 
-    // const [cartItems, setCartItems] = useState({});
-
-    const handleRemove = async (productId) => {
+    const handleRemove = async (e, productId) => {
+        e.stopPropagation();
         setRemovingId(productId);
         await removeFavorite(productId);
+    };
+
+    const handleNavigate = (productId) => {
+        navigate(`/product/${productId}`);
     };
 
     const getPrice = (product) => {
@@ -71,7 +76,8 @@ const FavoritesList = () => {
                         <li
                             key={fav.id}
                             className={`fav-item ${removingId === fav.product_id ? "fav-item--removing" : ""}`}
-                            style={{ animationDelay: `${i * 0.05}s` }}
+                            style={{ animationDelay: `${i * 0.05}s`, cursor: "pointer" }}
+                            onClick={() => handleNavigate(product.id)}
                         >
                             {/* IMAGE */}
                             <div className="fav-image">
@@ -103,23 +109,10 @@ const FavoritesList = () => {
 
                             {/* ACTIONS */}
                             <div className="fav-actions">
-
-                                {/*
-                                <button
-                                    className={`fav-action-btn fav-cart-btn ${cartItems[product.id] ? "active" : ""}`}
-                                    title={cartItems[product.id] ? "Remove from cart" : "Add to cart"}
-                                >
-                                    {cartItems[product.id]
-                                        ? <BagFill size={16} />
-                                        : <Bag size={16} />
-                                    }
-                                </button>
-                                */}
-
                                 {/* FAVORITE REMOVE */}
                                 <button
                                     className="fav-action-btn fav-heart-btn"
-                                    onClick={() => handleRemove(fav.product_id)}
+                                    onClick={(e) => handleRemove(e, fav.product_id)}
                                     title="Remove from favorites"
                                 >
                                     <HeartFill size={16} />

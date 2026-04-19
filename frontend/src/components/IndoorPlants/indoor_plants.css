@@ -1,389 +1,439 @@
- .image-placeholder {
-   width: 100%;
-   height: 100%;
-   background: gray;
-   display: flex;
-   align-items: center;
-   justify-content: center;
-   color: white;
-   font-size: 1.2rem;
-   font-weight: bold;
-   text-transform: uppercase;
-   transition: all 0.3s ease;
- }
-
- .image-placeholder span {
-   background: #ffffff33;
-   padding: 8px 16px;
- }
-
- /* ======================= */
- /* Base layout */
-
- .indoor-plant {
-   border-top: 1px inset #21433261;
- }
-
- .title-edit {
-   font-family: 'Playfair Display', serif;
-   font-weight: 400;
-   font-size: 50px;
-   color: #214332;
- }
-
- /* ======================= */
- /* Filter sections */
-
- .filter-section {
-   border-bottom: 1px solid rgba(32, 55, 43, 0.368);
-   padding-bottom: 1rem;
- }
-
- .section-header {
-   cursor: pointer;
-   user-select: none;
-   margin-bottom: 0.5rem;
-   font-weight: 600;
-   width: 100%;
- }
-
- /* ======================= */
- /* Checkbox styling */
-
- .form-check-input {
-   transform: scale(1.5);
-   margin-right: 20px;
-   box-shadow: none;
-   border-color: #214332;
-   background-color: #ffffff;
-   outline: none;
- }
-
- .form-check-input:focus {
-   box-shadow: none !important;
-   outline: none !important;
-   border-color: #214332;
- }
-
- .form-check-input:checked:hover {
-   background-color: #214332;
-   border-color: #214332;
-   box-shadow: none;
- }
-
- .form-check {
-   margin-top: 5px;
-   margin-left: 20px;
- }
-
- .filter-section .form-check-label {
-   font-size: 17px;
-   font-weight: 300 !important;
- }
-
- /* ======================= */
- /* Chevron styling */
-
- .chevron-up {
-   display: none;
- }
-
- .filter-details[open] .chevron-down {
-   display: none;
- }
-
- .filter-details[open] .chevron-up {
-   display: inline-block;
- }
-
- /* ======================= */
- /* Buttons */
-
- .clear-filter {
-   width: 290px;
-   border-radius: 50px;
-   font-size: 20px;
-   background-color: transparent;
-   color: #214332;
-   border-color: #2143323c;
-   margin-bottom: 15px;
- }
-
- .clear-filter:hover {
-   background-color: transparent !important;
-   border-color: #214332 !important;
-   color: #214332;
- }
-
- .button-container {
-   display: flex;
-   flex-direction: column;
-   align-items: center;
- }
-
- .btn-info {
-   width: 200px;
-   display: block;
-   border-radius: 50px;
-   font-size: 20px;
-   background-color: rgb(237, 170, 122);
-   color: #ffffff;
-   border-color: rgb(237, 170, 122);
-   margin-bottom: 10px;
- }
-
- .btn-info:hover {
-   background-color: rgb(240, 154, 92) !important;
-   border-color: rgb(240, 154, 92) !important;
-   color: white;
- }
-
- /* ======================= */
- /* Plant card */
-
- .plant-card {
-   border: none;
-   max-width: 324px;
-   margin: 0 auto;
-   background: transparent;
- }
-
- /* Image wrapper */
-
- .image-wrapper {
-   position: relative;
-   height: 405px;
-   border-radius: 12px;
-   overflow: hidden;
-   background-color: #f8f9fa;
-   cursor: pointer;
- }
-
- .plant-image {
-   width: 100%;
-   height: 100%;
-   object-fit: cover;
- }
-
- /* ======================= */
- /* Label */
- .labels-container {
-   position: absolute;
-   top: 10px;
-   left: 10px;
-   z-index: 2;
-   display: flex;
-   flex-direction: row;
-   gap: 5px;
- }
-
- .label {
-   display: block;
-   top: 8px;
-   left: 8px;
-   padding: 4px 5px;
-   border-radius: 20px;
-   font-size: 12px;
-   font-weight: 600;
-   text-transform: uppercase;
-   color: white;
-   z-index: 6;
- }
-
- .label.new {
-   background-color: #4CAF50;
- }
-
- .label.bestseller {
-   background-color: #FFC107;
-   color: black;
- }
-
- .label.most_gifted {
-   background-color: #9C27B0;
- }
-
- .label.sale {
-   background-color: #F44336;
- }
-
- .label.rare_bloom {
-   background-color: #FF9800;
- }
-
- .label.low_maintenance {
-   background-color: #2196F3;
- }
-
- /* ======================= */
- /* Cart button */
-
- .cart-btn {
-   position: absolute;
-   bottom: 0;
-   left: 0;
-   width: 100%;
-   border-radius: 0;
-   border: none;
-   padding: 12px;
-   font-weight: 600;
-   background-color: rgb(246, 207, 178) !important;
-   color: #214332 !important;
-   opacity: 0;
-   transition: opacity 0.3s ease;
-   z-index: 6;
- }
-
- .cart-btn.show {
-   opacity: 1;
-   z-index: 6;
- }
-
- .cart-btn:hover {
-   background-color: rgb(237, 170, 122) !important;
- }
-
- /* ======================= */
- /* Card details */
-
- .details {
-   padding: 12px 8px;
- }
-
- .title-row {
-   display: flex;
-   justify-content: space-between;
-   align-items: center;
-   margin-bottom: 8px;
- }
-
- .title {
-   font-size: 1rem;
-   font-weight: 600;
-   margin: 0;
-   color: #333;
- }
-
- .price {
-   font-weight: 600;
-   color: #2c3e50;
-   font-size: 0.95rem;
- }
-
- .old-price {
-   font-size: 0.85rem;
-   color: #6c757d;
-   text-decoration: line-through;
-   margin-right: 8px;
- }
-
- .sale-price {
-   font-weight: 600;
-   color: #F44336;
- }
-
- /* ======================= */
- /* Color/size */
-
- .info-row {
-   display: flex;
-   justify-content: space-between;
-   align-items: center;
- }
-
- .color-buttons {
-   display: flex;
-   gap: 8px;
- }
-
- .color-btn {
-   width: 24px;
-   height: 24px;
-   border-radius: 50%;
-   border: 2px solid transparent;
-   padding: 0;
-   cursor: pointer;
- }
-
- .color-btn.active {
-   border-color: #333;
- }
-
- .size-badge {
-   font-size: 0.85rem;
-   color: #6c757d;
-   background-color: #f8f9fa;
-   padding: 4px 8px;
-   border-radius: 4px;
- }
-
- /* Pot colors */
-
- .color-clay {
-   background-color: rgb(166, 102, 77);
- }
-
- .color-slate {
-   background-color: rgb(101, 110, 119);
- }
-
- .color-stone {
-   background-color: rgb(197, 198, 196);
- }
-
- .color-charcoal {
-   background-color: rgb(28, 26, 24);
- }
-
- .color-indigo {
-   background-color: rgb(40, 90, 118);
- }
-
- .color-default {
-   background-color: #478d6a;
- }
-
- .color-taupe {
-   background-color: #483C32;
- }
-
- .color-white {
-   background-color: white;
- }
-
- .color-yellow {
-   background-color: yellow;
- }
-
- .color-blue {
-   background-color: rgb(219, 193, 148);
- }
-
- /* Sort bY */
- .custom-sort-select {
-   width: 260px;
-   padding: 10px 15px;
-   font-family: 'Roboto', sans-serif;
-   font-weight: 500;
-   font-size: 14px;
-   border: 1px solid #21433271;
-   background-color: rgb(245, 245, 236);
-   color: #214332;
-   cursor: pointer;
-   transition: all 0.3s ease;
-   margin-right: 20px !important;
- }
-
- .custom-sort-select:focus {
-   outline: none;
-   border-color: #214332;
-   box-shadow: none;
-   outline: none;
- }
- .fav-icon {
-   position: absolute;
-   top: 10px;
-   right: 10px;
-   cursor: pointer;
-   z-index: 5;
- }
+/* ======================= */
+/* Image placeholder */
+
+.image-placeholder {
+  width: 100%;
+  height: 100%;
+  background: gray;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+}
+
+.image-placeholder span {
+  background: #ffffff33;
+  padding: 8px 16px;
+}
+
+/* ======================= */
+/* Base layout */
+
+.indoor-plant {
+  border-top: 1px inset #21433261;
+}
+
+.title-edit {
+  font-family: 'Playfair Display', serif;
+  font-weight: 400;
+  font-size: 50px;
+  color: #214332;
+}
+
+/* ======================= */
+/* Filter sections */
+
+.filter-section {
+  border-bottom: 1px solid rgba(32, 55, 43, 0.368);
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+  margin-bottom: 0 !important;
+}
+
+.section-header {
+  cursor: pointer;
+  user-select: none;
+  margin-bottom: 0;
+  font-weight: 600;
+  font-size: 15px;
+  color: #214332;
+  width: 100%;
+  list-style: none;
+  display: flex;
+  align-items: center;
+}
+
+/* Collapsed state — no extra space */
+.filter-details:not([open]) summary {
+  margin-bottom: 0;
+}
+
+/* Open state — small gap before checkboxes */
+.filter-details[open] summary {
+  margin-bottom: 0.5rem;
+}
+
+/* Remove default summary arrow */
+.filter-details>summary {
+  list-style: none;
+}
+
+.filter-details>summary::-webkit-details-marker {
+  display: none;
+}
+
+/* ======================= */
+/* Chevron styling */
+
+.chevron-up {
+  display: none;
+}
+
+.filter-details[open] .chevron-down {
+  display: none;
+}
+
+.filter-details[open] .chevron-up {
+  display: inline-block;
+}
+
+/* ======================= */
+/* Checkbox styling */
+
+.form-check-input {
+  transform: scale(1.5);
+  margin-right: 20px;
+  box-shadow: none;
+  border-color: #214332;
+  background-color: #ffffff;
+  outline: none;
+  cursor: pointer;
+}
+
+.form-check-input:focus {
+  box-shadow: none !important;
+  outline: none !important;
+  border-color: #214332;
+}
+
+.form-check-input:checked {
+  background-color: #214332;
+  border-color: #214332;
+}
+
+.form-check-input:checked:hover {
+  background-color: #214332;
+  border-color: #214332;
+  box-shadow: none;
+}
+
+.form-check {
+  margin-top: 5px;
+  margin-left: 20px;
+}
+
+.filter-section .form-check-label {
+  font-size: 15px;
+  font-weight: 300 !important;
+  color: #333;
+  cursor: pointer;
+}
+
+/* ======================= */
+/* Buttons */
+
+.clear-filter {
+  width: 290px;
+  border-radius: 50px;
+  font-size: 16px;
+  background-color:rgb(237, 170, 122) ;
+  color: #214332;
+  border-color: rgb(237, 170, 122);
+  margin-bottom: 15px;
+  transition: all 0.2s ease;
+}
+
+.clear-filter:hover {
+  background-color: rgb(220, 148, 96) !important;
+  border-color: rgb(220, 148, 96) !important;
+  color: white !important;
+}
+
+.button-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 8px;
+}
+
+
+/* ======================= */
+/* Plant card */
+
+.plant-card {
+  border: none;
+  max-width: 324px;
+  margin: 0 auto;
+  background: transparent;
+  transition: transform 0.2s ease;
+}
+
+.plant-card:hover {
+  transform: translateY(-4px);
+}
+
+/* Image wrapper */
+
+.image-wrapper {
+  position: relative;
+  height: 405px;
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: #f8f9fa;
+  cursor: pointer;
+}
+
+.plant-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.image-wrapper:hover .plant-image {
+  transform: scale(1.04);
+}
+
+/* ======================= */
+/* Labels */
+
+.labels-container {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 2;
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+}
+
+.label {
+  display: block;
+  padding: 4px 8px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: white;
+  z-index: 6;
+  letter-spacing: 0.03em;
+}
+
+.label.new {
+  background-color: #4CAF50;
+}
+
+.label.bestseller {
+  background-color: #FFC107;
+  color: black;
+}
+
+.label.most_gifted {
+  background-color: #9C27B0;
+}
+
+.label.sale {
+  background-color: #F44336;
+}
+
+.label.rare_bloom {
+  background-color: #FF9800;
+}
+
+.label.low_maintenance {
+  background-color: #2196F3;
+}
+
+/* ======================= */
+/* Cart button */
+
+.cart-btn {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  border-radius: 0;
+  border: none;
+  padding: 12px;
+  font-weight: 600;
+  font-size: 14px;
+  background-color: rgb(246, 207, 178) !important;
+  color: #214332 !important;
+  opacity: 0;
+  transition: opacity 0.3s ease, background-color 0.2s ease;
+  z-index: 6;
+}
+
+.cart-btn.show {
+  opacity: 1;
+}
+
+.cart-btn:hover {
+  background-color: rgb(237, 170, 122) !important;
+}
+
+/* ======================= */
+/* Card details */
+
+.details {
+  padding: 12px 8px;
+}
+
+.title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0;
+  color: #333;
+}
+
+.price {
+  font-weight: 600;
+  color: #2c3e50;
+  font-size: 0.95rem;
+  white-space: nowrap;
+}
+
+.old-price {
+  font-size: 0.82rem;
+  color: #6c757d;
+  text-decoration: line-through;
+  margin-right: 6px;
+}
+
+.sale-price {
+  font-weight: 600;
+  color: #F44336;
+}
+
+/* ======================= */
+/* Color / size row */
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.color-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.color-btn {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  padding: 0;
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+}
+
+.color-btn:hover {
+  border-color: #aaa;
+}
+
+.color-btn.active {
+  border-color: #333;
+}
+
+.size-badge {
+  font-size: 0.82rem;
+  color: #6c757d;
+  background-color: #f8f9fa;
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+/* Pot colors */
+.color-clay {
+  background-color: rgb(166, 102, 77);
+}
+
+.color-slate {
+  background-color: rgb(101, 110, 119);
+}
+
+.color-stone {
+  background-color: rgb(197, 198, 196);
+}
+
+.color-charcoal {
+  background-color: rgb(28, 26, 24);
+}
+
+.color-indigo {
+  background-color: rgb(40, 90, 118);
+}
+
+.color-default {
+  background-color: #478d6a;
+}
+
+.color-taupe {
+  background-color: #483C32;
+}
+
+.color-white {
+  background-color: #fff;
+  border: 1px solid #ddd;
+}
+
+.color-yellow {
+  background-color: yellow;
+}
+
+.color-blue {
+  background-color: rgb(219, 193, 148);
+}
+
+/* ======================= */
+/* Sort select */
+
+.custom-sort-select {
+  width: 260px;
+  padding: 10px 15px;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  border: 1px solid #21433271;
+  border-radius: 4px;
+  background-color: rgb(245, 245, 236);
+  color: #214332;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+  margin-right: 20px !important;
+}
+
+.custom-sort-select:focus {
+  outline: none;
+  border-color: #214332;
+  box-shadow: none;
+}
+
+/* ======================= */
+/* Fav icon */
+
+.fav-icon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+  z-index: 5;
+  transition: transform 0.2s ease;
+}
+
+.fav-icon:hover {
+  transform: scale(1.15);
+}

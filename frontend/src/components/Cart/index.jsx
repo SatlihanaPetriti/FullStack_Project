@@ -57,7 +57,7 @@ const CartDrawer = ({ show, onClose }) => {
 
     return (
         <div className="cart-overlay" onClick={onClose}>
-            <div className="cart-drawer">
+            <div className="cart-drawer" onClick={(e) => e.stopPropagation()}>
 
                 {/* Header */}
                 <div className="drw-head">

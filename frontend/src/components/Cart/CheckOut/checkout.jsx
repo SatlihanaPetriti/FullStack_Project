@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useCartContext } from "../../../Context/CartContext";
 import { useProductContext } from "../../../Context/Product";
 import { useCategoryContext } from "../../../Context/Category";
+import CheckoutModal from './CheckoutModal';
 import "./checkout.css";
 
 const BASE_URL = "http://localhost:3000/products/uploads/variants";
@@ -12,7 +13,7 @@ const CheckOut = () => {
     const { cart, updateQuantity, removeFromCart, clearCart } = useCartContext();
     const { products } = useProductContext();
     const { categories } = useCategoryContext();
-
+    const [modalOpen, setModalOpen] = useState(false);
     const [ordered, setOrdered] = useState(false);
 
     const items = cart?.items ?? [];
@@ -41,11 +42,6 @@ const CheckOut = () => {
     const handleMinus = (item) => {
         if (item.quantity === 1) removeFromCart(item.id);
         else updateQuantity(item.id, item.quantity - 1);
-    };
-
-    const handlePlaceOrder = async () => {
-        await clearCart();
-        setOrdered(true);
     };
 
     // ── ORDER CONFIRMED ──────────────────────────────────────────────
@@ -132,7 +128,7 @@ const CheckOut = () => {
                                 </div>
 
                                 {/* Clear Cart */}
-                                <div className="co-clear ">
+                                <div className="co-clear">
                                     <button className="co-clear__btn" onClick={clearCart}>
                                         Clear your shopping cart
                                     </button>
@@ -166,7 +162,7 @@ const CheckOut = () => {
                                     <span>${total.toFixed(2)}</span>
                                 </div>
 
-                                <button className="co-btn-primary" onClick={handlePlaceOrder}>
+                                <button className="co-btn-primary" onClick={() => setModalOpen(true)}>
                                     Place Order
                                 </button>
                                 <button className="co-btn-secondary" onClick={() => navigate("/")}>
@@ -177,6 +173,16 @@ const CheckOut = () => {
                     )}
                 </div>
             </div>
+
+            {/* Checkout Modal */}
+            <CheckoutModal
+                isOpen={modalOpen}
+                onClose={() => setModalOpen(false)}
+                onSuccess={() => {
+                    setModalOpen(false);
+                    setOrdered(true);
+                }}
+            />
         </div>
     );
 };

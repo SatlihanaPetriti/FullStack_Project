@@ -16,72 +16,83 @@ import CategoryProducts from './components/FeaturedIn/ProductsByCategory.jsx';
 import CheckOut from './components/Cart/CheckOut/checkout.jsx'
 import FavoritesList from "./components/Favorite/favorite.jsx";
 import { FavoritesProvider } from './Context/Favorite.jsx';
-import {CartProvider } from './Context/CartContext.jsx'
-
+import { CartProvider } from './Context/CartContext.jsx'
+import { CheckoutProvider } from './Context/Checkout.jsx';
+import About from "./components/AboutUs/AboutUs.jsx"
 function App() {
   return (
     <UserProvider>
       <CategoryProvider>
         <ProductProvider>
           <CartProvider>
-          <NewsletterProvider>
-              <FavoritesProvider>
-                <Routes>
-                  <Route path="/" element={
-                    <>
-                      <Announcement />
-                      <Header />
-                      <HomePage />
-                    </>
-                  } />
+            <CheckoutProvider>
+              <NewsletterProvider>
+                <FavoritesProvider>
+                  <Routes>
+                    <Route path="/" element={
+                      <>
+                        <Announcement />
+                        <Header />
+                        <HomePage />
+                      </>
+                    } />
 
-                  <Route path="/indoor-plants" element={
-                    <>
-                      <Announcement />
-                      <Header />
-                      <IndoorPlants />
-                    </>
-                  } />
+                    <Route path="/indoor-plants" element={
+                      <>
+                        <Announcement />
+                        <Header />
+                        <IndoorPlants />
+                      </>
+                    } />
 
 
-                  <Route path="/category/:id" element={
-                    <>
-                      <Announcement />
-                      <Header />
-                      <CategoryProducts />
-                    </>
-                  } />
+                    <Route path="/category/:id" element={
+                      <>
+                        <Announcement />
+                        <Header />
+                        <CategoryProducts />
+                      </>
+                    } />
 
-                  <Route path="/admin/*" element={
-                    <ProtectedRoute requiredRole="admin">
-                      <AdminRouter />
-                    </ProtectedRoute>
-                  } />
+                    <Route path="/admin/*" element={
+                      <ProtectedRoute requiredRole="admin">
+                        <AdminRouter />
+                      </ProtectedRoute>
+                    } />
 
-                  <Route path="/product/:id" element={
-                    <>
-                      <Announcement />
-                      <Header />
-                      <Productcart />
-                    </>
-                  } />
-                  <Route path="/checkout" element={
-                    <>
-                      <Announcement />
-                      <Header />
-                      <CheckOut />
-                      <FooterHome />
-                    </>
-                  } />
-                  <Route path="/favorite" element={
-                    <>
-                      <FavoritesList />
-                    </>
-                  } />
-                  <Route path="/reset-password" element={<ResetPassword />} />
-                </Routes>
-              </FavoritesProvider>
-          </NewsletterProvider>
+                    <Route path="/product/:id" element={
+                      <>
+                        <Announcement />
+                        <Header />
+                        <Productcart />
+                      </>
+                    } />
+                    <Route path="/checkout" element={
+                      <>
+                        <Announcement />
+                        <Header />
+                        <CheckOut />
+                        <FooterHome />
+                      </>
+                    } />
+                    <Route path="/favorite" element={
+                      <>
+                        <FavoritesList />
+                      </>
+                    } />
+                    <Route path="/About" element={
+                      <>
+                        <Announcement />
+                        <Header />
+                        <About/>
+                        <FooterHome />
+                      </>
+                    } />
+                    <Route path="/reset-password" element={<ResetPassword />} />
+                  </Routes>
+                </FavoritesProvider>
+              </NewsletterProvider>
+            </CheckoutProvider>
           </CartProvider>
         </ProductProvider>
       </CategoryProvider>

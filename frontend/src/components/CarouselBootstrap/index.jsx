@@ -20,7 +20,7 @@ const CarouselBootstrap = () => {
             </h1>
             <Link to='/indoor-plants'>
               <Button className='custom-carousel-btn ' size='lg'>
-                Shop Collection <span className='btn-arrow'>&gt;</span>
+                Shop Our Plants <span className='btn-arrow'>&gt;</span>
               </Button>
             </Link>
           </div>
@@ -34,7 +34,7 @@ const CarouselBootstrap = () => {
             <h1 className='carousel-heading'>Plant life made easy</h1>
             <Link to='/indoor-plants'>
               <Button className='custom-carousel-btn' size='lg'>
-                Shop Collection <span className='btn-arrow'>&gt;</span>
+                Shop Our Plants <span className='btn-arrow'>&gt;</span>
               </Button>
             </Link>
           </div>
@@ -47,7 +47,7 @@ const CarouselBootstrap = () => {
             <h1 className='carousel-heading'>Gift of a living plant</h1>
             <Link to='/indoor-plants'>
               <Button className='custom-carousel-btn' size='lg'>
-                Shop Collection <span className='btn-arrow'>&gt;</span>
+                Shop Our Plants <span className='btn-arrow'>&gt;</span>
               </Button>
             </Link>
           </div>

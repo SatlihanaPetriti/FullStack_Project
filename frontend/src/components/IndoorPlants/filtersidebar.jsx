@@ -1,65 +1,152 @@
-import React from 'react';
-import { Container, Row, Col, Form, Button } from 'react-bootstrap';
-import { ChevronDown, ChevronUp } from 'react-bootstrap-icons';
-import './indoor_plants.css';
+import { useCategoryContext } from '../../Context/Category';
+import './filtersidebar.css';
 
-const filters = {
-    'Product Type': ['Indoor Plants', 'Preorder'],
-    'Indoor Light': ['Low / Artificial', 'Partial / Bright Indirect', 'Direct Sunlight'],
-    'Plant Size': ['MD (1-2 FT)', 'LG (1.5-2.5 FT)', 'XL (2-3 FT)', 'XXL (3-5 FT)'],
-    Difficulty: ['No Fuss', 'Moderate'],
-    'Pet Friendly': ['Yes'],
-    'Air Cleaner': ['Yes'],
-    Price: ['$50-$100', '$100-$150', '$150-$200'],
-};
+const PRICE_RANGES = [
+    { label: '$50 – $100', key: '50-100' },
+    { label: '$100 – $150', key: '100-150' },
+    { label: '$150 – $200', key: '150-200' },
+];
 
-const FilterSidebar = () => {
+const SIZES = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+
+const FilterSidebar = ({ filters, onChange }) => {
+    const { categories } = useCategoryContext();
+
+    const toggle = (key, value) => {
+        const current = filters[key] || [];
+        const next = current.includes(value)
+            ? current.filter((v) => v !== value)
+            : [...current, value];
+        onChange({ ...filters, [key]: next });
+    };
+
+    const toggleBool = (key) => {
+        onChange({ ...filters, [key]: !filters[key] });
+    };
+
+    const clearAll = () => {
+        onChange({ categories: [], priceRanges: [], sizes: [], onSalePercent: false, onSalePrice: false });
+    };
+
+    const hasActive =
+        filters.categories?.length > 0 ||
+        filters.priceRanges?.length > 0 ||
+        filters.sizes?.length > 0 ||
+        filters.onSalePercent ||
+        filters.onSalePrice;
+
+    const activeCount =
+        (filters.categories?.length || 0) +
+        (filters.priceRanges?.length || 0) +
+        (filters.sizes?.length || 0) +
+        (filters.onSalePercent ? 1 : 0) +
+        (filters.onSalePrice ? 1 : 0);
+
     return (
-        <Container fluid className="px-5 py-3">
-            {Object.entries(filters).map(([category, options], i) => (
-                <Row className="filter-section mb-4" key={i}>
-                    <Col>
-                        <details className="filter-details">
-                            <summary className="section-header d-flex align-items-center">
-                                {category}
-                                <span className="ms-auto ">
-                                    <ChevronDown className="chevron-down" />
-                                    <ChevronUp className="chevron-up" />
-                                </span>
-                            </summary>
-                            <Form className="mt-2">
-                                {options.map((label, id) => (
-                                    <Form.Check
-                                        type="checkbox"
-                                        id={`${category} ${id}`}
-                                        key={id}
-                                        label={label}
-                                        className="mb-2"
-                                    />
-                                ))}
-                            </Form>
-                        </details>
-                    </Col>
-                </Row>
-            ))}
+        <div className="fsb">
 
-            {/* Buttons */}
-            <Row className="mt-4">
-                <Col>
-                    <div className="button-container">
-                        <Button variant="outline-secondary" className="clear-filter">
-                            Clear Filters
-                        </Button>
-                        <Button variant="outline-primary" className="btn-info">
-                            Size Guide
-                        </Button>
-                        <Button variant="outline-primary" className="btn-info">
-                            About Our Pots
-                        </Button>
-                    </div>
-                </Col>
-            </Row>
-        </Container>
+            {/* Header */}
+            <div className="fsb-top">
+                <span className="fsb-heading">Filters</span>
+            </div>
+
+            {/* CATEGORY */}
+            <details className="fsb-group" open>
+                <summary className="fsb-group-header">
+                    <span>Category</span>
+                    <svg className="fsb-chevron" viewBox="0 0 16 16" fill="none">
+                        <path d="M4 6l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                </summary>
+                <div className="fsb-options">
+                    {categories.map((cat) => (
+                        <button
+                            key={cat.id}
+                            className={`fsb-pill ${filters.categories?.includes(cat.id) ? 'fsb-pill--active' : ''}`}
+                            onClick={() => toggle('categories', cat.id)}
+                        >
+                            {cat.name}
+                        </button>
+                    ))}
+                </div>
+            </details>
+
+            {/* PRICE */}
+            <details className="fsb-group" open>
+                <summary className="fsb-group-header">
+                    <span>Price</span>
+                    <svg className="fsb-chevron" viewBox="0 0 16 16" fill="none">
+                        <path d="M4 6l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                </summary>
+                <div className="fsb-options">
+                    {PRICE_RANGES.map(({ label, key }) => (
+                        <button
+                            key={key}
+                            className={`fsb-pill ${filters.priceRanges?.includes(key) ? 'fsb-pill--active' : ''}`}
+                            onClick={() => toggle('priceRanges', key)}
+                        >
+                            {label}
+                        </button>
+                    ))}
+                </div>
+            </details>
+
+            {/* OFFERS */}
+            <details className="fsb-group" open>
+                <summary className="fsb-group-header">
+                    <span>Offers</span>
+                    <svg className="fsb-chevron" viewBox="0 0 16 16" fill="none">
+                        <path d="M4 6l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                </summary>
+                <div className="fsb-options">
+                    <button
+                        className={`fsb-pill fsb-pill--offer ${filters.onSalePercent ? 'fsb-pill--active' : ''}`}
+                        onClick={() => toggleBool('onSalePercent')}
+                    >
+                        Sale %
+                    </button>
+                    <button
+                        className={`fsb-pill fsb-pill--offer ${filters.onSalePrice ? 'fsb-pill--active' : ''}`}
+                        onClick={() => toggleBool('onSalePrice')}
+                    >
+                        Sale Price
+                    </button>
+                </div>
+            </details>
+
+            {/* SIZE */}
+            <details className="fsb-group" open>
+                <summary className="fsb-group-header">
+                    <span>Size</span>
+                    <svg className="fsb-chevron" viewBox="0 0 16 16" fill="none">
+                        <path d="M4 6l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                </summary>
+                <div className="fsb-sizes">
+                    {SIZES.map((s) => (
+                        <button
+                            key={s}
+                            className={`fsb-size ${filters.sizes?.includes(s) ? 'fsb-size--active' : ''}`}
+                            onClick={() => toggle('sizes', s)}
+                        >
+                            {s}
+                        </button>
+                    ))}
+                </div>
+            </details>
+
+            {/* Bottom buttons */}
+            <div className="fsb-bottom">
+                {hasActive && (
+                    <button className="fsb-clear-bottom" onClick={clearAll}>
+                        Clear Filters ({activeCount})
+                    </button>
+                )}
+            </div>
+
+        </div>
     );
 };
 

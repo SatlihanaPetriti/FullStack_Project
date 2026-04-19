@@ -4,15 +4,16 @@ import { Container, Row, Col, Image, Button, Breadcrumb, Tabs, Tab } from "react
 import { SuitHeart, SuitHeartFill } from "react-bootstrap-icons";
 import { useParams, Link } from "react-router-dom";
 import { useProductContext } from "../../Context/Product";
-// import { useCart } from "../../Context/CartContext";
+import { useCartContext } from "../../Context/CartContext";
 import { useFavorites } from "../../Context/Favorite";
+import FilterSidebar from '../IndoorPlants/filtersidebar';
 
 const BASE_URL = "http://localhost:3000/products/uploads/variants";
 
 const Productcart = () => {
   const { id } = useParams();
   const { getProductById } = useProductContext();
-  // const { addToCart } = useCart();
+  const { addToCart, cart, updateQuantity, removeFromCart } = useCartContext();
   const { addFavorite, removeFavorite, favorites } = useFavorites();
 
   const [product, setProduct] = useState(null);
@@ -28,6 +29,20 @@ const Productcart = () => {
     };
     load();
   }, [id]);
+
+  useEffect(() => {
+    if (!product || !cart?.items) return;
+    const cartItem = cart.items.find((item) => item.product_id === product.id);
+    if (cartItem) {
+      setQty(cartItem.quantity);
+    } else {
+      setQty(1);
+    }
+  }, [product, cart]);
+
+  const cartItem = product && cart?.items
+    ? cart.items.find((item) => item.product_id === product.id)
+    : null;
 
   const isFavorite = product
     ? favorites.some((fav) => fav.product_id === product.id)
@@ -49,10 +64,17 @@ const Productcart = () => {
     }
   };
 
-  const changeQty = (delta) => {
+  const changeQty = async (delta) => {
     const newQty = qty + delta;
-    if (newQty < 1) return;
+    if (newQty < 1) {
+      if (cartItem) await removeFromCart(cartItem.id);
+      setQty(1);
+      return;
+    }
     setQty(newQty);
+    if (cartItem) {
+      await updateQuantity(cartItem.id, newQty);
+    }
   };
 
   const getPrice = () => {
@@ -62,15 +84,12 @@ const Productcart = () => {
     return Number(product.price);
   };
 
-  const handleAddToCart = () => {
-    const finalPrice = getPrice();
-    addToCart({
-      product_id: product.id,
-      title: product.title,
-      price: finalPrice.toFixed(2),
-      image: product.variants?.find((v) => v.image)?.image,
-      quantity: qty,
-    });
+  const handleAddToCart = async () => {
+    await addToCart(product.id, qty);
+  };
+
+  const handleRemoveFromCart = async () => {
+    await removeFromCart(cartItem.id);
   };
 
   if (!product) return <p className="text-center mt-5">Loading...</p>;
@@ -150,14 +169,25 @@ const Productcart = () => {
             <Button className="quantity" onClick={() => changeQty(1)}>+</Button>
           </div>
 
-          <Button
-            size="lg"
-            className="botton-cart mt-2"
-            disabled={product.stock <= 0}
-            onClick={handleAddToCart}
-          >
-            Add To Cart
-          </Button>
+          {cartItem ? (
+            <Button
+              size="lg"
+              variant="danger"
+              className="botton-cart mt-2"
+              onClick={handleRemoveFromCart}
+            >
+              Remove from Cart
+            </Button>
+          ) : (
+            <Button
+              size="lg"
+              className="botton-cart mt-2"
+              disabled={product.stock <= 0}
+              onClick={handleAddToCart}
+            >
+              Add To Cart
+            </Button>
+          )}
 
           <p className="text-note">
             *Please note: this product cannot be cancelled after placing an order

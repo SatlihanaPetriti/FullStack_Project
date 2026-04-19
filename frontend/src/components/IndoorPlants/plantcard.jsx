@@ -3,12 +3,14 @@ import { Card, Button } from 'react-bootstrap';
 import { Heart, HeartFill, Bag, BagFill } from "react-bootstrap-icons";
 import { useFavorites } from "../../Context/Favorite";
 import { useCartContext } from "../../Context/CartContext";
+import { useNavigate } from 'react-router-dom';
 import './indoor_plants.css';
 
 const PlantCard = ({ product }) => {
     const hasVariants = product.variants && product.variants.length > 0;
     const { favorites, addFavorite, removeFavorite } = useFavorites();
     const { addToCart, removeFromCart, cart } = useCartContext();
+    const navigate = useNavigate();
 
     const [selectedVariant, setSelectedVariant] = useState(
         hasVariants ? product.variants[0] : { type: 'Default', id: 'default' }
@@ -20,7 +22,8 @@ const PlantCard = ({ product }) => {
     const cartItem = cart?.items?.find(item => item.product_id === product.id);
     const added = !!cartItem;
 
-    const handleCartClick = async () => {
+    const handleCartClick = async (e) => {
+        e.stopPropagation();
         try {
             if (added) {
                 await removeFromCart(cartItem.id);
@@ -30,6 +33,16 @@ const PlantCard = ({ product }) => {
         } catch (err) {
             console.error(err);
         }
+    };
+
+    const handleFavClick = (e) => {
+        e.stopPropagation();
+        isFavorite ? removeFavorite(product.id) : addFavorite(product.id);
+    };
+
+    const handleVariantClick = (e, variant) => {
+        e.stopPropagation();
+        setSelectedVariant(variant);
     };
 
     const getPrice = () => {
@@ -87,7 +100,11 @@ const PlantCard = ({ product }) => {
     };
 
     return (
-        <Card className="plant-card">
+        <Card
+            className="plant-card"
+            style={{ cursor: "pointer" }}
+            onClick={() => navigate(`/product/${product.id}`)}
+        >
             <div
                 className="image-wrapper"
                 onMouseEnter={() => setShowCartButton(true)}
@@ -111,10 +128,7 @@ const PlantCard = ({ product }) => {
                     )}
                 </Button>
 
-                <div
-                    className="fav-icon"
-                    onClick={() => isFavorite ? removeFavorite(product.id) : addFavorite(product.id)}
-                >
+                <div className="fav-icon" onClick={handleFavClick}>
                     {isFavorite ? <HeartFill size={25} color="red" /> : <Heart size={25} />}
                 </div>
             </div>
@@ -129,7 +143,7 @@ const PlantCard = ({ product }) => {
                         {(product.variants || []).map((variant) => (
                             <button
                                 key={variant.id}
-                                onClick={() => setSelectedVariant(variant)}
+                                onClick={(e) => handleVariantClick(e, variant)}
                                 className={`
                                     color-btn 
                                     color-${variant.type?.toLowerCase() || 'default'}
