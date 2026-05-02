@@ -68,14 +68,12 @@ export class CartService {
                 if (product.stock < quantity) {
                     throw new BadRequestException(`Not enough stock. Available: ${product.stock}`);
                 }
-
                 const cartItem = this.cartItemRepo.create({
                     cart_id: cart.id,
                     product_id,
                     quantity,
                     price: product.price,
                 });
-
                 return await this.cartItemRepo.save(cartItem);
             }),
         );
@@ -155,9 +153,6 @@ export class CartService {
 
         };
     }
-
-
-
 
     public async removeFromCart(
         userId: number,
