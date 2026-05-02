@@ -81,13 +81,22 @@ function App() {
                       </>
                     } />
                     <Route path="/About" element={
-                      <>
-                        <Announcement />
-                        <Header />
-                        <About/>
-                        <FooterHome />
-                      </>
-                    } />
+            <>
+              <Announcement />
+              <Header onOpenAccount={openAccount} />
+              <About />
+              <FooterHome />
+            </>
+          } />
+
+          <Route path="/Contact" element={
+            <>
+              <Announcement />
+              <Header onOpenAccount={openAccount} />
+              <Contact />
+              <FooterHome />
+            </>
+          } />
                     <Route path="/reset-password" element={<ResetPassword />} />
                   </Routes>
                 </FavoritesProvider>
