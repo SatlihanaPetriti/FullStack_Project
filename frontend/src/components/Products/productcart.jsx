@@ -66,9 +66,13 @@ const Productcart = () => {
 
   const changeQty = async (delta) => {
     const newQty = qty + delta;
+
     if (newQty < 1) {
       if (cartItem) await removeFromCart(cartItem.id);
       setQty(1);
+      return;
+    }
+    if (newQty > product.stock) {
       return;
     }
     setQty(newQty);

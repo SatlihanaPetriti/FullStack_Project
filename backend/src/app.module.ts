@@ -15,6 +15,8 @@ import { Favorite } from './favorite/Entity/favorite.entity';
 import { CartModule } from './Cart/cart.module';
 import { Cart } from './Cart/Entity/cart';
 import { CartItem } from './Cart/Entity/cart-items';
+import { SubscriberModule } from './subscriber/subscriber.module';
+import { Subscriber } from './mail/Entity/subscriber.entity';
 
 @Module({
     imports: [
@@ -30,7 +32,7 @@ import { CartItem } from './Cart/Entity/cart-items';
                 username: configService.get<string>('DB_USERNAME'),
                 password: configService.get<string>('DB_PASSWORD'),
                 database: configService.get<string>('DB_NAME'),
-                entities: [Product, CategoryEntity, ProductVariant, UserEntity, Favorite, CartItem, Cart],
+                entities: [Product, CategoryEntity, ProductVariant, UserEntity, Favorite, CartItem, Cart, Subscriber],
                 synchronize: true,
             }),
         }),
@@ -40,7 +42,8 @@ import { CartItem } from './Cart/Entity/cart-items';
         CategoryModule,
         MailModule,
         FavoriteModule,
-        CartModule
+        CartModule,
+        SubscriberModule
     ],
 })
 export class AppModule { }

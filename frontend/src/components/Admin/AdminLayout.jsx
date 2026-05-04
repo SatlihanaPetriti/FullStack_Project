@@ -1,7 +1,9 @@
 import { NavLink } from 'react-router-dom';
 import './AdminLayout.css';
 import { UserRoundCog, LayoutDashboard, Package, Layers, ShoppingCart, Warehouse, LogOut, ExternalLink } from 'lucide-react';
+import SubscribersPage from './Subscriber';
 import { useUserContext } from '../../Context/Auth';
+import { Mail } from 'lucide-react';
 
 const AdminLayout = ({ children }) => {
     const { user, logout } = useUserContext();
@@ -33,6 +35,9 @@ const AdminLayout = ({ children }) => {
                     </NavLink>
                     <NavLink to="/admin/inventory" className="admin-nav-link">
                         <Warehouse size={16} /> Inventory
+                    </NavLink>
+                    <NavLink to="/admin/subscribers" className="admin-nav-link">
+                        <Mail size={16} /> Subscribers
                     </NavLink>
                     <hr className="admin-nav-divider" />
                     <a href="/" target="_blank" rel="noopener noreferrer" className="admin-nav-link admin-visit-link">

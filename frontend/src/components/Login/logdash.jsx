@@ -1,16 +1,14 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { useUserContext } from '../../Context/Auth';
 import {
   Person, BoxArrowRight, ClipboardCheck,
   Eye, EyeSlash, CheckLg, X, List, ChevronLeft
 } from 'react-bootstrap-icons';
 import './logdash.css';
 
-// ─── Mock orders — swap with real API ────────────────────────────────────────
 const MOCK_ORDERS = [
   {
-    id: 'ORD-2841',
-    date: 'Apr 28, 2025',
-    status: 'Delivered',
+    id: 'ORD-2841', date: 'Apr 28, 2025', status: 'Delivered',
     items: [
       { name: 'Monstera Deliciosa', qty: 1, price: 24.99 },
       { name: 'Ceramic Pot – White', qty: 2, price: 12.50 },
@@ -18,16 +16,12 @@ const MOCK_ORDERS = [
     total: 49.99,
   },
   {
-    id: 'ORD-2763',
-    date: 'Mar 14, 2025',
-    status: 'Delivered',
+    id: 'ORD-2763', date: 'Mar 14, 2025', status: 'Delivered',
     items: [{ name: 'Peace Lily', qty: 1, price: 18.00 }],
     total: 18.00,
   },
   {
-    id: 'ORD-2910',
-    date: 'May 01, 2025',
-    status: 'Processing',
+    id: 'ORD-2910', date: 'May 01, 2025', status: 'Processing',
     items: [
       { name: 'Fiddle Leaf Fig', qty: 1, price: 39.99 },
       { name: 'Plant Food Drops', qty: 1, price: 9.99 },
@@ -39,36 +33,56 @@ const MOCK_ORDERS = [
 const STATUS_COLOR = {
   Delivered: '#2d6a4f',
   Processing: '#e07b39',
-  Cancelled:  '#c0392b',
-  Shipped:    '#3a7bbf',
+  Cancelled: '#c0392b',
+  Shipped: '#3a7bbf',
 };
 
-// ─── Profile Tab ──────────────────────────────────────────────────────────────
+// ── Profile Tab ───────────────────────────────────────────────────────────────
 const ProfileTab = ({ user }) => {
-  const [form, setForm]       = useState({ name: user?.name || '', email: user?.email || '' });
+  const { updateProfile, changePassword } = useUserContext();
+
+  const [form, setForm] = useState({ name: user?.name || '', email: user?.email || '' });
   const [editing, setEditing] = useState({ name: false, email: false });
-  const [saved, setSaved]     = useState({ name: false, email: false });
-  const [pwForm, setPwForm]   = useState({ current: '', next: '', confirm: '' });
-  const [showPw, setShowPw]   = useState({ current: false, next: false, confirm: false });
+  const [saved, setSaved] = useState({ name: false, email: false });
+  const [pwForm, setPwForm] = useState({ current: '', next: '', confirm: '' });
+  const [showPw, setShowPw] = useState({ current: false, next: false, confirm: false });
   const [pwError, setPwError] = useState('');
   const [pwSaved, setPwSaved] = useState(false);
+  const [loading, setLoading] = useState({ name: false, email: false, password: false });
+  const [fieldError, setFieldError] = useState({ name: '', email: '' });
 
-  const saveField = (field) => {
-    setEditing(e => ({ ...e, [field]: false }));
-    setSaved(s => ({ ...s, [field]: true }));
-    setTimeout(() => setSaved(s => ({ ...s, [field]: false })), 2000);
-    // TODO: persist via API
+  const saveField = async (field) => {
+    setLoading(l => ({ ...l, [field]: true }));
+    setFieldError(e => ({ ...e, [field]: '' }));
+    const result = await updateProfile({ [field]: form[field] });
+    setLoading(l => ({ ...l, [field]: false }));
+
+    if (result.success) {
+      setEditing(e => ({ ...e, [field]: false }));
+      setSaved(s => ({ ...s, [field]: true }));
+      setTimeout(() => setSaved(s => ({ ...s, [field]: false })), 2000);
+    } else {
+      setFieldError(e => ({ ...e, [field]: result.message || 'Failed to update.' }));
+    }
   };
 
-  const handlePwSave = () => {
-    if (!pwForm.current)                  { setPwError('Enter your current password.'); return; }
-    if (pwForm.next.length < 6)           { setPwError('New password must be at least 6 characters.'); return; }
-    if (pwForm.next !== pwForm.confirm)   { setPwError('Passwords do not match.'); return; }
-    setPwError('');
-    setPwSaved(true);
-    setPwForm({ current: '', next: '', confirm: '' });
-    setTimeout(() => setPwSaved(false), 2500);
-    // TODO: call API
+  const handlePwSave = async () => {
+    if (!pwForm.current) { setPwError('Enter your current password.'); return; }
+    if (pwForm.next.length < 6) { setPwError('New password must be at least 6 characters.'); return; }
+    if (pwForm.next !== pwForm.confirm) { setPwError('Passwords do not match.'); return; }
+
+    setLoading(l => ({ ...l, password: true }));
+    const result = await changePassword({ currentPassword: pwForm.current, newPassword: pwForm.next });
+    setLoading(l => ({ ...l, password: false }));
+
+    if (result.success) {
+      setPwError('');
+      setPwSaved(true);
+      setPwForm({ current: '', next: '', confirm: '' });
+      setTimeout(() => setPwSaved(false), 2500);
+    } else {
+      setPwError(result.message || 'Failed to update password.');
+    }
   };
 
   const Field = ({ label, field, type = 'text' }) => (
@@ -84,10 +98,13 @@ const ProfileTab = ({ user }) => {
               onChange={e => setForm(f => ({ ...f, [field]: e.target.value }))}
               autoFocus
             />
-            <button className="ap-btn-save" onClick={() => saveField(field)}>
-              <CheckLg size={13} /> Save
+            <button className="ap-btn-save" onClick={() => saveField(field)} disabled={loading[field]}>
+              <CheckLg size={13} /> {loading[field] ? 'Saving...' : 'Save'}
             </button>
-            <button className="ap-btn-cancel" onClick={() => setEditing(e => ({ ...e, [field]: false }))}>
+            <button className="ap-btn-cancel" onClick={() => {
+              setEditing(e => ({ ...e, [field]: false }));
+              setFieldError(e => ({ ...e, [field]: '' }));
+            }}>
               <X size={15} />
             </button>
           </>
@@ -101,6 +118,7 @@ const ProfileTab = ({ user }) => {
           </>
         )}
       </div>
+      {fieldError[field] && <p className="ap-pw-error">{fieldError[field]}</p>}
     </div>
   );
 
@@ -128,7 +146,7 @@ const ProfileTab = ({ user }) => {
         <div className="ap-card-header">
           <h3 className="ap-card-title">Personal Info</h3>
         </div>
-        <Field label="Full Name"     field="name" />
+        <Field label="Full Name" field="name" />
         <Field label="Email Address" field="email" type="email" />
       </div>
 
@@ -136,21 +154,23 @@ const ProfileTab = ({ user }) => {
         <div className="ap-card-header">
           <h3 className="ap-card-title">Change Password</h3>
         </div>
-        <PwInput label="Current Password"     field="current" />
-        <PwInput label="New Password"         field="next" />
+        <PwInput label="Current Password" field="current" />
+        <PwInput label="New Password" field="next" />
         <PwInput label="Confirm New Password" field="confirm" />
         {pwError && <p className="ap-pw-error">{pwError}</p>}
         {pwSaved && <p className="ap-pw-success">✓ Password updated successfully!</p>}
-        <button className="ap-btn-primary" onClick={handlePwSave}>Update Password</button>
+        <button className="ap-btn-primary" onClick={handlePwSave} disabled={loading.password}>
+          {loading.password ? 'Updating...' : 'Update Password'}
+        </button>
       </div>
     </div>
   );
 };
 
-// ─── Dashboard Tab ────────────────────────────────────────────────────────────
+// ── Dashboard Tab ─────────────────────────────────────────────────────────────
 const DashboardTab = () => {
   const [expanded, setExpanded] = useState(null);
-  const total     = MOCK_ORDERS.reduce((s, o) => s + o.total, 0);
+  const total = MOCK_ORDERS.reduce((s, o) => s + o.total, 0);
   const delivered = MOCK_ORDERS.filter(o => o.status === 'Delivered').length;
 
   return (
@@ -176,7 +196,7 @@ const DashboardTab = () => {
         </div>
 
         {MOCK_ORDERS.length === 0 && (
-          <p className="ap-empty">No orders yet. Time to grow your collection</p>
+          <p className="ap-empty">No orders yet. Time to grow your collection 🌱</p>
         )}
 
         <div className="ap-order-list">
@@ -226,39 +246,12 @@ const DashboardTab = () => {
   );
 };
 
-// ─── AccountPage — inline full-page section (header + footer stay visible) ───
-//
-// HOW IT WORKS:
-//   • This component renders as a normal div in document flow,
-//     BELOW the sticky header and ABOVE the footer.
-//   • When `show` is false it renders nothing, so the page underneath shows.
-//   • No modal, no new tab, no page refresh.
-//
-// USAGE in App.jsx (or wherever you compose your layout):
-//
-//   <Header />
-//   <AccountPage
-//     show={showAccount}
-//     initialTab={accountTab}
-//     user={activeUser}
-//     onClose={() => setShowAccount(false)}
-//     onLogout={() => { logout(); setShowAccount(false); }}
-//   />
-//   {!showAccount && <YourPageRoutes />}   ← hide other content while account is open
-//   <Footer />
-//
+// ── Account Page ──────────────────────────────────────────────────────────────
 const AccountPage = ({ show, initialTab = 'profile', user, onClose, onLogout }) => {
-  const [tab, setTab]             = useState(initialTab);
+  const [tab, setTab] = useState(initialTab);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
-  // Sync active tab when opened from different navbar links
-  useEffect(() => { if (show) setTab(initialTab); }, [show, initialTab]);
-
-  // Scroll to top of page whenever account view opens
-  useEffect(() => {
-    if (show) window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [show]);
-
+ 
   if (!show) return null;
 
   const initials = user?.name
@@ -266,14 +259,14 @@ const AccountPage = ({ show, initialTab = 'profile', user, onClose, onLogout }) 
     : 'U';
 
   const NAV = [
-    { id: 'profile',   label: 'My Profile', icon: <Person size={15} /> },
-    { id: 'dashboard', label: 'Dashboard',  icon: <ClipboardCheck size={15} /> },
+    { id: 'profile', label: 'My Profile', icon: <Person size={15} /> },
+    { id: 'dashboard', label: 'Dashboard', icon: <ClipboardCheck size={15} /> },
   ];
 
   return (
     <div className="ap-page">
 
-      {/* ── Breadcrumb / back bar ── */}
+      {/* Breadcrumb */}
       <div className="ap-topbar">
         <button className="ap-back-btn" onClick={onClose}>
           <ChevronLeft size={14} /> Back to site
@@ -286,7 +279,7 @@ const AccountPage = ({ show, initialTab = 'profile', user, onClose, onLogout }) 
 
       <div className="ap-layout">
 
-        {/* ── Sidebar ── */}
+        {/* Sidebar */}
         <aside className="ap-sidebar">
           <div className="ap-sidebar-top">
             <div className="ap-avatar">{initials}</div>
@@ -303,28 +296,22 @@ const AccountPage = ({ show, initialTab = 'profile', user, onClose, onLogout }) 
                 className={`ap-nav-item ${tab === n.id ? 'active' : ''}`}
                 onClick={() => setTab(n.id)}
               >
-                {n.icon}
-                {n.label}
+                {n.icon} {n.label}
               </button>
             ))}
           </nav>
 
           <button className="ap-nav-item ap-logout" onClick={onLogout}>
-            <BoxArrowRight size={15} />
-            Log Out
+            <BoxArrowRight size={15} /> Log Out
           </button>
         </aside>
 
-        {/* ── Main content ── */}
+        {/* Main */}
         <main className="ap-main">
 
           {/* Mobile bar */}
           <div className="ap-mobile-bar">
-            <button
-              className="ap-hamburger"
-              onClick={() => setMobileNavOpen(v => !v)}
-              aria-label="Toggle menu"
-            >
+            <button className="ap-hamburger" onClick={() => setMobileNavOpen(v => !v)}>
               <List size={20} />
             </button>
             <span className="ap-mobile-title">
@@ -332,7 +319,6 @@ const AccountPage = ({ show, initialTab = 'profile', user, onClose, onLogout }) 
             </span>
           </div>
 
-          {/* Mobile dropdown nav */}
           {mobileNavOpen && (
             <div className="ap-mobile-nav">
               {NAV.map(n => (
@@ -350,12 +336,11 @@ const AccountPage = ({ show, initialTab = 'profile', user, onClose, onLogout }) 
             </div>
           )}
 
-          {/* Desktop section heading */}
           <h2 className="ap-section-title">
             {tab === 'profile' ? 'My Profile' : 'Dashboard'}
           </h2>
 
-          {tab === 'profile'   && <ProfileTab user={user} />}
+          {tab === 'profile' && <ProfileTab user={user} />}
           {tab === 'dashboard' && <DashboardTab />}
         </main>
       </div>

@@ -13,6 +13,7 @@ const CartDrawer = ({ show, onClose }) => {
     const navigate = useNavigate();
     const { cart, updateQuantity, removeFromCart } = useCartContext();
     const { products } = useProductContext();
+    const [qty, setQty] = useState(1);
     const { categories } = useCategoryContext();
     const [atBottom, setAtBottom] = useState(false);
 

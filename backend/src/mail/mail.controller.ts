@@ -1,4 +1,6 @@
-import { Controller, Post, Body, BadRequestException } from '@nestjs/common';
+import {Controller,Post,Get,Body,Query,BadRequestException,
+} from '@nestjs/common';
+
 import { MailService } from './mail.service';
 
 @Controller('mail')
@@ -6,12 +8,23 @@ export class MailController {
     constructor(private mailService: MailService) { }
 
     @Post('subscribe')
-    async subscribe(@Body('email') email: string) {
+    public async subscribe(@Body('email') email: string) {
         if (!email || !email.includes('@')) {
             throw new BadRequestException('INVALID_EMAIL');
         }
+        return this.mailService.subscribe(email);
+    }
 
-        await this.mailService.sendWelcome(email);
-        return { message: 'The email was sent successfully!' };
+    @Get('unsubscribe')
+    public async unsubscribeFromLink(@Query('email') email: string) {
+        if (!email || !email.includes('@')) {
+            throw new BadRequestException('INVALID_EMAIL');
+        }
+        return this.mailService.unsubscribe(email);
+    }
+
+    @Get('subscribers')
+    public async getSubscribers() {
+        return this.mailService.getSubscribers();
     }
 }
