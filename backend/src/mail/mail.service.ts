@@ -3,6 +3,7 @@ import { MailerService } from '@nestjs-modules/mailer';
 import { InjectRepository, } from '@nestjs/typeorm';
 import { Repository, } from 'typeorm';
 import { Subscriber } from './Entity/subscriber.entity';
+import { SendNewsletterDto } from './DTO/send-newsletter.dto';
 
 @Injectable()
 export class MailService {
@@ -12,12 +13,16 @@ export class MailService {
         @InjectRepository(Subscriber) private subscriberRepository: Repository<Subscriber>,
     ) { }
 
-    public async getSubscribers() {
-        return this.subscriberRepository.find({
-            order: { createdAt: 'DESC' },
-        });
+
+    public async findAll() {
+        try {
+            return await this.subscriberRepository.find({
+            });
+        } catch (error) {
+            throw new Error('Error fetching subscribers');
+        }
     }
-    
+
     public async subscribe(email: string) {
         const existing = await this.subscriberRepository.findOne({
             where: { email },
@@ -54,6 +59,36 @@ export class MailService {
     }
 
 
+    public async sendToSubscribers(data: SendNewsletterDto) {
+        if (!data.subscriberIds) {
+            throw new BadRequestException('subscriberIds is required');
+        }
+        const subscriberIds = Array.isArray(data.subscriberIds)
+            ? data.subscriberIds
+            : [data.subscriberIds];
+            
+        const allSubscribers = await this.subscriberRepository.find({
+            where: { isActive: true },
+        });
+        const selectedSubscribers = allSubscribers.filter(subscriber =>
+            subscriberIds.includes(subscriber.id),
+        );
+
+        const emails = selectedSubscribers.map(subscriber => subscriber.email);
+        if (!emails.length) {
+            throw new BadRequestException('NO_ACTIVE_SUBSCRIBERS');
+        }
+        await this.mailerService.sendMail({
+            to: emails,
+            subject: data.subject,
+            html: `
+            <h2>${data.subject}</h2>
+            <p>${data.message}</p>
+        `,
+        });
+
+        return { sentTo: emails.length, emails, message: 'Newsletter sent successfully' };
+    }
 
     public async sendWelcome(subscriberEmail: string) {
         const unsubscribeLink = `http://localhost:3000/mail/unsubscribe?email=${encodeURIComponent(subscriberEmail)}`;
