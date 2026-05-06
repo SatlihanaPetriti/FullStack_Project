@@ -78,14 +78,18 @@ export class MailService {
         if (!emails.length) {
             throw new BadRequestException('NO_ACTIVE_SUBSCRIBERS');
         }
-        await this.mailerService.sendMail({
-            to: emails,
-            subject: data.subject,
-            html: `
-            <h2>${data.subject}</h2>
-            <p>${data.message}</p>
-        `,
-        });
+        await Promise.all(
+            emails.map((email, index) =>
+                this.mailerService.sendMail({
+                    to: email, 
+                    subject: data.subject,
+                    html: `
+                    <h2>${data.subject}</h2>
+                    <p>${data.message}</p>
+                `,
+                }),
+            ),
+        );
 
         return { sentTo: emails.length, emails, message: 'Newsletter sent successfully' };
     }

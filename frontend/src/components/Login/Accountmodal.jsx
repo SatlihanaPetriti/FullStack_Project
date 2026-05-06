@@ -34,7 +34,7 @@ const AccountDropdown = ({ show, handleClose, user, position, logout, onNavigate
       </div>
       <button
         className="acc-btn acc-btn-green"
-        onClick={() => { onNavigate('profile'); handleClose(); }}
+        onClick={() => { onNavigate('account'); handleClose(); }}
       >
         My Profile
       </button>

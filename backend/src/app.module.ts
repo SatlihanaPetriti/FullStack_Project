@@ -15,7 +15,6 @@ import { Favorite } from './favorite/Entity/favorite.entity';
 import { CartModule } from './Cart/cart.module';
 import { Cart } from './Cart/Entity/cart';
 import { CartItem } from './Cart/Entity/cart-items';
-import { SubscriberModule } from './subscriber/subscriber.module';
 import { Subscriber } from './mail/Entity/subscriber.entity';
 
 @Module({
@@ -43,7 +42,6 @@ import { Subscriber } from './mail/Entity/subscriber.entity';
         MailModule,
         FavoriteModule,
         CartModule,
-        SubscriberModule
     ],
 })
 export class AppModule { }

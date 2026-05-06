@@ -20,7 +20,10 @@ import { CartProvider } from './Context/CartContext.jsx';
 import { CheckoutProvider } from './Context/Checkout.jsx';
 import About from "./components/AboutUs/AboutUs.jsx";
 import Contact from "./components/Contact/Contact.jsx";
-import AccountPage from './components/Login/logdash.jsx'; // ← ADD
+import UserLayout from "./components/Login/UserDashboard/UserLayout.jsx";
+// import ProfilePage from './components/User/Profile';
+import DashboardFavorites from "./components/Login/UserDashboard/Favorite.jsx";
+import MyProfile from "./components/Login/UserDashboard/MyProfile.jsx";
 
 function App() {
   return (
@@ -102,17 +105,17 @@ function App() {
                         <FooterHome />
                       </>
                     } />
-
-                    {/* ← ADD THIS ROUTE */}
                     <Route path="/account" element={
                       <>
                         <Announcement />
                         <Header />
-                        <AccountPageWrapper />
+                        <UserLayout />
                         <FooterHome />
                       </>
-                    } />
-
+                    }>
+                      <Route path="profile" element={<MyProfile />} />
+                      <Route index element={<DashboardFavorites />} />
+                    </Route>
                     <Route path="/reset-password" element={<ResetPassword />} />
                   </Routes>
                 </FavoritesProvider>
@@ -122,28 +125,6 @@ function App() {
         </ProductProvider>
       </CategoryProvider>
     </UserProvider>
-  );
-}
-
-// ← ADD THIS — reads ?tab= from the URL and passes it to AccountPage
-import { useSearchParams } from 'react-router-dom';
-import { useUserContext } from './Context/Auth.jsx';
-import { useNavigate } from 'react-router-dom';
-
-function AccountPageWrapper() {
-  const [searchParams] = useSearchParams();
-  const { user, logout } = useUserContext();
-  const navigate = useNavigate();
-  const tab = searchParams.get('tab') || 'profile';
-
-  return (
-    <AccountPage
-      show={true}
-      initialTab={tab}
-      user={user}
-      onClose={() => navigate(-1)}
-      onLogout={() => { logout(); navigate('/'); }}
-    />
   );
 }
 
