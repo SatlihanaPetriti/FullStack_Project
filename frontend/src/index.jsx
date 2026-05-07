@@ -21,10 +21,12 @@ import { CheckoutProvider } from './Context/Checkout.jsx';
 import About from "./components/AboutUs/AboutUs.jsx";
 import Contact from "./components/Contact/Contact.jsx";
 import UserLayout from "./components/Login/UserDashboard/UserLayout.jsx";
-// import ProfilePage from './components/User/Profile';
+import SalePage from './components/salesection/SalePage.jsx';
 import DashboardFavorites from "./components/Login/UserDashboard/Favorite.jsx";
 import MyProfile from "./components/Login/UserDashboard/MyProfile.jsx";
-
+import {OrderProvider} from "./Context/OrderService.jsx";
+import UserOrders from "./components/Login/UserDashboard/MyOrders.jsx";
+import AccountDashboard from "./components/Login/UserDashboard/dashboard.jsx";
 function App() {
   return (
     <UserProvider>
@@ -32,99 +34,107 @@ function App() {
         <ProductProvider>
           <CartProvider>
             <CheckoutProvider>
-              <NewsletterProvider>
-                <FavoritesProvider>
-                  <Routes>
-                    <Route path="/" element={
-                      <>
-                        <Announcement />
-                        <Header />
-                        <HomePage />
-                      </>
-                    } />
+              <OrderProvider>
+                <NewsletterProvider>
+                  <FavoritesProvider>
+                    <Routes>
+                      <Route path="/" element={
+                        <>
+                          <Announcement />
+                          <Header />
+                          <HomePage />
+                        </>
+                      } />
 
-                    <Route path="/indoor-plants" element={
-                      <>
-                        <Announcement />
-                        <Header />
-                        <IndoorPlants />
-                      </>
-                    } />
+                      <Route path="/indoor-plants" element={
+                        <>
+                          <Announcement />
+                          <Header />
+                          <IndoorPlants />
+                        </>
+                      } />
 
-                    <Route path="/category/:id" element={
-                      <>
-                        <Announcement />
-                        <Header />
-                        <CategoryProducts />
-                      </>
-                    } />
+                      <Route path="/category/:id" element={
+                        <>
+                          <Announcement />
+                          <Header />
+                          <CategoryProducts />
+                        </>
+                      } />
 
-                    <Route path="/admin/*" element={
-                      <ProtectedRoute requiredRole="admin">
-                        <AdminRouter />
-                      </ProtectedRoute>
-                    } />
+                      <Route path="/admin/*" element={
+                        <ProtectedRoute requiredRole="admin">
+                          <AdminRouter />
+                        </ProtectedRoute>
+                      } />
 
-                    <Route path="/product/:id" element={
-                      <>
-                        <Announcement />
-                        <Header />
-                        <Productcart />
-                      </>
-                    } />
+                      <Route path="/product/:id" element={
+                        <>
+                          <Announcement />
+                          <Header />
+                          <Productcart />
+                        </>
+                      } />
+                      <Route path="/sale" element={
+                        <><Announcement />
+                          <Header />
+                          <SalePage />
+                        </>}
+                      />
 
-                    <Route path="/checkout" element={
-                      <>
-                        <Announcement />
-                        <Header />
-                        <CheckOut />
-                        <FooterHome />
-                      </>
-                    } />
+                      <Route path="/checkout" element={
+                        <>
+                          <Announcement />
+                          <Header />
+                          <CheckOut />
+                          <FooterHome />
+                        </>
+                      } />
 
-                    <Route path="/favorite" element={
-                      <>
-                        <FavoritesList />
-                      </>
-                    } />
+                      <Route path="/favorite" element={
+                        <>
+                          <FavoritesList />
+                        </>
+                      } />
 
-                    <Route path="/About" element={
-                      <>
-                        <Announcement />
-                        <Header />
-                        <About />
-                        <FooterHome />
-                      </>
-                    } />
+                      <Route path="/About" element={
+                        <>
+                          <Announcement />
+                          <Header />
+                          <About />
+                          <FooterHome />
+                        </>
+                      } />
 
-                    <Route path="/Contact" element={
-                      <>
-                        <Announcement />
-                        <Header />
-                        <Contact />
-                        <FooterHome />
-                      </>
-                    } />
-                    <Route path="/account" element={
-                      <>
-                        <Announcement />
-                        <Header />
-                        <UserLayout />
-                        <FooterHome />
-                      </>
-                    }>
-                      <Route path="profile" element={<MyProfile />} />
-                      <Route index element={<DashboardFavorites />} />
-                    </Route>
-                    <Route path="/reset-password" element={<ResetPassword />} />
-                  </Routes>
-                </FavoritesProvider>
-              </NewsletterProvider>
+                      <Route path="/Contact" element={
+                        <>
+                          <Announcement />
+                          <Header />
+                          <Contact />
+                          <FooterHome />
+                        </>
+                      } />
+                      <Route path="/account" element={
+                        <>
+                          <Announcement />
+                          <Header />
+                          <UserLayout />
+                          <FooterHome />
+                        </>
+                      }>
+                        <Route path="profile" element={<MyProfile />} />
+                        <Route index element={<AccountDashboard />} />
+                      </Route>
+                      <Route path="/reset-password" element={<ResetPassword />} />
+                    </Routes>
+                  </FavoritesProvider>
+                </NewsletterProvider>
+              </OrderProvider>
             </CheckoutProvider>
           </CartProvider>
         </ProductProvider>
       </CategoryProvider>
-    </UserProvider>
+    </UserProvider >
   );
 }
 

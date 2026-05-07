@@ -1,5 +1,7 @@
 import {
     Controller, Post, Get, Body, Query, BadRequestException,
+    Res,
+    Header,
 } from '@nestjs/common';
 
 import { MailService } from './mail.service';
@@ -22,12 +24,14 @@ export class MailController {
     }
 
     @Get('unsubscribe')
+    @Header('Content-Type', 'text/html')
     public async unsubscribeFromLink(@Query('email') email: string) {
         if (!email || !email.includes('@')) {
             throw new BadRequestException('INVALID_EMAIL');
         }
         return this.mailService.unsubscribe(email);
     }
+    
     @Post('send-newsletter')
     public async sendNewsletter(@Body() body: SendNewsletterDto,) {
         return this.mailService.sendToSubscribers(body);

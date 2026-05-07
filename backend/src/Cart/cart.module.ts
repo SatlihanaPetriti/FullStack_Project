@@ -10,11 +10,12 @@ import { Product } from 'src/products/Entity/product.entity';
 import { CartService } from './cart.service';
 import { CheckoutService } from './checkout.service';
 import { CheckoutController } from './checkout.controller';
+import { Order } from 'src/orders/Entity/order.entity';
+import { OrderItem } from 'src/orders/Entity/order-item.entity';
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Cart, CartItem, Product]),
+    TypeOrmModule.forFeature([Cart, CartItem, Product, Order, OrderItem]),
     UsersModule,
-    ProductsModule,
     JwtModule,
   ],
   controllers: [CartController, CheckoutController],

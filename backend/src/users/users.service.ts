@@ -47,11 +47,9 @@ export class UsersService {
         try {
             await this.userRepository.update(id, data);
             const updatedUser = await this.userRepository.findOne({ where: { id } });
-
             if (!updatedUser) {
                 throw new ErrorHandler('User not found', HttpStatus.NOT_FOUND);
             }
-
             return updatedUser;
         } catch (error) {
             throw new ErrorHandler(error.message, HttpStatus.BAD_REQUEST);

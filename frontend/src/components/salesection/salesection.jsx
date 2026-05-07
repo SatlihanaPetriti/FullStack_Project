@@ -1,8 +1,11 @@
+import { useNavigate } from 'react-router-dom';
 import { Button } from "react-bootstrap";
 import img1 from '../../assets/images/Home/saleimage.png';
 import './salesection.css';
 
 const SaleSection = () => {
+    const navigate = useNavigate();
+
     return (
         <section
             className="sale-section d-flex align-items-start justify-content-center"
@@ -22,7 +25,7 @@ const SaleSection = () => {
                 <Button
                     variant="light"
                     className="shop-btn"
-                    href="/sale"
+                    onClick={() => navigate('/sale')}
                 >
                     Shop for Sale
                 </Button>

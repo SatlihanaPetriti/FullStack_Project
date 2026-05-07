@@ -7,7 +7,7 @@ import { AuthGuard } from '../guards/auth.guards';
 export class CheckoutController {
     constructor(private readonly checkoutService: CheckoutService) { }
 
-    @Post('create-intent')
+    @Post('create-payment')
     async createIntent(@Req() req: any) {
         return await this.checkoutService.createPaymentIntent(req.user.id);
     }
@@ -15,7 +15,7 @@ export class CheckoutController {
     @Post('confirm')
     async confirm(
         @Req() req: any,
-        @Body('paymentIntentId') paymentIntentId: string,
+        @Body('paymentId') paymentIntentId: string,
     ) {
         return await this.checkoutService.confirmOrder(req.user.id, paymentIntentId);
     }

@@ -39,25 +39,34 @@ export class MailService {
             message: 'Subscribed successfully',
         };
     }
-    public async unsubscribe(email: string) {
+    public async unsubscribe(email: string): Promise<string> {
         const subscriber = await this.subscriberRepository.findOne({
             where: { email },
         });
 
         if (!subscriber) {
-            throw new BadRequestException('EMAIL_NOT_FOUND');
+            return `
+            <html>
+                <body style="font-family:sans-serif; text-align:center; padding:80px; color:#214332;">
+                    <h2>❌ Email not found.</h2>
+                    <a href="http://localhost:5173">← Back to Green Scene</a>
+                </body>
+            </html>
+        `;
         }
-        if (!subscriber.isActive) {
-            throw new BadRequestException('ALREADY_UNSUBSCRIBED');
-        }
-        await this.subscriberRepository.update(
-            { email },
-            { isActive: false }
-        );
 
-        return { message: 'Unsubscribed successfully' };
+        await this.subscriberRepository.delete({ email });
+
+        return `
+        <html>
+            <body style="font-family:sans-serif; text-align:center; padding:80px; color:#214332;">
+                <h2>✅ Unsubscribed successfully.</h2>
+                <p>You will no longer receive emails from us.</p>
+                <a href="http://localhost:5173">← Back to Green Scene</a>
+            </body>
+        </html>
+    `;
     }
-
 
     public async sendToSubscribers(data: SendNewsletterDto) {
         if (!data.subscriberIds) {
@@ -66,7 +75,7 @@ export class MailService {
         const subscriberIds = Array.isArray(data.subscriberIds)
             ? data.subscriberIds
             : [data.subscriberIds];
-            
+
         const allSubscribers = await this.subscriberRepository.find({
             where: { isActive: true },
         });
@@ -78,19 +87,16 @@ export class MailService {
         if (!emails.length) {
             throw new BadRequestException('NO_ACTIVE_SUBSCRIBERS');
         }
-        await Promise.all(
-            emails.map((email, index) =>
-                this.mailerService.sendMail({
-                    to: email, 
-                    subject: data.subject,
-                    html: `
-                    <h2>${data.subject}</h2>
-                    <p>${data.message}</p>
-                `,
-                }),
-            ),
-        );
-
+        for (const email of emails) {
+            await this.mailerService.sendMail({
+                to: email,
+                subject: data.subject,
+                html: `
+            <h2>${data.subject}</h2>
+            <p>${data.message}</p>
+        `,
+            });
+        }
         return { sentTo: emails.length, emails, message: 'Newsletter sent successfully' };
     }
 
