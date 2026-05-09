@@ -19,6 +19,7 @@ import { Subscriber } from './mail/Entity/subscriber.entity';
 import { OrderModule } from './orders/orders.module';
 import { Order } from './orders/Entity/order.entity';
 import { OrderItem } from './orders/Entity/order-item.entity';
+import { SendEmailModule } from './send_email/send_email.module';
 
 @Module({
     imports: [
@@ -46,6 +47,7 @@ import { OrderItem } from './orders/Entity/order-item.entity';
         FavoriteModule,
         CartModule,
         OrderModule,
+        SendEmailModule,
     ],
 })
 export class AppModule { }

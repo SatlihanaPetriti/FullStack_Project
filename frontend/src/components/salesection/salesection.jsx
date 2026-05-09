@@ -14,7 +14,7 @@ const SaleSection = () => {
             <div className="container text-center text-white sale-content">
                 <h2 className="sale-title">
                     Spring into Green - <br />
-                    <span className="highlight">25%</span> off all indoor plants!
+                    <span className="highlight">20%</span> off all indoor plants!
                 </h2>
 
                 <p className="sale-description">

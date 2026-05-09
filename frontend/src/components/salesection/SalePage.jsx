@@ -19,7 +19,7 @@ const SalePage = () => {
                     Spring <em>Sale</em>
                 </h1>
                 <p className="sale-hero__sub">
-                    Fresh greens, unbeatable prices — up to 25% off indoor plants
+                    Fresh greens, unbeatable prices — up to 20% off indoor plants
                 </p>
             </div>
 

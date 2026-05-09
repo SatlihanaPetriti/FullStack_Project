@@ -1,14 +1,43 @@
-import { Container, Row, Col, Form, Button } from "react-bootstrap";
+import { useState } from "react";
+import { Container, Row, Col, Form, Button, Alert } from "react-bootstrap";
 import { GeoAlt, Telephone, Envelope, ArrowRight, Lock } from "react-bootstrap-icons";
+import { useContactContext } from "../../Context/ContactContext";
 import "./Contact.css";
 
 const INFO_ITEMS = [
   { icon: <GeoAlt size={14} color="#a3c4b0" />, label: "Visit us", value: "14 Fernwood Lane, Portland OR" },
   { icon: <Telephone size={14} color="#a3c4b0" />, label: "Call us", value: "+1 (503) 864 2291" },
-  { icon: <Envelope size={14} color="#a3c4b0" />, label: "Email",   value: "hello@leafandroot.com" },
+  { icon: <Envelope size={14} color="#a3c4b0" />, label: "Email", value: "hello@leafandroot.com" },
 ];
 
+const INITIAL_FORM = {
+  firstName: "",
+  lastName: "",
+  email: "",
+  phone: "",
+  message: "",
+};
+
 export default function Contact() {
+  const { success, sendMessage } = useContactContext();
+
+  const [formData, setFormData] = useState(INITIAL_FORM);
+
+  const handleChange = (e) => {
+    
+    const { id, value } = e.target;
+    
+    setFormData((prev) => ({ 
+      ...prev, [id]: value
+     }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    await sendMessage(formData);
+    setFormData(INITIAL_FORM);
+  };
+
   return (
     <div className="contact-page">
       <Container fluid className="p-0">
@@ -49,31 +78,58 @@ export default function Contact() {
                 Fill out the form and we'll be in touch within 24 hours.
               </p>
 
-              <Form noValidate onSubmit={e => e.preventDefault()}>
+              {/* Feedback messages */}
+              {success === true && <Alert variant="success">Mesazhi u dërgua me sukses! ✓</Alert>}
+
+              <Form noValidate onSubmit={handleSubmit}>
 
                 <Row className="g-4 mb-4">
                   <Col sm={6}>
                     <Form.Group controlId="firstName">
                       <Form.Label className="field-label">First name</Form.Label>
-                      <Form.Control className="contact-input" type="text" placeholder="Ada" />
+                      <Form.Control
+                        className="contact-input"
+                        type="text"
+                        placeholder="Ada"
+                        value={formData.firstName}
+                        onChange={handleChange}
+                      />
                     </Form.Group>
                   </Col>
                   <Col sm={6}>
                     <Form.Group controlId="lastName">
                       <Form.Label className="field-label">Last name</Form.Label>
-                      <Form.Control className="contact-input" type="text" placeholder="Lovelace" />
+                      <Form.Control
+                        className="contact-input"
+                        type="text"
+                        placeholder="Lovelace"
+                        value={formData.lastName}
+                        onChange={handleChange}
+                      />
                     </Form.Group>
                   </Col>
                 </Row>
 
                 <Form.Group controlId="email" className="mb-4">
                   <Form.Label className="field-label">Email address</Form.Label>
-                  <Form.Control className="contact-input" type="email" placeholder="ada@example.com" />
+                  <Form.Control
+                    className="contact-input"
+                    type="email"
+                    placeholder="ada@example.com"
+                    value={formData.email}
+                    onChange={handleChange}
+                  />
                 </Form.Group>
 
                 <Form.Group controlId="phone" className="mb-4">
                   <Form.Label className="field-label">Phone (optional)</Form.Label>
-                  <Form.Control className="contact-input" type="tel" placeholder="+1 (000) 000 0000" />
+                  <Form.Control
+                    className="contact-input"
+                    type="tel"
+                    placeholder="+1 (000) 000 0000"
+                    value={formData.phone}
+                    onChange={handleChange}
+                  />
                 </Form.Group>
 
                 <Form.Group controlId="message" className="mb-0">
@@ -82,6 +138,8 @@ export default function Contact() {
                     as="textarea"
                     className="contact-textarea"
                     placeholder="Tell us what's on your mind…"
+                    value={formData.message}
+                    onChange={handleChange}
                   />
                 </Form.Group>
 
@@ -91,7 +149,7 @@ export default function Contact() {
                 </Button>
 
                 <p className="privacy-note">
-                  <Lock size={11} color="#a09a92" />
+                  <Lock size={11} color="#565656" />
                   Your information is private and never shared.
                 </p>
 

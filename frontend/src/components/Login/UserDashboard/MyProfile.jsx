@@ -4,10 +4,6 @@ import "./MyProfile.css";
 const MyProfile = () => {
     const { user } = useUserContext();
 
-    if (!user) {
-        return <p className="loading">No user found</p>;
-    }
-
     return (
         <div className="profile-container">
             <h2 className="title">My Profile</h2>
