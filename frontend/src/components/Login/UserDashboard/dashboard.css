@@ -1,0 +1,190 @@
+/* ── dashboard.css ───────────────────────────────────────────────────────────
+   AccountDashboard — exact logdash.css colors, fonts & tokens
+   ──────────────────────────────────────────────────────────────────────────── */
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+:root {
+    --green: #214332;
+    --green-mid: #2f5e47;
+    --green-soft: #3d7a5e;
+    --green-pale: #d6e8de;
+    --green-mist: #f0f6f2;
+    --white: #ffffff;
+    --text-dark: #1a2e24;
+    --text-mid: #4a6358;
+    --text-light: #7a9e8e;
+    --border: #dceee5;
+    --shadow-sm: 0 2px 8px rgba(33, 67, 50, 0.08);
+    --shadow-md: 0 6px 24px rgba(33, 67, 50, 0.12);
+    --radius: 14px;
+    --radius-sm: 8px;
+}
+
+/* ── Wrapper ──────────────────────────────────────────────────────────────── */
+
+.account-dashboard {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    font-family: 'DM Sans', sans-serif;
+    animation: dash-fadein 0.35s ease;
+}
+
+@keyframes dash-fadein {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ── Page title ───────────────────────────────────────────────────────────── */
+
+.dashboard-page-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 26px;
+    color: var(--green);
+    margin: 0 0 4px;
+    letter-spacing: -0.3px;
+}
+
+/* ── Stats row  (mirrors .ap-stats-row / .ap-stat) ───────────────────────── */
+
+.dash-stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+.dash-stat {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    box-shadow: var(--shadow-sm);
+    transition: box-shadow 0.18s, transform 0.18s;
+}
+
+.dash-stat:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+.dash-stat-num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 28px;
+    color: var(--green);
+    line-height: 1;
+}
+
+.dash-stat-label {
+    font-size: 12px;
+    color: var(--text-light);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 500;
+}
+
+/* ── Section card  (mirrors .ap-card) ────────────────────────────────────── */
+
+.dash-section {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+    animation: dash-fadein 0.3s ease;
+}
+
+/* ── Section header  (mirrors .ap-card-header) ───────────────────────────── */
+
+.dash-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px 18px;
+    border-bottom: 1px solid var(--border);
+}
+
+.dash-section-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.dash-section-titles {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+/* mirrors .ap-card-title */
+.dash-section-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 17px;
+    color: var(--green);
+    margin: 0;
+}
+
+.dash-section-sub {
+    font-size: 12px;
+    color: var(--text-light);
+}
+
+/* ── Pills  (mirrors .ap-saved-badge / .ap-status-badge) ─────────────────── */
+
+.dash-section-pill {
+    font-size: 11.5px;
+    font-weight: 600;
+    padding: 3px 12px;
+    border-radius: 999px;
+    border: 1.5px solid;
+    flex-shrink: 0;
+    letter-spacing: 0.2px;
+}
+
+.dash-section-pill--orders {
+    background: var(--green-pale);
+    border-color: var(--green-pale);
+    color: var(--green);
+}
+
+.dash-section-pill--favorites {
+    background: #fef2f2;
+    border-color: #fecaca;
+    color: #991b1b;
+}
+
+/* ── Responsive ───────────────────────────────────────────────────────────── */
+
+@media (max-width: 600px) {
+    .dash-stats-row {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    .dash-section-header {
+        padding: 14px 16px 12px;
+    }
+
+    .dash-stat-num {
+        font-size: 22px;
+    }
+}
+
+@media (max-width: 400px) {
+    .dash-stats-row {
+        grid-template-columns: 1fr;
+    }
+}

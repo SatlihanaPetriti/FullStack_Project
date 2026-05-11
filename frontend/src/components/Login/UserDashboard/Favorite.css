@@ -1,180 +1,197 @@
-.dbfav-root {
-    padding: 24px;
-    background: #f9fafb;
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Poppins:wght@300;400;500;600&display=swap');
+
+:root {
+    --ap-green-dark: #214332;
+    --ap-green-mid: #2d6a4f;
+    --ap-green-light: #52b788;
+    --ap-green-pale: #eaf4ee;
+    --ap-red: #c0392b;
+    --ap-bg: #f0f4f1;
+    --ap-card: #ffffff;
+    --ap-border: rgba(33, 67, 50, 0.10);
+}
+
+/* ROOT */
+.fav-root {
+    padding: 16px 26px 24px;
+    background: transparent;
     min-height: 100%;
 }
 
-/* HEADER */
-.dbfav-header {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 20px;
-    font-size: 16px;
-    font-weight: 600;
-    color: #111827;
-}
-
-.dbfav-title {
-    font-size: 18px;
-    font-weight: 700;
-}
-
-.dbfav-pill {
-    margin-left: auto;
-    background: #111827;
-    color: #fff;
-    font-size: 12px;
-    padding: 4px 10px;
-    border-radius: 999px;
-}
-
 /* EMPTY STATE */
-.dbfav-empty {
+.fav-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     text-align: center;
-    padding: 60px 20px;
-    color: #6b7280;
-    animation: fadeIn 0.3s ease-in;
+    padding: 48px 20px;
+    color: rgba(33, 67, 50, 0.45);
 }
 
-.dbfav-empty p {
-    font-size: 16px;
-    font-weight: 600;
-    margin-top: 10px;
-    color: #374151;
+.fav-empty-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: rgba(33, 67, 50, 0.55);
+    margin: 0 0 4px;
 }
 
-.dbfav-empty span {
-    font-size: 13px;
+.fav-empty-sub {
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    color: rgba(33, 67, 50, 0.35);
 }
 
 /* LIST */
-.dbfav-list {
+.fav-list {
     list-style: none;
     padding: 0;
     margin: 0;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 8px;
 }
 
 /* ITEM */
-.dbfav-item {
+.fav-item {
     display: flex;
     align-items: center;
     gap: 14px;
-    background: #fff;
-    border-radius: 14px;
-    padding: 12px;
+    background: var(--ap-card);
+    border-radius: 12px;
+    padding: 12px 14px;
+    border: 1px solid var(--ap-border);
     cursor: pointer;
-    transition: all 0.2s ease;
-    border: 1px solid #eee;
+    transition: box-shadow 0.18s ease, border-color 0.18s ease;
 }
 
-.dbfav-item:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+.fav-item:hover {
+    border-color: rgba(33, 67, 50, 0.20);
+    box-shadow: 0 4px 14px rgba(33, 67, 50, 0.08);
 }
 
-.dbfav-item--removing {
-    opacity: 0.5;
+.fav-item--removing {
+    opacity: 0.4;
+    pointer-events: none;
     transform: scale(0.98);
+    transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
 /* IMAGE */
-.dbfav-img {
-    width: 60px;
-    height: 60px;
-    border-radius: 10px;
+.fav-img {
+    width: 52px;
+    height: 52px;
+    border-radius: 8px;
     overflow: hidden;
-    background: #f3f4f6;
+    background: var(--ap-bg);
     flex-shrink: 0;
 }
 
-.dbfav-img img {
+.fav-img img {
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
 
-.dbfav-img-placeholder {
+.fav-img-placeholder {
     width: 100%;
     height: 100%;
-    background: #e5e7eb;
+    background: rgba(33, 67, 50, 0.08);
 }
 
 /* INFO */
-.dbfav-info {
+.fav-info {
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 3px;
+    min-width: 0;
 }
 
-.dbfav-name {
-    font-size: 14px;
-    font-weight: 600;
-    color: #111827;
+.fav-name {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ap-green-dark);
     margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-.dbfav-category {
-    font-size: 12px;
-    color: #6b7280;
+.fav-cat {
+    font-family: 'Poppins', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    color: rgba(33, 67, 50, 0.40);
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
 }
 
 /* PRICE */
-.dbfav-price-wrap {
+.fav-price-wrap {
     text-align: right;
     display: flex;
     flex-direction: column;
+    align-items: flex-end;
     gap: 2px;
+    flex-shrink: 0;
 }
 
-.dbfav-price {
-    font-size: 14px;
-    font-weight: 700;
-    color: #111827;
+.fav-price {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ap-green-dark);
 }
 
-.dbfav-price-old {
-    font-size: 12px;
-    color: #9ca3af;
+.fav-price-old {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    color: rgba(33, 67, 50, 0.40);
     text-decoration: line-through;
 }
 
+.fav-sale-badge {
+    font-family: 'Poppins', sans-serif;
+    font-size: 10px;
+    color: var(--ap-red);
+    background: rgba(192, 57, 43, 0.08);
+    padding: 2px 7px;
+    border-radius: 999px;
+    font-weight: 600;
+    border: 1px solid rgba(192, 57, 43, 0.20);
+}
+
 /* REMOVE BUTTON */
-.dbfav-remove {
+.fav-remove {
     background: transparent;
     border: none;
-    color: #ef4444;
+    color: rgba(33, 67, 50, 0.25);
     cursor: pointer;
     padding: 6px;
     border-radius: 8px;
-    transition: 0.2s;
+    font-size: 14px;
+    line-height: 1;
+    transition: color 0.15s ease, background 0.15s ease;
+    flex-shrink: 0;
 }
 
-.dbfav-remove:hover {
-    background: #fee2e2;
+.fav-remove:hover {
+    color: var(--ap-red);
+    background: rgba(192, 57, 43, 0.08);
 }
 
-/* SCROLL HINT */
-.dbfav-scroll-hint {
+/* FOOTER */
+.fav-footer {
+    margin-top: 14px;
     text-align: center;
-    font-size: 12px;
-    color: #9ca3af;
-    margin-top: 12px;
 }
 
-/* ANIMATION */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(6px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+.fav-footer span {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    color: rgba(33, 67, 50, 0.40);
+    font-weight: 500;
+    letter-spacing: 0.3px;
 }

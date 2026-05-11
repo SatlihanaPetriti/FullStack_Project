@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { HeartFill } from "react-bootstrap-icons";
 import { useFavorites } from "../../../Context/Favorite";
+import { Heart } from "lucide-react";
 import "./Favorite.css";
 
 const BASE_URL = "http://localhost:3000/products/uploads/variants";
@@ -13,16 +13,34 @@ const DashboardFavorites = () => {
 
     const handleRemove = async (e, id) => {
         e.stopPropagation();
+
         setRemovingId(id);
-        await removeFavorite(id);
+
+        try {
+            await removeFavorite(id);
+        } finally {
+            setRemovingId(null);
+        }
     };
 
     const getPrice = (product) => {
-        if (product.sale_price) 
+        if (product.sale_price)
             return Number(product.sale_price);
-        if (product.sale_percentage) 
+
+        if (product.sale_percentage)
             return product.price - (product.price * product.sale_percentage) / 100;
+
         return Number(product.price);
+    };
+
+    const getDiscount = (product) => {
+        if (product.sale_percentage)
+            return Math.round(product.sale_percentage);
+
+        if (product.sale_price)
+            return Math.round(((product.price - product.sale_price) / product.price) * 100);
+
+        return null;
     };
 
     const getImage = (product) => {
@@ -32,65 +50,106 @@ const DashboardFavorites = () => {
 
     if (!favorites.length) {
         return (
-            <div className="dbfav-empty">
-                <HeartFill size={28} />
-                <p>No favorites yet</p>
-                <span>Start saving products you like</span>
+            <div className="fav-empty">
+                <p className="fav-empty-title">No favorites yet</p>
+                <span className="fav-empty-sub">
+                    Start saving products you like
+                </span>
             </div>
         );
     }
 
     return (
-        <div className="dbfav-root">
-
-            <div className="dbfav-header">
-                <HeartFill size={14} />
-                <span className="dbfav-title">Favorites</span>
-                <span className="dbfav-pill">{favorites.length}</span>
-            </div>
-
-            <ul className="dbfav-list">
+        <div className="fav-root">
+            <ul className="fav-list">
                 {favorites.map(({ id, product, product_id }) => {
-                    if (!product) 
-                        return null;
+                    if (!product) return null;
 
                     const image = getImage(product);
                     const price = getPrice(product);
                     const hasDiscount = product.sale_price || product.sale_percentage;
+                    const discount = getDiscount(product);
+
+                    const isFavorite = favorites.some(
+                        (f) => f.product_id === product_id
+                    );
 
                     return (
                         <li
                             key={id}
-                            className={`dbfav-item ${removingId === product_id ? "dbfav-item--removing" : ""}`}
-                            onClick={() => navigate(`/product/${product.id}`)}
+                            className={`fav-item ${removingId === product_id ? "fav-item--removing" : ""
+                                }`}
+                            onClick={() =>
+                                navigate(`/product/${product.id}`)
+                            }
                         >
-                            <div className="dbfav-img">
-                                {image
-                                    ? <img src={image} alt={product.title} />
-                                    : <div className="dbfav-img-placeholder" />
-                                }
-                            </div>
-
-                            <div className="dbfav-info">
-                                <p className="dbfav-name">{product.title}</p>
-                                <span className="dbfav-category">{product?.category?.name || "No category"}</span>
-                            </div>
-
-                            <div className="dbfav-price-wrap">
-                                {hasDiscount && (
-                                    <span className="dbfav-price-old">€{Number(product.price).toFixed(2)}</span>
+                            {/* IMAGE */}
+                            <div className="fav-img">
+                                {image ? (
+                                    <img
+                                        src={image}
+                                        alt={product.title}
+                                    />
+                                ) : (
+                                    <div className="fav-img-placeholder" />
                                 )}
-                                <span className="dbfav-price">€{price.toFixed(2)}</span>
                             </div>
 
-                            <button className="dbfav-remove" onClick={(e) => handleRemove(e, product_id)}>
-                                <HeartFill size={13} />
+                            {/* INFO */}
+                            <div className="fav-info">
+                                <p className="fav-name">
+                                    {product.title}
+                                </p>
+                                <span className="fav-cat">
+                                    {product?.category?.name || "No category"}
+                                </span>
+                            </div>
+
+                            {/* PRICE */}
+                            <div className="fav-price-wrap">
+                                {hasDiscount && (
+                                    <span className="fav-price-old">
+                                        €{Number(product.price).toFixed(2)}
+                                    </span>
+                                )}
+
+                                <span className="fav-price">
+                                    €{price.toFixed(2)}
+                                </span>
+
+                                {discount && (
+                                    <span className="fav-sale-badge">
+                                        −{discount}%
+                                    </span>
+                                )}
+                            </div>
+
+                            {/* HEART REMOVE */}
+                            <button
+                                className="fav-remove"
+                                onClick={(e) =>
+                                    handleRemove(e, product_id)
+                                }
+                                aria-label="Remove from favorites"
+                            >
+                                <Heart
+                                    size={16}
+                                    fill={isFavorite ? "#c0392b" : "none"}
+                                    stroke="#c0392b"
+                                />
                             </button>
                         </li>
                     );
                 })}
             </ul>
 
+            {/* FOOTER */}
+            <div className="fav-footer">
+                <span>
+                    {favorites.length} saved item
+                    {favorites.length !== 1 ? "s" : ""}
+                </span>
+            </div>
         </div>
     );
 };

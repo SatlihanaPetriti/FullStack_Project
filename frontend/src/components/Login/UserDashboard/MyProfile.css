@@ -1,37 +1,153 @@
-.profile-container {
-    padding: 30px;
-    font-family: Arial, sans-serif;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Poppins:wght@300;400;500;600&display=swap');
+
+:root {
+    --ap-green-dark: #214332;
+    --ap-green-mid: #2d6a4f;
+    --ap-green-light: #52b788;
+    --ap-green-pale: #eaf4ee;
+    --ap-red: #c0392b;
+    --ap-bg: #f0f4f1;
+    --ap-card: #ffffff;
+    --ap-border: rgba(33, 67, 50, 0.10);
 }
 
-.title {
-    margin-bottom: 20px;
-    color: #333;
+/* PAGE */
+.profile-container {
+    display: flex;
+    flex-direction: column;
+    animation: apFadeUp 0.25s ease;
+}
+
+@keyframes apFadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.profile-page-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--ap-green-dark);
+    margin: 0 0 22px;
+    letter-spacing: 0.5px;
+}
+
+/* CARDS */
+.profile-section {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 
 .profile-card {
-    background: #f5f5f5;
-    padding: 20px;
-    border-radius: 12px;
-    width: 320px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    background: var(--ap-card);
+    border: 1px solid var(--ap-border);
+    border-radius: 16px;
+    padding: 26px;
+    box-shadow: 0 2px 12px rgba(33, 67, 50, 0.06);
 }
 
-.profile-card p {
-    margin: 10px 0;
-    font-size: 16px;
-    color: #444;
+.profile-card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--ap-border);
 }
 
-.profile-card span {
-    font-weight: bold;
-    color: #000;
+.profile-card-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 19px;
+    font-weight: 600;
+    color: var(--ap-green-dark);
+    margin: 0;
+    letter-spacing: 0.3px;
 }
 
-.loading {
-    text-align: center;
-    margin-top: 50px;
-    font-size: 18px;
+/* FIELD */
+.profile-field {
+    margin-bottom: 18px;
+}
+
+.profile-field:last-child {
+    margin-bottom: 0;
+}
+
+.profile-label {
+    display: block;
+    font-family: 'Poppins', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    color: rgba(33, 67, 50, 0.50);
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+}
+
+.profile-value {
+    display: block;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    color: var(--ap-green-dark);
+    padding: 10px 13px;
+    background: var(--ap-bg);
+    border-radius: 9px;
+    border: 1px solid var(--ap-border);
+}
+
+/* AVATAR section inside profile card */
+.profile-avatar-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--ap-border);
+}
+
+.profile-avatar {
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    background: var(--ap-green-dark);
+    color: #fff;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border: 2px solid rgba(33, 67, 50, 0.15);
+}
+
+.profile-avatar-info p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ap-green-dark);
+    margin: 0 0 2px;
+}
+
+.profile-avatar-info span {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    color: rgba(33, 67, 50, 0.45);
+    font-weight: 400;
+}
+
+
+
+@media (max-width: 600px) {
+    .profile-page-title {
+        font-size: 22px;
+    }
 }

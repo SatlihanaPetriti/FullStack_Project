@@ -15,6 +15,7 @@ export class MailController {
     public async getSubscribers() {
         return this.mailService.findAll();
     }
+    
     @Post('subscribe')
     public async subscribe(@Body('email') email: string) {
         if (!email || !email.includes('@')) {

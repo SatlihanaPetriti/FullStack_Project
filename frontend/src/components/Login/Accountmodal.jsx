@@ -6,19 +6,32 @@ const AccountDropdown = ({ show, handleClose, user, position, logout }) => {
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
 
-  const firstName = user?.name?.split(" ")[0] || "User";
+  const fullName = user?.name || "User";
 
   useEffect(() => {
     if (!show) return;
 
+    // close when clicking outside
     const handleClick = (e) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
         handleClose();
       }
     };
 
+    // close on scroll
+    const handleScroll = () => {
+      handleClose();
+    };
+
     document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
+
+    // detects scroll everywhere
+    window.addEventListener("scroll", handleScroll, true);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClick);
+      window.removeEventListener("scroll", handleScroll, true);
+    };
   }, [show, handleClose]);
 
   if (!show) return null;
@@ -33,39 +46,49 @@ const AccountDropdown = ({ show, handleClose, user, position, logout }) => {
       ref={dropdownRef}
       className="acc-card"
       style={{
-        position: "fixed",
-        top: position?.top ?? 60,
-        left: position?.left ?? 0,
-        zIndex: 9999,
+        "--acc-top": `${position?.top ?? 60}px`,
+        "--acc-left": `${position?.left ?? 0}px`,
       }}
     >
-      <div className="acc-welcome">
-        Welcome, <strong>{firstName}</strong>
+      {/* HEADER */}
+      <div className="acc-header">
+        <div className="acc-header-left">
+          <span className="acc-title">Welcome {fullName}</span>
+        </div>
       </div>
 
-      <button
-        className="acc-btn acc-btn-green"
-        onClick={() => goTo("/account/profile")}
-      >
-        My Profile
-      </button>
+      {/* ACTIONS */}
+      <ul className="acc-list">
+        <li className="acc-item" style={{ animationDelay: "0.06s" }}>
+          <button
+            className="acc-btn acc-btn-green"
+            onClick={() => goTo("/account/profile")}
+          >
+            My Profile
+          </button>
+        </li>
 
-      <button
-        className="acc-btn acc-btn-green"
-        onClick={() => goTo("/account")}
-      >
-        Dashboard
-      </button>
+        <li className="acc-item" style={{ animationDelay: "0.11s" }}>
+          <button
+            className="acc-btn acc-btn-green"
+            onClick={() => goTo("/account")}
+          >
+            Dashboard
+          </button>
+        </li>
 
-      <button
-        className="acc-btn acc-btn-red"
-        onClick={() => {
-          logout();
-          handleClose();
-        }}
-      >
-        Log out
-      </button>
+        <li className="acc-item" style={{ animationDelay: "0.16s" }}>
+          <button
+            className="acc-btn acc-btn-red"
+            onClick={() => {
+              logout();
+              handleClose();
+            }}
+          >
+            Log out
+          </button>
+        </li>
+      </ul>
     </div>
   );
 };

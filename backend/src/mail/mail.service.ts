@@ -34,16 +34,18 @@ export class MailService {
         }
         const subscriber = this.subscriberRepository.create({ email });
         await this.subscriberRepository.save(subscriber);
-        await this.sendWelcome(email);
-        return {
-            message: 'Subscribed successfully',
-        };
+        try {
+            await this.sendWelcome(email);
+        } catch (error) {
+            console.error(`Failed to send welcome email to ${email}:`, error);
+        }
+        return { message: 'Subscribed successfully', subscriber };
     }
+
     public async unsubscribe(email: string): Promise<string> {
         const subscriber = await this.subscriberRepository.findOne({
             where: { email },
         });
-
         if (!subscriber) {
             return `
             <html>
@@ -73,20 +75,21 @@ export class MailService {
             throw new BadRequestException('subscriberIds is required');
         }
         const subscriberIds = Array.isArray(data.subscriberIds)
-            ? data.subscriberIds
-            : [data.subscriberIds];
-
+            ? data.subscriberIds // [1,2,3]
+            : [data.subscriberIds]; // 5 -> [5]
+        // merren active subscribers true
         const allSubscribers = await this.subscriberRepository.find({
             where: { isActive: true },
         });
+        // filtrojme cetem ata qe zgjidhen nga admin
         const selectedSubscribers = allSubscribers.filter(subscriber =>
             subscriberIds.includes(subscriber.id),
         );
-
         const emails = selectedSubscribers.map(subscriber => subscriber.email);
         if (!emails.length) {
             throw new BadRequestException('NO_ACTIVE_SUBSCRIBERS');
         }
+        // dergojme nje nga nje
         for (const email of emails) {
             await this.mailerService.sendMail({
                 to: email,

@@ -7,42 +7,42 @@ const UserLayout = () => {
     const { user, logout } = useUserContext();
 
     return (
-        <div className="user-wrapper">
+        <div className="user-layout-wrapper">
             <aside className="user-sidebar">
 
+                {/* Avatar + name block */}
                 <div className="user-logo">
-                    <User size={28} />
-                    <span>
-                        My Account<br />
-                        <small>Dashboard</small>
-                    </span>
-                </div>
-
-                <nav className="user-nav">
-                    <NavLink to="/account" className="user-nav-link">
-                        <LayoutDashboard size={16} /> Dashboard
-                    </NavLink>
-                    <NavLink to="/account/profile" className="user-nav-link">
-                        <User size={16} /> My Profile
-                    </NavLink>
-                    
-                </nav>
-
-                <div className="user-sidebar-footer">
-                    <div className="user-info">
-                        <div className="user-avatar">
-                            {user?.name?.charAt(0).toUpperCase()}
-                        </div>
-
-                        <div>
-                            <div className="user-name">
-                                {user?.name} {user?.lastname}
-                            </div>
-                        </div>
+                    <div className="user-avatar">
+                        {user?.name?.charAt(0).toUpperCase()}
                     </div>
 
+                    <div className="user-sidebar-info">
+                        <p className="user-welcome">
+                            Welcome, {user?.name}
+                        </p>
+
+                        <p className="user-fullname">
+                            {user?.name} {user?.lastname}
+                        </p>
+                    </div>
+                </div>
+
+                {/* Nav links */}
+                <nav className="user-nav">
+                    <NavLink to="/account" end className="user-nav-link">
+                        <LayoutDashboard size={15} /> Dashboard
+                    </NavLink>
+                    <NavLink to="/account/profile" className="user-nav-link">
+                        <User size={15} /> My Profile
+                    </NavLink>
+                </nav>
+
+                <div className="user-sidebar-divider" />
+
+                {/* Logout */}
+                <div className="user-sidebar-footer">
                     <button onClick={logout} className="user-logout">
-                        <LogOut size={18} /> Logout
+                        <LogOut size={15} /> Logout
                     </button>
                 </div>
 
