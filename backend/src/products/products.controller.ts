@@ -36,26 +36,27 @@ export class ProductsController {
 
     @Get('uploads/variants/:filename')
     @IsPublic()
-    serveImage(@Param('filename') filename: string, @Res() res: Response) {
+    public async serveImage(@Param('filename') filename: string, @Res() res: Response) {
         res.sendFile(filename, { root: 'uploads/variants' });
     }
 
     @Get()
     @IsPublic()
-    getAllProducts() {
+    public async getAllProducts() {
         return this.productService.getAllProducts();
     }
 
     @Get(':id')
     @IsPublic()
-    getProductById(@Param('id') id: number) {
+    public async getProductById(
+        @Param('id') id: number) {
         return this.productService.getProductById(id);
     }
 
     @Post('create')
     @Roles('admin')
     @UseInterceptors(AnyFilesInterceptor({ storage }))
-    createProduct(
+    public async createProduct(
         @Body() dto: ProductDto,
         @UploadedFiles() files: Express.Multer.File[]
     ) {
@@ -65,17 +66,26 @@ export class ProductsController {
     @Put(':id')
     @Roles('admin')
     @UseInterceptors(AnyFilesInterceptor({ storage }))
-    updateProduct(
+    public async updateProduct(
         @Param('id') id: number,
         @Body() dto: ProductDto,
         @UploadedFiles() files: Express.Multer.File[]
     ) {
         return this.productService.updateProduct(id, dto, matchFilesToVariants(files ?? []));
     }
+
+    @Put(':id/add-stock')
+    @Roles('admin')
+    public async addStock(
+        @Param('id') id: number, 
+        @Body('stockToAdd') stockToAdd: number) {
+        return this.productService.addStock(id, stockToAdd);
+    }
     
     @Delete(':id')
     @Roles('admin')
-    deleteProduct(@Param('id') id: number) {
+    public async deleteProduct(
+        @Param('id') id: number) {
         return this.productService.deleteProduct(id);
     }
 }

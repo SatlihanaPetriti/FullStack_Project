@@ -11,7 +11,7 @@ export class CategoryController {
     constructor(private readonly categoriesService: CategoryService) { }
 
     @Get('uploads/:filename')
-    serveImage(@Param('filename') filename: string, @Res() res: express.Response) {
+    public async serveImage(@Param('filename') filename: string, @Res() res: express.Response) {
         res.sendFile(filename, { root: './uploads/category' });
     }
     @Get()
@@ -37,6 +37,7 @@ export class CategoryController {
             }
         )
     )
+    
     public async create(
         @Body() body: CategoryDTO,
         @UploadedFiles() files: { image?: Express.Multer.File[] }

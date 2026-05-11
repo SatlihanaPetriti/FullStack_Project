@@ -130,7 +130,7 @@ const Header = () => {
           logout={logout}
           onNavigate={(tab) => {
             setShowAccount(false);
-            navigate(`/account?tab=${tab}`); // ← navigate to route
+            navigate(`/account?tab=${tab}`);
           }}
         />
       )}
