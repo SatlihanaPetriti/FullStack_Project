@@ -126,15 +126,18 @@ export class ProductsService {
         }
     }
 
+    public async addStock(id: number, addToStock: number) {
 
-    public async addStock(id: number, stockToAdd: number) {
         const product = await this.productRepo.findOne({ where: { id } });
-        if (!product)
-            throw new NotFoundException(`Product ${id} not found`);
-        if (stockToAdd <= 0)
-            throw new BadRequestException(`Quantity must be greater than 0`);
-        product.stock += stockToAdd;
-        return this.productRepo.save(product);
+        if (!product) {
+            throw new NotFoundException(`Product with ID ${id} not found`);
+        }
+        if (addToStock <= 0) {
+            throw new BadRequestException(`addToStock must be a positive number`);
+        }
+        product.stock += addToStock;
+        await this.productRepo.save(product);
+        return { message: `Added ${addToStock} to stock of product ${id}` };
     }
 
     public async deleteProduct(id: number) {

@@ -1,14 +1,19 @@
 import { useState } from 'react';
 import { GrFormEdit, GrFormTrash } from "react-icons/gr";
-import { Search, Plus } from "lucide-react";
+import { Search, Plus, Warehouse } from "lucide-react";
+
 import ImageModal from "./ImageModal";
+import AddStock from "./AddStock";
 import './Products.css';
 
-const Products = ({ products, onEdit, onDelete, onAdd }) => {
+const Products = ({ products, onEdit, onDelete, onAdd, onAddStock }) => {
 
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedProductId, setSelectedProductId] = useState(null);
     const [showImageModal, setShowImageModal] = useState(false);
+
+    const [showAddStock, setShowAddStock] = useState(false);
+    const [stockProduct, setStockProduct] = useState(null);
 
     const selectedProduct = products.find(p => p.id === selectedProductId) ?? null;
 
@@ -39,6 +44,16 @@ const Products = ({ products, onEdit, onDelete, onAdd }) => {
     const handleCloseModal = () => {
         setShowImageModal(false);
         setSelectedProductId(null);
+    };
+
+    const handleOpenStock = (product) => {
+        setStockProduct(product);
+        setShowAddStock(true);
+    };
+
+    const handleCloseStock = () => {
+        setShowAddStock(false);
+        setStockProduct(null);
     };
 
     const filteredProducts = products.filter(product => {
@@ -219,7 +234,7 @@ const Products = ({ products, onEdit, onDelete, onAdd }) => {
                                         )}
                                     </td>
 
-                                    {/* STOCK (ONLY product.stock) */}
+                                    {/* STOCK */}
                                     <td>
                                         <div className={`plant-stock-badge plant-stock-badge--${isOut ? 'out' : isLow ? 'low' : 'ok'}`}>
                                             {isOut
@@ -231,7 +246,7 @@ const Products = ({ products, onEdit, onDelete, onAdd }) => {
                                         </div>
                                     </td>
 
-                                    {/* IMAGES (still variants ok) */}
+                                    {/* IMAGES */}
                                     <td>
                                         {product.variants?.some(v => v.image) ? (
                                             <button
@@ -253,6 +268,12 @@ const Products = ({ products, onEdit, onDelete, onAdd }) => {
                                                 onClick={() => onEdit(product)}
                                             >
                                                 <GrFormEdit size={15} /> Edit
+                                            </button>
+                                            <button
+                                                className="plant-btn plant-btn--edit"
+                                                onClick={() => handleOpenStock(product)}
+                                            >
+                                                <Warehouse size={15} /> Update Stock
                                             </button>
 
                                             <button
@@ -286,6 +307,15 @@ const Products = ({ products, onEdit, onDelete, onAdd }) => {
                     show={showImageModal}
                     onClose={handleCloseModal}
                     product={selectedProduct}
+                />
+            )}
+
+            {showAddStock && stockProduct && (
+                <AddStock
+                    show={showAddStock}
+                    product={stockProduct}
+                    onClose={handleCloseStock}
+                    onAddStock={onAddStock}
                 />
             )}
 

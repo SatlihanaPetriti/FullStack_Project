@@ -5,7 +5,7 @@ import ProductForm from './CreateEditModal/ProductForm';
 import Products from './Products';
 
 const AdminProductsPage = () => {
-    const { products, loading, error, createProduct, updateProduct, deleteProduct } = useProductContext();
+    const { products, loading, error, createProduct, updateProduct, deleteProduct, onAddStock } = useProductContext();
 
     const [selectedProductId, setSelectedProductId] = useState(null);
     const [showForm, setShowForm] = useState(false);
@@ -51,6 +51,7 @@ const AdminProductsPage = () => {
                 onEdit={handleEdit}
                 onDelete={deleteProduct}
                 onAdd={handleAdd}
+                onAddStock={onAddStock} 
             />
 
             {showForm && (

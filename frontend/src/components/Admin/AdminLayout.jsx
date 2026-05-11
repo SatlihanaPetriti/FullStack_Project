@@ -38,9 +38,6 @@ const AdminLayout = ({ children }) => {
                     <NavLink to="/admin/orders" className="admin-nav-link">
                         <ShoppingCart size={16} /> Orders
                     </NavLink>
-                    <NavLink to="/admin/inventory" className="admin-nav-link">
-                        <Warehouse size={16} /> Inventory
-                    </NavLink>
                     <NavLink to="/admin/subscribers" className="admin-nav-link">
                         <Mail size={16} /> Subscribers
                     </NavLink>

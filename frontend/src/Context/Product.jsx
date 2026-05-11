@@ -5,6 +5,7 @@ import {
     update_product_service,
     delete_product_service,
     get_product_by_id_service,
+    add_to_stock_service
 } from "../Services/Product.jsx";
 
 //   krijohet nje context global per produktet( ku do te shperndaje produktet, loading, error, dhe funksionet crud)
@@ -68,6 +69,16 @@ const ProductProvider = (props) => {
         }
     };
 
+    const onAddStock = async ({ id, stock }) => {
+        try {
+            const result = await add_to_stock_service(id, stock);
+            await getAllProducts();
+            return result;
+        } catch (error) {
+            setError("Failed to add stock");
+        }
+    };
+
     const deleteProduct = async (id) => {
         setLoading(true);
         try {
@@ -93,7 +104,8 @@ const ProductProvider = (props) => {
         getProductById,
         createProduct,
         updateProduct,
-        deleteProduct
+        deleteProduct,
+        onAddStock
     };
 
     return (

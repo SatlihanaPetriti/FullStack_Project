@@ -63,7 +63,9 @@ export async function update_product_service(id, data, images = []) {
         headers: { "Content-Type": "multipart/form-data" },
     });
 }
-
+export async function add_to_stock_service(id, stockToAdd) {
+    return await axios.put(`${URL}/${id}/add-stock`, { stockToAdd });
+}
 
 export async function delete_product_service(id) {
     return await axios.delete(`${URL}/${id}`);
