@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import { get_my_orders_service, update_order_status_service } from "../services/OrderService";
+import { get_my_orders_service, update_order_status_service } from "../Services/OrderService";
 
 const OrderContext = createContext();
 
@@ -28,10 +28,10 @@ const OrderProvider = ({ children }) => {
             console.error("Failed to update order status:", err);
         }
     };
-    
+
 
     return (
-        <OrderContext.Provider value={{ orders, loading, getOrders, updateOrderStatus }}>
+        <OrderContext.Provider value={{ orders, getOrders, updateOrderStatus }}>
             {children}
         </OrderContext.Provider>
     );

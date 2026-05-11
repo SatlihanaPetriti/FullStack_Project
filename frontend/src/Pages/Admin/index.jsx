@@ -4,6 +4,7 @@ import OverviewPage from '../../components/Admin/Overview/OverviewPage';
 import AdminProductsPage from '../../components/Admin/AdminProductsPage';
 import CategoriesPage from '../../components/Admin/AdminCategories';
 import SubscribersPage from '../../components/Admin/Subscriber';
+import AdminOrders from '../../components/Admin/Orders/OrdersAdmin';
 const AdminRouter = () => {
     return (
         <AdminLayout>
@@ -13,6 +14,7 @@ const AdminRouter = () => {
                 <Route path="categories" element={<CategoriesPage />} /> 
                 <Route path="products" element={<AdminProductsPage />} />
                 <Route path="subscribers" element={<SubscribersPage />} />
+                <Route path="orders" element={<AdminOrders />} />
             </Routes>
         </AdminLayout>
     );
