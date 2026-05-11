@@ -8,3 +8,6 @@ export const get_my_orders_service = () =>
 
 export const get_order_by_id_service = (orderId) =>
     axios.get(`${API_URL}/${orderId}`);
+
+export const update_order_status_service = (orderId, status) =>
+    axios.put(`${API_URL}/${orderId}/status`, { status });

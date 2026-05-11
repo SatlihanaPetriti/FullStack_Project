@@ -10,19 +10,39 @@ const SubscribersPage = () => {
 
     const { subscribers, getSubscribers, sendNewsletter } = useNewsletter();
 
+
     useEffect(() => {
         getSubscribers();
     }, []);
 
     const toggleSelect = (id) => {
-        setSelected((prev) =>
-            prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
-        );
+        if (selected.includes(id)) {
+            setSelected(selected.filter((x) => x !== id));
+        } else {
+            setSelected([...selected, id]);
+        }
     };
 
+
+    let allSelected = false;
+
+    if (subscribers.length > 0) {
+        allSelected = subscribers.every(s => selected.includes(s.id)
+        );
+    }
+
     const toggleAll = () => {
-        const allSelected = subscribers.every((s) => selected.includes(s.id));
-        setSelected(allSelected ? [] : subscribers.map((s) => s.id));
+
+        const allSelected = subscribers.every((s) => {
+            return selected.includes(s.id);
+        });
+
+        if (allSelected) {
+            setSelected([]);
+        } else {
+            const allIds = subscribers.map((s) => s.id);
+            setSelected(allIds);
+        }
     };
 
     const handleSend = async ({ subject, message }) => {
@@ -34,8 +54,7 @@ const SubscribersPage = () => {
         setSelected([]);
     };
 
-    const allSelected =
-        subscribers.length > 0 && subscribers.every((s) => selected.includes(s.id));
+
 
     return (
         <div className="sp-root">
@@ -67,7 +86,7 @@ const SubscribersPage = () => {
                 <div className="sp-table-wrap">
                     <table className="sp-table">
                         <thead>
-                            <tr>
+                            <tr >
                                 <th className="sp-th">
                                     <input
                                         type="checkbox"

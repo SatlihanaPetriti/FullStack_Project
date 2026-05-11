@@ -1,7 +1,7 @@
-import { Controller, Get, Param, ParseIntPipe, Req, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, ParseIntPipe, Put, Req, UseGuards, Body } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { AuthGuard } from '../guards/auth.guards';
-
+import { UpdateOrderStatusDto } from './DTO/order-status.dto';
 @Controller('orders')
 @UseGuards(AuthGuard)
 export class OrderController {
@@ -18,5 +18,13 @@ export class OrderController {
         @Param('id', ParseIntPipe) orderId: number,
     ) {
         return this.orderService.getOrderById(req.user.id, orderId);
+    }
+    
+    @Put(':id/status')
+    public async updateStatus(
+        @Param('id', ParseIntPipe) orderId: number,
+        @Body('status') dto: UpdateOrderStatusDto,
+    ) {
+        return this.orderService.updateOrderStatus(orderId, dto);
     }
 }

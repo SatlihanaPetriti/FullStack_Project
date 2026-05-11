@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm/dist/common/typeorm.decorators';
 import { Order } from './Entity/order.entity';
 import { Repository } from 'typeorm';
+import { UpdateOrderStatusDto } from './DTO/order-status.dto';
 
 @Injectable()
 export class OrdersService {
@@ -28,4 +29,11 @@ export class OrdersService {
 
         return order;
     }
+    public async updateOrderStatus(orderId: number, dto: UpdateOrderStatusDto): Promise<Order> {
+        const order = await this.orderRepo.findOne({ where: { id: orderId } });
+        if (!order) throw new NotFoundException('Order not found');
+        order.status = dto.status;
+        return this.orderRepo.save(order);
+    }
+    
 }

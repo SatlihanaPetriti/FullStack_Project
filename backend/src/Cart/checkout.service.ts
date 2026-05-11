@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { Cart } from './Entity/cart';
 import { CartItem } from './Entity/cart-items';
 import { Product } from 'src/products/Entity/product.entity';
-import { Order } from 'src/orders/Entity/order.entity';
+import { Order, OrderStatus } from 'src/orders/Entity/order.entity';
 import { OrderItem } from 'src/orders/Entity/order-item.entity';
 import Stripe from 'stripe';
 
@@ -20,7 +20,7 @@ export class CheckoutService {
         @InjectRepository(OrderItem) private orderItemRepo: Repository<OrderItem>,
     ) { }
 
-    public async createPaymentIntent(userId: number) {
+    private async getValidatedCart(userId: number) {
         const cart = await this.cartRepo.findOne({
             where: { user_id: userId },
             relations: ['items', 'items.product'],
@@ -36,10 +36,16 @@ export class CheckoutService {
             }
             if (item.product.stock < item.quantity) {
                 throw new BadRequestException(
-                    `"${item.product.id}" has only ${item.product.stock} units in stock`,
+                    `"${item.product.title}" has only ${item.product.stock} units in stock`,
                 );
             }
         }
+
+        return cart;
+    }
+
+    public async createPaymentIntent(userId: number) {
+        const cart = await this.getValidatedCart(userId);
 
         const paymentIntent = await this.stripe.paymentIntents.create({
             amount: Math.round(cart.total_price * 100),
@@ -62,38 +68,36 @@ export class CheckoutService {
             throw new BadRequestException('Unauthorized');
         }
 
-        const cart = await this.cartRepo.findOne({
-            where: { user_id: userId },
-            relations: ['items', 'items.product', 'items.product.variants'],
-        });
-
-        if (!cart) throw new BadRequestException('Cart not found');
+        const cart = await this.getValidatedCart(userId);
 
         const order = this.orderRepo.create({
             user_id: userId,
             total_price: cart.total_price,
-            status: 'completed',
+            status: OrderStatus.PENDING,
             payment_stripe_id: paymentIntentId,
         });
         const savedOrder = await this.orderRepo.save(order);
 
-        // Krijo OrderItems
-        for (const item of cart.items) {
-            const orderItem = this.orderItemRepo.create({
+        const orderItems = cart.items.map((item) =>
+            this.orderItemRepo.create({
                 order_id: savedOrder.id,
                 product_id: item.product_id,
                 product_title: item.product.title,
                 quantity: item.quantity,
                 price: item.price,
-            });
-            await this.orderItemRepo.save(orderItem);
-            // ul stock
-            item.product.stock = item.product.stock - item.quantity;
-            await this.productRepo.save(item.product);
-        }
+            }),
+        );
+        await this.orderItemRepo.save(orderItems);
+
+        const updatedProducts = cart.items.map((item) => {
+            item.product.stock -= item.quantity;
+            return item.product;
+        });
+        await this.productRepo.save(updatedProducts);
 
         await this.cartItemRepo.delete({ cart_id: cart.id });
         await this.cartRepo.remove(cart);
+
         return {
             message: 'Order placed successfully',
             orderId: savedOrder.id,

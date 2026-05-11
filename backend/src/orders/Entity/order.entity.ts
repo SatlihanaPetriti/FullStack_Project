@@ -1,8 +1,16 @@
-import {Entity, PrimaryGeneratedColumn,Column,CreateDateColumn, OneToMany,} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, OneToMany, } from 'typeorm';
 import { OrderItem } from './order-item.entity';
+
+export enum OrderStatus {
+    PENDING = 'pending',
+    PROCESSING = 'processing',
+    SHIPPED = 'shipped',
+    DELIVERED = 'delivered',
+}
 
 @Entity('orders')
 export class Order {
+
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -18,8 +26,12 @@ export class Order {
     })
     total_price: number;
 
-    @Column({ default: 'completed' })
-    status: string;
+    @Column({
+        type: 'enum',
+        enum: OrderStatus,
+        default: OrderStatus.PENDING,
+    })
+    status: OrderStatus;
 
     @Column()
     payment_stripe_id: string;
