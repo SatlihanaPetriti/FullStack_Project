@@ -24,7 +24,7 @@ import UserLayout from "./components/Login/UserDashboard/UserLayout.jsx";
 import SalePage from './components/salesection/SalePage.jsx';
 import DashboardFavorites from "./components/Login/UserDashboard/Favorite.jsx";
 import MyProfile from "./components/Login/UserDashboard/MyProfile.jsx";
-import { OrderProvider } from "./Context/OrderService.jsx";
+import { OrderProvider } from "./Context/OrderContext.jsx";
 import UserOrders from "./components/Login/UserDashboard/MyOrders.jsx";
 import AccountDashboard from "./components/Login/UserDashboard/dashboard.jsx";
 import { ContactProvider } from "./Context/ContactContext.jsx";

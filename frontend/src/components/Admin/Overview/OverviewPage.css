@@ -59,3 +59,15 @@
     background: rgb(251, 190, 190);
 }
 
+.ov-card--completed {
+    background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+    
+}
+
+.ov-card--completed .ov-card-num {
+    color: black;
+}
+
+.ov-card--completed .ov-card-label {
+    color:black;
+}

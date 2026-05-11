@@ -94,7 +94,6 @@ export function NewsletterProvider({ children }) {
     );
 }
 
-// ⚠️ KJO DUHET TË PËRPUTHET ME UI TËN
 export function useNewsletter() {
     return useContext(NewsletterContext);
 }

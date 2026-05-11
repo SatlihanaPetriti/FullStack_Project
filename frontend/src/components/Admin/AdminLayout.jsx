@@ -1,12 +1,17 @@
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import './AdminLayout.css';
 import { UserRoundCog, LayoutDashboard, Package, Layers, ShoppingCart, Warehouse, LogOut, ExternalLink } from 'lucide-react';
-import SubscribersPage from './Subscriber';
 import { useUserContext } from '../../Context/Auth';
 import { Mail } from 'lucide-react';
 
 const AdminLayout = ({ children }) => {
     const { user, logout } = useUserContext();
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        logout();
+        navigate('/');
+    };
 
     return (
         <div className="admin-wrapper">
@@ -57,7 +62,7 @@ const AdminLayout = ({ children }) => {
                             <span className="admin-user-role">Administrator</span>
                         </div>
                     </div>
-                    <button className="admin-logout-btn" onClick={logout} title="Log Out">
+                    <button className="admin-logout-btn" onClick={handleLogout} title="Log Out">
                         <LogOut size={18} />
                     </button>
                 </div>

@@ -4,13 +4,18 @@ import { useUserContext } from "../Context/Auth";
 const ProtectedRoute = ({ children, requiredRole }) => {
     const { isAuthChecked, user } = useUserContext();
 
-    console.log("ProtectedRoute - isAuthChecked:", isAuthChecked, "user:", user);
-
     if (!isAuthChecked) {
         return <div>Loading...</div>;
     }
-    // ndalon userin  te shkoje ne admin /admin e rikthen ne home
-    // kalohet tek admin route
+
+    if (!user) {
+        return <Navigate to="/login" replace />;
+    }
+
+    if (requiredRole && user.role !== requiredRole) {
+        return <Navigate to="/" replace />;
+    }
+
     return children;
 };
 

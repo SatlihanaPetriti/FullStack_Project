@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useOrderContext } from "../../../Context/OrderService.jsx";
+import { useOrderContext } from "../../../Context/OrderContext";
 import { useProductContext } from "../../../Context/Product";
 import { useCategoryContext } from "../../../Context/Category";
 import "./MyOrders.css";
@@ -7,10 +7,11 @@ import "./MyOrders.css";
 const BASE_URL = "http://localhost:3000/products/uploads/variants";
 
 const STATUS_COLOR = {
-    Delivered: "#2d6a4f",
-    Processing: "#e07b39",
-    Cancelled: "#c0392b",
-    Shipped: "#3a7bbf",
+    pending: "#e07b39",
+    processing: "#3a7bbf",
+    shipped: "#6d28d9",
+    delivered: "#2d6a4f",
+    completed: "#3aa160",
 };
 
 const UserOrders = () => {

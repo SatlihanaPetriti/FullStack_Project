@@ -20,7 +20,6 @@ const Login = ({ show, handleClose }) => {
 
   const { login, register, error, setError, user } = useUserContext();
 
-  // Kur user vendoset ne context (pas login ),
   // mbyll modal automatikisht
   useEffect(() => {
     if (user) {

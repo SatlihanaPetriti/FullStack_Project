@@ -20,6 +20,27 @@
   animation: acc-slide-in 0.22s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+.acc-btn-admin {
+  background: #1e293b;
+  color: #fff;
+  border: none;
+}
+
+.acc-btn-admin:hover {
+  background: #0f172a;
+}
+
+.acc-role-badge {
+  font-size: 0.65rem;
+  background: #1e293b;
+  color: #fff;
+  padding: 2px 8px;
+  border-radius: 99px;
+  margin-left: 8px;
+  font-weight: 600;
+  vertical-align: middle;
+}
+
 @keyframes acc-slide-in {
   from {
     opacity: 0;

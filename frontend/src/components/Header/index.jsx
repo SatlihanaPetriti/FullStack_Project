@@ -2,7 +2,7 @@ import { Navbar, Nav, Container } from 'react-bootstrap';
 import { Search, Person, Heart, Bag } from 'react-bootstrap-icons';
 import logo from '../../assets/images/Home/logo-green.png';
 import './menu.css';
-import { Link, useNavigate } from 'react-router-dom'; // ← add useNavigate
+import { Link, useNavigate } from 'react-router-dom'; 
 import Login from '../Login/login';
 import { useState, useRef, useEffect } from 'react';
 import { useUserContext } from '../../Context/Auth';
