@@ -197,7 +197,33 @@
 .image-wrapper:hover .plant-image {
   transform: scale(1.04);
 }
+.search-box {
+  display: flex;
+  align-items: center;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+}
 
+.search-box input {
+  border: none;
+  outline: none;
+  padding: 6px 12px;
+  font-size: 14px;
+  width: 200px;
+  background: transparent;
+}
+
+.search-box .icon-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 10px;
+  border-left: 1px solid #dee2e6;
+  color: #6c757d;
+  cursor: default;
+}
 /* ======================= */
 /* Labels */
 

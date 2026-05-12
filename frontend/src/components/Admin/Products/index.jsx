@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { GrFormEdit, GrFormTrash } from "react-icons/gr";
 import { Search, Plus, Warehouse } from "lucide-react";
-
 import ImageModal from "./ImageModal";
 import AddStock from "./AddStock";
 import './Products.css';

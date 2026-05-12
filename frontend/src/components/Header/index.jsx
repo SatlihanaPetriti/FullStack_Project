@@ -77,10 +77,6 @@ const Header = () => {
             </Nav>
 
             <div className="right-icons">
-              <div className="icon-box">
-                <Search />
-              </div>
-
               <div className="icon-box user-box" ref={personIconRef}>
                 <Person
                   size={16}

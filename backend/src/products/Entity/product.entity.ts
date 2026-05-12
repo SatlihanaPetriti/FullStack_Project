@@ -24,7 +24,12 @@ export class Product {
     @Column()
     size: string;
 
-    @Column({ type: 'int', default: 0 })
+    @Column({
+        transformer: {
+            to: (value: number) => value,
+            from: (value: string) => Number(value),
+        }
+    })
     stock: number;
 
     @Column('decimal', { precision: 10, scale: 2 })

@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Container, Row, Col, Form, Spinner, Alert, Button } from 'react-bootstrap';
+import { Container, Row, Col, Form, Spinner, Alert, Button, InputGroup } from 'react-bootstrap';
+import { Search } from 'react-bootstrap-icons';
 import PlantCard from './plantcard';
 import FilterSidebar from './filtersidebar/';
 import { useProductContext } from '../../Context/Product';
@@ -23,6 +24,7 @@ const IndoorPlants = () => {
   const { products, loading, error: contextError, getAllProducts } = useProductContext();
   const [filters, setFilters] = useState(DEFAULT_FILTERS);
   const [sortOption, setSortOption] = useState('featured');
+  const [searchTerm, setSearchTerm] = useState('');
 
   const getActualPrice = (product) => {
     if (product.sale_price) return Number(product.sale_price);
@@ -33,6 +35,10 @@ const IndoorPlants = () => {
 
   const getDisplayProducts = () => {
     const filtered = products.filter((p) => {
+      const byKeyword = p.title?.toLowerCase().includes(searchTerm);
+
+      if (!byKeyword) return false;
+
       if (filters.categories.length > 0) {
         const catId = p.category_id ?? p.category?.id;
         if (!filters.categories.includes(catId)) return false;
@@ -49,7 +55,6 @@ const IndoorPlants = () => {
 
       if (filters.onSalePercent && !p.sale_percentage) return false;
       if (filters.onSalePrice && !p.sale_price) return false;
-
       if (filters.sizes.length > 0 && !filters.sizes.includes(p.size)) return false;
 
       return true;
@@ -60,6 +65,10 @@ const IndoorPlants = () => {
     if (sortOption === 'high') sorted.sort((a, b) => getActualPrice(b) - getActualPrice(a));
 
     return { filtered, sorted };
+  };
+
+  const handleSearch = (e) => {
+    setSearchTerm(e.target.value.trim().toLowerCase());
   };
 
   if (loading) {
@@ -107,7 +116,19 @@ const IndoorPlants = () => {
               {filtered.length !== products.length && ` (filtered from ${products.length})`}
             </p>
           </Col>
-          <Col md={6} className="d-flex justify-content-md-end">
+          <Col md={6} className="d-flex justify-content-md-end align-items-center gap-2">
+            <InputGroup>
+              <InputGroup.Text className="filter-control">
+                <Search size={25} />
+              </InputGroup.Text>
+              <Form.Control
+                type="text"
+                placeholder="Search by keywords"
+                className="filter-control"
+                size="lg"
+                onChange={handleSearch}
+              />
+            </InputGroup>
             <Form.Select
               onChange={(e) => setSortOption(e.target.value)}
               value={sortOption}
@@ -151,4 +172,3 @@ const IndoorPlants = () => {
   );
 };
 
-export default IndoorPlants;
