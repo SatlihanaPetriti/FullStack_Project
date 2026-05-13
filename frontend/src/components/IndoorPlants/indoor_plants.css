@@ -140,7 +140,7 @@
   width: 290px;
   border-radius: 50px;
   font-size: 16px;
-  background-color:rgb(237, 170, 122) ;
+  background-color: rgb(237, 170, 122);
   color: #214332;
   border-color: rgb(237, 170, 122);
   margin-bottom: 15px;
@@ -160,6 +160,55 @@
   padding-top: 8px;
 }
 
+/* ======================= */
+/* Search & Sort */
+
+.simple-search {
+  width: 260px;
+  padding: 10px 15px;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  border: 1px solid #21433271;
+  border-radius: 4px;
+  background-color: rgb(245, 245, 236);
+  color: #214332;
+  transition: border-color 0.2s ease;
+}
+
+.simple-search::placeholder {
+  color: #8ab084;
+}
+
+.simple-search:focus {
+  outline: none;
+  border-color: #214332;
+  box-shadow: none;
+}
+
+/* ======================= */
+/* Sort select */
+
+.custom-sort-select {
+  width: 260px;
+  padding: 10px 15px;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  border: 1px solid #21433271;
+  border-radius: 4px;
+  background-color: rgb(245, 245, 236);
+  color: #214332;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+  margin-right: 20px !important;
+}
+
+.custom-sort-select:focus {
+  outline: none;
+  border-color: #214332;
+  box-shadow: none;
+}
 
 /* ======================= */
 /* Plant card */
@@ -197,33 +246,7 @@
 .image-wrapper:hover .plant-image {
   transform: scale(1.04);
 }
-.search-box {
-  display: flex;
-  align-items: center;
-  border: 1px solid #dee2e6;
-  border-radius: 8px;
-  overflow: hidden;
-  background: #fff;
-}
 
-.search-box input {
-  border: none;
-  outline: none;
-  padding: 6px 12px;
-  font-size: 14px;
-  width: 200px;
-  background: transparent;
-}
-
-.search-box .icon-box {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 6px 10px;
-  border-left: 1px solid #dee2e6;
-  color: #6c757d;
-  cursor: default;
-}
 /* ======================= */
 /* Labels */
 
@@ -422,30 +445,6 @@
 
 .color-blue {
   background-color: rgb(219, 193, 148);
-}
-
-/* ======================= */
-/* Sort select */
-
-.custom-sort-select {
-  width: 260px;
-  padding: 10px 15px;
-  font-family: 'Roboto', sans-serif;
-  font-weight: 500;
-  font-size: 14px;
-  border: 1px solid #21433271;
-  border-radius: 4px;
-  background-color: rgb(245, 245, 236);
-  color: #214332;
-  cursor: pointer;
-  transition: border-color 0.2s ease;
-  margin-right: 20px !important;
-}
-
-.custom-sort-select:focus {
-  outline: none;
-  border-color: #214332;
-  box-shadow: none;
 }
 
 /* ======================= */

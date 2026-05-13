@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Container, Row, Col, Form, Spinner, Alert, Button, InputGroup } from 'react-bootstrap';
+import { Container, Row, Col, Form, Spinner, Alert, Button } from 'react-bootstrap';
 import { Search } from 'react-bootstrap-icons';
 import PlantCard from './plantcard';
 import FilterSidebar from './filtersidebar/';
@@ -25,6 +25,7 @@ const IndoorPlants = () => {
   const [filters, setFilters] = useState(DEFAULT_FILTERS);
   const [sortOption, setSortOption] = useState('featured');
   const [searchTerm, setSearchTerm] = useState('');
+  const [searchInput, setSearchInput] = useState('');
 
   const getActualPrice = (product) => {
     if (product.sale_price) return Number(product.sale_price);
@@ -36,7 +37,6 @@ const IndoorPlants = () => {
   const getDisplayProducts = () => {
     const filtered = products.filter((p) => {
       const byKeyword = p.title?.toLowerCase().includes(searchTerm);
-
       if (!byKeyword) return false;
 
       if (filters.categories.length > 0) {
@@ -68,7 +68,14 @@ const IndoorPlants = () => {
   };
 
   const handleSearch = (e) => {
+    setSearchInput(e.target.value);
     setSearchTerm(e.target.value.trim().toLowerCase());
+  };
+
+  const handleClearAll = () => {
+    setFilters(DEFAULT_FILTERS);
+    setSearchTerm('');
+    setSearchInput('');
   };
 
   if (loading) {
@@ -117,18 +124,13 @@ const IndoorPlants = () => {
             </p>
           </Col>
           <Col md={6} className="d-flex justify-content-md-end align-items-center gap-2">
-            <InputGroup>
-              <InputGroup.Text className="filter-control">
-                <Search size={25} />
-              </InputGroup.Text>
-              <Form.Control
-                type="text"
-                placeholder="Search by keywords"
-                className="filter-control"
-                size="lg"
-                onChange={handleSearch}
-              />
-            </InputGroup>
+            <input
+              type="text"
+              placeholder="Search by keywords"
+              className="simple-search"
+              value={searchInput}
+              onChange={handleSearch}
+            />
             <Form.Select
               onChange={(e) => setSortOption(e.target.value)}
               value={sortOption}
@@ -151,7 +153,7 @@ const IndoorPlants = () => {
                 No products match your criteria.{' '}
                 <span
                   style={{ cursor: 'pointer', textDecoration: 'underline' }}
-                  onClick={() => setFilters(DEFAULT_FILTERS)}
+                  onClick={handleClearAll}
                 >
                   Clear filters
                 </span>
@@ -172,3 +174,4 @@ const IndoorPlants = () => {
   );
 };
 
+export default IndoorPlants;

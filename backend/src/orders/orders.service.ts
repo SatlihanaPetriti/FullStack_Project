@@ -39,7 +39,8 @@ export class OrdersService {
     }
     public async updateOrderStatus(orderId: number, dto: UpdateOrderStatusDto): Promise<Order> {
         const order = await this.orderRepo.findOne({ where: { id: orderId } });
-        if (!order) throw new NotFoundException('Order not found');
+        if (!order) 
+            throw new NotFoundException('Order not found');
         order.status = dto.status;
         return this.orderRepo.save(order);
     }
