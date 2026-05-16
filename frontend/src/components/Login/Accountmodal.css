@@ -27,12 +27,12 @@
 }
 
 .acc-btn-admin:hover {
-  background: #0f172a;
+  background: #11c90b67;
 }
 
 .acc-role-badge {
   font-size: 0.65rem;
-  background: #1e293b;
+  background: #1351b6;
   color: #fff;
   padding: 2px 8px;
   border-radius: 99px;
