@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" fill="white"></rect>
+
+  <!-- pot -->
+  <path d="M18 40 L46 40 L42 56 Q32 60 22 56 Z" fill="#4d6f52"></path>
+
+  <!-- stem -->
+  <rect x="30" y="20" width="4" height="22" fill="#4d6f52"></rect>
+
+  <!-- simple leaves -->
+  <path d="M32 22 C20 10 10 18 14 30 C22 32 28 28 32 22 Z" fill="#4d6f52"></path>
+
+  <path d="M32 22 C44 10 54 18 50 30 C42 32 36 28 32 22 Z" fill="#4d6f52"></path>
+</svg>
