@@ -1,29 +1,28 @@
-import { Controller, Get, Post, Param, Body, UseGuards, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Param, UseGuards, ParseIntPipe } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { AuthGuard } from '../guards/auth.guards';
-import { PermissionGuard } from '../guards/permission.guards';
+import { AuthGuard } from '../guards/auth.guard';
 import { Roles } from '../decorators/roles.decorator';
 
 @Controller('users')
-@UseGuards(AuthGuard, PermissionGuard)
+@UseGuards(AuthGuard)
 export class UserController {
     constructor(private readonly usersService: UsersService) { }
 
     @Get()
     @Roles('admin')
-    findAll() {
+    public async findAll() {
         return this.usersService.findAll();
     }
 
     @Get('email/:email')
     @Roles('admin')
-    findByEmail(@Param('email') email: string) {
+    public async findByEmail(@Param('email') email: string) {
         return this.usersService.findByEmail(email);
     }
 
     @Get(':id')
-    findOne(@Param('id', ParseIntPipe) id: number) {
+    @Roles('admin', 'user')
+    public async findOne(@Param('id', ParseIntPipe) id: number) {
         return this.usersService.findById(id);
     }
-
 }

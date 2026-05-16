@@ -1,4 +1,5 @@
-import { Controller, Get, Post, Put, Delete, Param, Body, UseInterceptors, UploadedFiles, Res, UseGuards
+import {
+    Controller, Get, Post, Put, Delete, Param, Body, UseInterceptors, UploadedFiles, Res, UseGuards
 } from '@nestjs/common';
 import { AnyFilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
@@ -6,8 +7,7 @@ import { ProductsService } from './products.service';
 import { ProductDto } from './dto/product.dto';
 import type { Response } from 'express';
 import { FormatDateImage } from '../Helper/FormatDateImage';
-import { AuthGuard } from '../guards/auth.guards';
-import { PermissionGuard } from '../guards/permission.guards';
+import { AuthGuard } from 'src/guards/auth.guard';
 import { IsPublic } from '../decorators/public.decorator';
 import { Roles } from '../decorators/roles.decorator';
 
@@ -30,7 +30,7 @@ function matchFilesToVariants(files: Express.Multer.File[]): Express.Multer.File
 }
 
 @Controller('products')
-@UseGuards(AuthGuard, PermissionGuard)
+@UseGuards(AuthGuard)
 export class ProductsController {
     constructor(private readonly productService: ProductsService) { }
 
@@ -77,11 +77,11 @@ export class ProductsController {
     @Put(':id/add-stock')
     @Roles('admin')
     public async addStock(
-        @Param('id') id: number, 
+        @Param('id') id: number,
         @Body('stockToAdd') stockToAdd: number) {
         return this.productService.addStock(id, stockToAdd);
     }
-    
+
     @Delete(':id')
     @Roles('admin')
     public async deleteProduct(

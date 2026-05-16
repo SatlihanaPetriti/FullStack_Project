@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, MiddlewareConsumer, NestModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProductsModule } from './products/products.module';
 import { Product } from './products/Entity/product.entity';
@@ -20,7 +20,7 @@ import { OrderModule } from './orders/orders.module';
 import { Order } from './orders/Entity/order.entity';
 import { OrderItem } from './orders/Entity/order-item.entity';
 import { SendEmailModule } from './send_email/send_email.module';
-
+import { AuthMiddleware } from './Middleware/auth.middleware';
 @Module({
     imports: [
         ConfigModule.forRoot({
@@ -50,4 +50,10 @@ import { SendEmailModule } from './send_email/send_email.module';
         SendEmailModule,
     ],
 })
-export class AppModule { }
+export class AppModule implements NestModule {
+    configure(consumer: MiddlewareConsumer) {
+        consumer
+            .apply(AuthMiddleware)
+            .forRoutes('users', 'orders');
+    }
+}

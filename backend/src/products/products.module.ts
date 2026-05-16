@@ -5,9 +5,9 @@ import { ProductVariant } from './Entity/product-variant.entity';
 import { ProductsController } from './products.controller';
 import { ProductsService } from './products.service';
 import { UsersModule } from '../users/users.module';
-import { AuthGuard } from '../guards/auth.guards';
-import { PermissionGuard } from '../guards/permission.guards';
 import { FileService } from './file.service';
+import { AuthGuard } from 'src/guards/auth.guard';
+
 @Module({
   imports: [
     TypeOrmModule.forFeature([Product, ProductVariant]),
@@ -17,7 +17,6 @@ import { FileService } from './file.service';
   providers: [
     ProductsService,
     AuthGuard,
-    PermissionGuard,
     FileService
   ]
 })

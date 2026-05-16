@@ -7,22 +7,24 @@ import { UserDto } from './DTO/user.dto';
 
 @Injectable()
 export class UsersService {
-    constructor(@InjectRepository(UserEntity) private readonly userRepository: Repository<UserEntity>) { }
+    constructor(
+        @InjectRepository(UserEntity)
+        private readonly userRepository: Repository<UserEntity>
+    ) { }
 
     public async findAll(): Promise<UserEntity[]> {
         try {
             return await this.userRepository.find();
         } catch (error) {
-            throw new ErrorHandler(error.message, HttpStatus.NOT_FOUND);
+            throw new ErrorHandler('Failed to get users', HttpStatus.BAD_REQUEST);
         }
     }
 
     public async findByEmail(email: string): Promise<UserEntity | null> {
         try {
-            const result = await this.userRepository.findOne({ where: { email } });
-            return result;
+            return await this.userRepository.findOne({ where: { email } }) ?? null;
         } catch (error) {
-            throw new ErrorHandler(error.message, HttpStatus.NOT_FOUND);
+            throw new ErrorHandler('Failed to find user by email', HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -30,16 +32,15 @@ export class UsersService {
         try {
             return await this.userRepository.save(user);
         } catch (error) {
-            throw new ErrorHandler(error.message, HttpStatus.BAD_REQUEST);
+            throw new ErrorHandler('Failed to create user', HttpStatus.BAD_REQUEST);
         }
     }
 
     public async findById(id: number): Promise<UserEntity | null> {
         try {
-            const result = await this.userRepository.findOne({ where: { id } });
-            return result;
+            return await this.userRepository.findOne({ where: { id } }) ?? null;
         } catch (error) {
-            throw new ErrorHandler(error.message, HttpStatus.NOT_FOUND);
+            throw new ErrorHandler('Failed to find user by id', HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -52,7 +53,7 @@ export class UsersService {
             }
             return updatedUser;
         } catch (error) {
-            throw new ErrorHandler(error.message, HttpStatus.BAD_REQUEST);
+            throw new ErrorHandler('Failed to update user', HttpStatus.BAD_REQUEST);
         }
     }
 }

@@ -1,6 +1,6 @@
 import { Controller, Post, Req, UseGuards, Body } from '@nestjs/common';
 import { CheckoutService } from './checkout.service';
-import { AuthGuard } from '../guards/auth.guards';
+import { AuthGuard } from 'src/guards/auth.guard';
 
 @Controller('checkout')
 @UseGuards(AuthGuard)

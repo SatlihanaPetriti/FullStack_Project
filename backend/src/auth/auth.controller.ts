@@ -1,43 +1,44 @@
-import { Body, Controller, Get, Post, Req, Res } from '@nestjs/common';
+import { Controller, Post, Body, Res, Get, Req } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { UsersService } from '../users/users.service';
-import { UserEntity } from '../users/Entity/user.entity';
 import { UserDto } from '../users/DTO/user.dto';
+import { UserEntity } from '../users/Entity/user.entity';
 import { LoginDto } from '../users/DTO/login.dto';
 import type { Response, Request } from 'express';
 
 @Controller('auth')
 export class AuthController {
-    constructor(private readonly authService: AuthService, private readonly userService: UsersService) { }
+    constructor(private readonly authService: AuthService) { }
 
     @Post('register')
-    public async register(@Body() body: UserDto, @Res({ passthrough: true }) response: Response): Promise<UserEntity> {
-        const { user, token } = await this.authService.register(body);
+    public async register(
+        @Body() param: UserDto,
+        @Res({ passthrough: true }) response: Response
+    ): Promise<UserEntity> {
+        const { user, token } = await this.authService.register(param);
         response.cookie('jwt', token, { httpOnly: true });
         return user;
     }
 
     @Post('login')
-    public async login(@Body() bodyParam: LoginDto, @Res({ passthrough: true }) response: Response) {
-        const { user, token } = await this.authService.loginUser(bodyParam);
+    public async login(
+        @Body() param: LoginDto,
+        @Res({ passthrough: true }) response: Response
+    ): Promise<UserEntity> {
+        const { user, token } = await this.authService.login(param);
         response.cookie('jwt', token, { httpOnly: true });
         return user;
     }
 
     @Post('logout')
-    public logout(@Res({ passthrough: true }) response: Response) {
+    public async logout(@Res({ passthrough: true }) response: Response) {
         response.clearCookie('jwt');
         return { "message": "success", "status": 201 };
     }
 
     @Get('checkUser')
-    public async checkAuthUser(@Req() request: Request): Promise<UserEntity> { 
+    public async checkAuthUser(@Req() request: Request): Promise<UserEntity> {
         const id = await this.authService.authUserId(request);
         return await this.authService.getUserById(id);
-    }
-
-    public async getUserById(id: number): Promise<UserEntity | null> {
-        return await this.userService.findById(id);
     }
 
     @Post('forgot-password')
@@ -46,7 +47,7 @@ export class AuthController {
     }
 
     @Post('reset-password')
-    async resetPassword(@Body() body: {token:string; password:string}){
+    public async resetPassword(@Body() body: { token: string; password: string }) {
         return this.authService.resetPassword(body.token, body.password);
     }
 }

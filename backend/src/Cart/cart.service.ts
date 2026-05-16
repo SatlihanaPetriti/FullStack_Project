@@ -132,13 +132,11 @@ export class CartService {
         });
 
         const total_quantity = allItems.reduce(
-            (sum, i) => sum + i.quantity,
-            0,
+            (sum, i) => sum + i.quantity, 0,
         );
 
         const total_price = allItems.reduce(
-            (sum, i) => sum + i.quantity * Number(i.price),
-            0,
+            (sum, i) => sum + i.quantity * Number(i.price), 0,
         );
         console.log('total quantity:', total_quantity);
         console.log('total price:', total_price);
