@@ -4,6 +4,7 @@ import {
     get_all_orders_service,
     update_order_status_service,
 } from "../Services/OrderService";
+import { useUserContext } from "./Auth";
 
 
 const OrderContext = createContext();
@@ -11,12 +12,13 @@ const OrderContext = createContext();
 const OrderProvider = ({ children }) => {
     const [orders, setOrders] = useState([]);
     const [adminOrders, setAdminOrders] = useState([]);
+    const { user } = useUserContext();
 
     useEffect(() => {
         getOrders();
         getAllOrders();
 
-    }, []);
+    }, [user]);
 
     const getOrders = async () => {
         try {

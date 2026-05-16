@@ -1,6 +1,4 @@
 import axios from "axios";
-axios.defaults.withCredentials = true;
-
 const API_URL = "http://localhost:3000/favorites";
 
 export const get_favorites_service = () =>

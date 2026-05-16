@@ -59,7 +59,7 @@ const PaymentForm = ({ onSuccess, onClose, clientSecret }) => {
             )}
 
             <div className="modal__actions">
-                <button type="button" className="co-btn-secondary" onClick={onClose}>
+                <button type="button" className="co-btn-primary" onClick={onClose}>
                     Cancel
                 </button>
                 <button type="submit" className="co-btn-primary" disabled={!stripe || loading}>
