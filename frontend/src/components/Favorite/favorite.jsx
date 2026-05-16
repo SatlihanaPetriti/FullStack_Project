@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { HeartFill, Bag, BagFill } from "react-bootstrap-icons";
+import { HeartFill } from "react-bootstrap-icons";
 import { useFavorites } from "../../Context/Favorite";
 import "./favorite.css";
 
@@ -22,15 +22,12 @@ const FavoritesList = () => {
     };
 
     const getPrice = (product) => {
-        if (product.sale_price)
-            return Number(product.sale_price);
         if (product.sale_percentage)
             return product.price - (product.price * product.sale_percentage) / 100;
         return Number(product.price);
     };
 
-    const isDiscounted = (product) =>
-        !!product.sale_price || !!product.sale_percentage;
+    const isDiscounted = (product) => !!product.sale_percentage;
 
     const getImage = (product) => {
         const image = product?.variants?.[0]?.image;
@@ -109,7 +106,6 @@ const FavoritesList = () => {
 
                             {/* ACTIONS */}
                             <div className="fav-actions">
-                                {/* FAVORITE REMOVE */}
                                 <button
                                     className="fav-action-btn fav-heart-btn"
                                     onClick={(e) => handleRemove(e, fav.product_id)}

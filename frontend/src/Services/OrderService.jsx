@@ -1,5 +1,5 @@
 import axios from "axios";
-
+axios.defaults.withCredentials = true;
 const API_URL = "http://localhost:3000/orders";
 
 export const get_my_orders_service = () =>

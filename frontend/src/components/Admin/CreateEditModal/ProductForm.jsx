@@ -13,9 +13,7 @@ const EMPTY_FORM = {
     size: "SM",
     stock: "",
     price: "",
-    sale_price: "",
     sale_percentage: "",
-    is_bundle: false,
     date_added: new Date().toISOString().split("T")[0],
     variants: [],
 };
@@ -65,9 +63,7 @@ const ProductForm = ({ show, onClose, product, onSave, allProducts = [] }) => {
                 size: product.size || "SM",
                 stock: product.stock ?? "",
                 price: product.price ?? "",
-                sale_price: product.sale_price ?? "",
                 sale_percentage: product.sale_percentage ?? "",
-                is_bundle: product.is_bundle || false,
                 date_added: product.date_added?.split("T")[0] || new Date().toISOString().split("T")[0],
                 variants: product.variants?.map(toFormVariant) || [],
             });
@@ -170,9 +166,7 @@ const ProductForm = ({ show, onClose, product, onSave, allProducts = [] }) => {
             size: formData.size,
             stock: Number(formData.stock),
             price: Number(formData.price),
-            sale_price: formData.sale_price === "" ? null : Number(formData.sale_price),
             sale_percentage: formData.sale_percentage === "" ? null : Number(formData.sale_percentage),
-            is_bundle: formData.is_bundle,
             date_added: formData.date_added,
             variants: formData.variants.map(v => ({
                 ...(v.id ? { id: v.id } : {}),

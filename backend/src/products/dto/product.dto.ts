@@ -57,19 +57,8 @@ export class ProductDto {
     @Transform(({ value }) => value === '' || value == null ? null : Number(value))
     @IsNumber()
     @Min(0)
-    sale_price?: number;
-
-    @IsOptional()
-    @Transform(({ value }) => value === '' || value == null ? null : Number(value))
-    @IsNumber()
-    @Min(0)
     @Max(100)
     sale_percentage?: number;
-
-    @IsOptional()
-    @Transform(({ value }) => value === 'true' || value === true)
-    @IsBoolean()
-    is_bundle?: boolean;
 
     @IsOptional()
     @IsDateString()

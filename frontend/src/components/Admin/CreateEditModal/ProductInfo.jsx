@@ -114,17 +114,7 @@ const ProductInfo = ({ formData, errors, onChange }) => {
                         />
                     </Form.Group>
                 </Col>
-                <Col md={4}>
-                    <Form.Group>
-                        <Form.Label style={{ fontSize: 12 }}>Sale price</Form.Label>
-                        <Form.Control
-                            type="number" name="sale_price" step="0.5"
-                            placeholder="0.00"
-                            value={formData.sale_price}
-                            onChange={onChange}
-                        />
-                    </Form.Group>
-                </Col>
+               
                 <Col md={4}>
                     <Form.Group>
                         <Form.Label style={{ fontSize: 12 }}>Sale %</Form.Label>
@@ -137,22 +127,6 @@ const ProductInfo = ({ formData, errors, onChange }) => {
                     </Form.Group>
                 </Col>
             </Row>
-
-            <div className="d-flex align-items-center ms-2">
-                <Form.Check
-                    type="checkbox"
-                    name="is_bundle"
-                    checked={formData.is_bundle}
-                    onChange={onChange}
-                    id="is_bundle"
-                />
-                <Form.Label
-                    htmlFor="is_bundle"
-                    style={{ fontSize: 14, margin: 0, cursor: 'pointer' }}
-                >
-                    Is bundle
-                </Form.Label>
-            </div>
         </>
     );
 };

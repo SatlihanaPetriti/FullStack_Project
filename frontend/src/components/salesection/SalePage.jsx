@@ -5,15 +5,15 @@ import './SalePage.css';
 const SalePage = () => {
     const { products, loading, error } = useProductContext();
 
-    const saleProducts = products.filter(
-        (p) => p.sale_price || p.sale_percentage
-    );
+    const saleProducts = products.filter(p => p.sale_percentage);
 
     if (loading) return <div className="sale-spinner" />;
-    if (error) return <p> {error}</p>;
+    if (error) return <p>{error}</p>;
 
     return (
         <div className="sale-page">
+
+            {/* HERO */}
             <div className="sale-hero">
                 <h1 className="sale-hero__title">
                     Spring <em>Sale</em>
@@ -23,13 +23,15 @@ const SalePage = () => {
                 </p>
             </div>
 
+            {/* GRID */}
             <div className="sale-body container">
                 <div className="sale-grid">
-                    {saleProducts.map((product) => (
+                    {saleProducts.map(product => (
                         <PlantCard key={product.id} product={product} />
                     ))}
                 </div>
             </div>
+
         </div>
     );
 };

@@ -353,12 +353,6 @@
   white-space: nowrap;
 }
 
-.old-price {
-  font-size: 0.82rem;
-  color: #6c757d;
-  text-decoration: line-through;
-  margin-right: 6px;
-}
 
 .sale-price {
   font-weight: 600;

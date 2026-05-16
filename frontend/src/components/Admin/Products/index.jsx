@@ -17,8 +17,6 @@ const Products = ({ products, onEdit, onDelete, onAdd, onAddStock }) => {
     const selectedProduct = products.find(p => p.id === selectedProductId) ?? null;
 
     const getPriceAfterDiscount = (product) => {
-        if (product.sale_price)
-            return `$${parseFloat(product.sale_price).toFixed(2)}`;
         if (product.sale_percentage) {
             const discounted = product.price - (product.price * product.sale_percentage) / 100;
             return `$${discounted.toFixed(2)}`;
@@ -65,7 +63,7 @@ const Products = ({ products, onEdit, onDelete, onAdd, onAddStock }) => {
 
     const totalUnits = products.reduce((s, p) => s + (p.stock || 0), 0);
     const outOfStock = products.filter(p => (p.stock || 0) === 0).length;
-    const onSale = products.filter(p => p.sale_price || p.sale_percentage).length;
+    const onSale = products.filter(p => p.sale_percentage).length;
 
     return (
         <div className="plant-table-wrap">
@@ -175,14 +173,6 @@ const Products = ({ products, onEdit, onDelete, onAdd, onAddStock }) => {
                                                     {product.sale_percentage}% OFF
                                                 </span>
                                             )}
-                                            {product.is_bundle && (
-                                                <span className="plant-badge plant-badge--bundle">
-                                                    Bundle
-                                                </span>
-                                            )}
-                                            {!product.label && !product.sale_percentage && !product.is_bundle && (
-                                                <span>—</span>
-                                            )}
                                         </div>
                                     </td>
 
@@ -204,18 +194,7 @@ const Products = ({ products, onEdit, onDelete, onAdd, onAddStock }) => {
                                             {getPriceAfterDiscount(product)}
                                         </div>
 
-                                        {product.sale_price && (
-                                            <div className="plant-price-meta">
-                                                <span className="plant-price-original--struck">
-                                                    ${parseFloat(product.price).toFixed(2)}
-                                                </span>
-                                                <span className="plant-price-tag plant-price-tag--sale">
-                                                    Sale price
-                                                </span>
-                                            </div>
-                                        )}
-
-                                        {!product.sale_price && product.sale_percentage && (
+                                        {product.sale_percentage && (
                                             <div className="plant-price-meta">
                                                 <span className="plant-price-original--struck">
                                                     ${parseFloat(product.price).toFixed(2)}
@@ -226,7 +205,7 @@ const Products = ({ products, onEdit, onDelete, onAdd, onAddStock }) => {
                                             </div>
                                         )}
 
-                                        {!product.sale_price && !product.sale_percentage && (
+                                        {!product.sale_percentage && (
                                             <div className="plant-price-meta">
                                                 <span className="plant-price-base">Base price</span>
                                             </div>
@@ -274,7 +253,6 @@ const Products = ({ products, onEdit, onDelete, onAdd, onAddStock }) => {
                                             >
                                                 <Warehouse size={15} /> Update Stock
                                             </button>
-
                                             <button
                                                 className="plant-btn plant-btn--delete"
                                                 onClick={() => handleDelete(product.id)}

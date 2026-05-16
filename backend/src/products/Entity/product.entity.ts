@@ -35,15 +35,8 @@ export class Product {
     @Column('decimal', { precision: 10, scale: 2 })
     price: number;
 
-
-    @Column('decimal', { precision: 10, scale: 2, nullable: true })
-    sale_price: number;
-
     @Column('int', { nullable: true })
     sale_percentage: number;
-
-    @Column({ default: false })
-    is_bundle: boolean;
 
     @Column({ type: 'date', nullable: true })
     date_added: Date;

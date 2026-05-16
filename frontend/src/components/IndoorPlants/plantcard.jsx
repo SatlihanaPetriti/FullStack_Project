@@ -46,14 +46,6 @@ const PlantCard = ({ product }) => {
     };
 
     const getPrice = () => {
-        if (product.sale_price) {
-            return (
-                <>
-                    <span className="old-price">${product.price}</span>
-                    <span className="sale-price">${product.sale_price}</span>
-                </>
-            );
-        }
         if (product.sale_percentage) {
             const calculatedSale = product.price - (product.price * product.sale_percentage / 100);
             return (

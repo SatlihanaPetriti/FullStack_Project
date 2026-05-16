@@ -13,9 +13,7 @@ const DashboardFavorites = () => {
 
     const handleRemove = async (e, id) => {
         e.stopPropagation();
-
         setRemovingId(id);
-
         try {
             await removeFavorite(id);
         } finally {
@@ -24,22 +22,14 @@ const DashboardFavorites = () => {
     };
 
     const getPrice = (product) => {
-        if (product.sale_price)
-            return Number(product.sale_price);
-
         if (product.sale_percentage)
             return product.price - (product.price * product.sale_percentage) / 100;
-
         return Number(product.price);
     };
 
     const getDiscount = (product) => {
         if (product.sale_percentage)
             return Math.round(product.sale_percentage);
-
-        if (product.sale_price)
-            return Math.round(((product.price - product.sale_price) / product.price) * 100);
-
         return null;
     };
 
@@ -67,7 +57,7 @@ const DashboardFavorites = () => {
 
                     const image = getImage(product);
                     const price = getPrice(product);
-                    const hasDiscount = product.sale_price || product.sale_percentage;
+                    const hasDiscount = !!product.sale_percentage;
                     const discount = getDiscount(product);
 
                     const isFavorite = favorites.some(
@@ -77,19 +67,13 @@ const DashboardFavorites = () => {
                     return (
                         <li
                             key={id}
-                            className={`fav-item ${removingId === product_id ? "fav-item--removing" : ""
-                                }`}
-                            onClick={() =>
-                                navigate(`/product/${product.id}`)
-                            }
+                            className={`fav-item ${removingId === product_id ? "fav-item--removing" : ""}`}
+                            onClick={() => navigate(`/product/${product.id}`)}
                         >
                             {/* IMAGE */}
                             <div className="fav-img">
                                 {image ? (
-                                    <img
-                                        src={image}
-                                        alt={product.title}
-                                    />
+                                    <img src={image} alt={product.title} />
                                 ) : (
                                     <div className="fav-img-placeholder" />
                                 )}
@@ -97,9 +81,7 @@ const DashboardFavorites = () => {
 
                             {/* INFO */}
                             <div className="fav-info">
-                                <p className="fav-name">
-                                    {product.title}
-                                </p>
+                                <p className="fav-name">{product.title}</p>
                                 <span className="fav-cat">
                                     {product?.category?.name || "No category"}
                                 </span>
@@ -127,9 +109,7 @@ const DashboardFavorites = () => {
                             {/* HEART REMOVE */}
                             <button
                                 className="fav-remove"
-                                onClick={(e) =>
-                                    handleRemove(e, product_id)
-                                }
+                                onClick={(e) => handleRemove(e, product_id)}
                                 aria-label="Remove from favorites"
                             >
                                 <Heart

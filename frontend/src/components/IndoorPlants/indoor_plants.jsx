@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { Container, Row, Col, Form, Spinner, Alert, Button } from 'react-bootstrap';
-import { Search } from 'react-bootstrap-icons';
 import PlantCard from './plantcard';
 import FilterSidebar from './filtersidebar/';
 import { useProductContext } from '../../Context/Product';
@@ -17,7 +16,6 @@ const DEFAULT_FILTERS = {
   priceRanges: [],
   sizes: [],
   onSalePercent: false,
-  onSalePrice: false,
 };
 
 const IndoorPlants = () => {
@@ -28,7 +26,6 @@ const IndoorPlants = () => {
   const [searchInput, setSearchInput] = useState('');
 
   const getActualPrice = (product) => {
-    if (product.sale_price) return Number(product.sale_price);
     if (product.sale_percentage)
       return product.price - (product.price * product.sale_percentage / 100);
     return Number(product.price);
@@ -54,7 +51,6 @@ const IndoorPlants = () => {
       }
 
       if (filters.onSalePercent && !p.sale_percentage) return false;
-      if (filters.onSalePrice && !p.sale_price) return false;
       if (filters.sizes.length > 0 && !filters.sizes.includes(p.size)) return false;
 
       return true;

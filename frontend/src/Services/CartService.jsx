@@ -1,4 +1,5 @@
 import axios from "axios";
+axios.defaults.withCredentials = true;
 
 const API_URL = "http://localhost:3000/cart";
 

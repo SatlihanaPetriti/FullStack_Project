@@ -67,7 +67,7 @@ function SubscribeModal() {
               onClick={handleSubmit}
               disabled={status === "loading" || status === "success"}
             >
-              {status === "loading" ? "Duke dërguar..." : "Grow with us"}
+              {status === "loading" ? "Sending..." : "Grow with us"}
             </Button>
 
             {status === "success" && (

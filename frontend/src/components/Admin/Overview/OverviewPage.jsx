@@ -148,24 +148,13 @@ const OverviewPage = () => {
                                                 <div className="plant-badges">
                                                     {product.label && <span className="plant-badge plant-badge--label">{product.label}</span>}
                                                     {product.sale_percentage && <span className="plant-badge plant-badge--sale">{product.sale_percentage}% OFF</span>}
-                                                    {product.is_bundle && <span className="plant-badge plant-badge--bundle">Bundle</span>}
-                                                    {!product.label && !product.sale_percentage && !product.is_bundle && <span>—</span>}
+                                                    {!product.label && !product.sale_percentage && <span>—</span>}
                                                 </div>
                                             </td>
                                             <td><span className="plant-category">{product.category?.name ?? "—"}</span></td>
                                             <td><span className="plant-size">{product.size}</span></td>
                                             <td className="plant-cell-price">
-                                                {product.sale_price ? (
-                                                    <>
-                                                        <div className="plant-price-final">${parseFloat(product.sale_price).toFixed(2)}</div>
-                                                        <div className="plant-price-meta">
-                                                            <span className="plant-price-original--struck">${parseFloat(product.price).toFixed(2)}</span>
-                                                            <span className="plant-price-tag plant-price-tag--sale">Sale price</span>
-                                                        </div>
-                                                    </>
-                                                ) : (
-                                                    <div className="plant-price-final">${parseFloat(product.price).toFixed(2)}</div>
-                                                )}
+                                                <div className="plant-price-final">${parseFloat(product.price).toFixed(2)}</div>
                                             </td>
                                             <td>
                                                 <div className={`plant-stock-badge plant-stock-badge--${isOut ? 'out' : isLow ? 'low' : 'ok'}`}>

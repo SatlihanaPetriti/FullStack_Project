@@ -15,7 +15,7 @@ const FilterSidebar = ({ filters, onChange }) => {
     const toggle = (key, value) => {
         const current = filters[key] || [];
         const next = current.includes(value)
-            ? current.filter((v) => v !== value)
+            ? current.filter(v => v !== value)
             : [...current, value];
         onChange({ ...filters, [key]: next });
     };
@@ -25,27 +25,25 @@ const FilterSidebar = ({ filters, onChange }) => {
     };
 
     const clearAll = () => {
-        onChange({ categories: [], priceRanges: [], sizes: [], onSalePercent: false, onSalePrice: false });
+        onChange({ categories: [], priceRanges: [], sizes: [], onSalePercent: false });
     };
 
     const hasActive =
         filters.categories?.length > 0 ||
         filters.priceRanges?.length > 0 ||
         filters.sizes?.length > 0 ||
-        filters.onSalePercent ||
-        filters.onSalePrice;
+        filters.onSalePercent;
 
     const activeCount =
         (filters.categories?.length || 0) +
         (filters.priceRanges?.length || 0) +
         (filters.sizes?.length || 0) +
-        (filters.onSalePercent ? 1 : 0) +
-        (filters.onSalePrice ? 1 : 0);
+        (filters.onSalePercent ? 1 : 0);
 
     return (
         <div className="fsb">
 
-            {/* Header */}
+            {/* HEADER */}
             <div className="fsb-top">
                 <span className="fsb-heading">Filters</span>
             </div>
@@ -59,7 +57,7 @@ const FilterSidebar = ({ filters, onChange }) => {
                     </svg>
                 </summary>
                 <div className="fsb-options">
-                    {categories.map((cat) => (
+                    {categories.map(cat => (
                         <button
                             key={cat.id}
                             className={`fsb-pill ${filters.categories?.includes(cat.id) ? 'fsb-pill--active' : ''}`}
@@ -107,12 +105,6 @@ const FilterSidebar = ({ filters, onChange }) => {
                     >
                         Sale %
                     </button>
-                    <button
-                        className={`fsb-pill fsb-pill--offer ${filters.onSalePrice ? 'fsb-pill--active' : ''}`}
-                        onClick={() => toggleBool('onSalePrice')}
-                    >
-                        Sale Price
-                    </button>
                 </div>
             </details>
 
@@ -125,7 +117,7 @@ const FilterSidebar = ({ filters, onChange }) => {
                     </svg>
                 </summary>
                 <div className="fsb-sizes">
-                    {SIZES.map((s) => (
+                    {SIZES.map(s => (
                         <button
                             key={s}
                             className={`fsb-size ${filters.sizes?.includes(s) ? 'fsb-size--active' : ''}`}
@@ -137,7 +129,7 @@ const FilterSidebar = ({ filters, onChange }) => {
                 </div>
             </details>
 
-            {/* Bottom buttons */}
+            {/* CLEAR */}
             <div className="fsb-bottom">
                 {hasActive && (
                     <button className="fsb-clear-bottom" onClick={clearAll}>

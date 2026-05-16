@@ -18,9 +18,7 @@ export async function create_product_service(data, images = []) {
     formData.append('price', String(data.price));
     if (data.stock != null) { formData.append('stock', String(data.stock)); }
     if (data.label) formData.append('label', data.label);
-    if (data.sale_price) formData.append('sale_price', String(data.sale_price));
     if (data.sale_percentage) formData.append('sale_percentage', String(data.sale_percentage));
-    if (data.is_bundle != null) formData.append('is_bundle', String(data.is_bundle));
     if (data.date_added) formData.append('date_added', data.date_added);
 
     data.variants.forEach((variant, i) => {
@@ -43,10 +41,8 @@ export async function update_product_service(id, data, images = []) {
     if (data.stock != null) { formData.append('stock', String(data.stock)); }
 
     formData.append('label', data.label != null ? data.label : '');
-    formData.append('sale_price', data.sale_price != null ? String(data.sale_price) : '');
     formData.append('sale_percentage', data.sale_percentage != null ? String(data.sale_percentage) : '');
 
-    if (data.is_bundle != null) formData.append('is_bundle', String(data.is_bundle));
     if (data.date_added) formData.append('date_added', data.date_added);
 
     if (data.variants) {

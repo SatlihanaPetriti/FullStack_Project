@@ -1,20 +1,25 @@
 import { useState, useEffect } from "react";
-import "./productcart.css";
 import { Container, Row, Col, Image, Button, Breadcrumb, Tabs, Tab } from "react-bootstrap";
 import { SuitHeart, SuitHeartFill } from "react-bootstrap-icons";
 import { useParams, Link } from "react-router-dom";
 import { useProductContext } from "../../Context/Product";
 import { useCartContext } from "../../Context/CartContext";
 import { useFavorites } from "../../Context/Favorite";
-import FilterSidebar from '../IndoorPlants/filtersidebar';
+import "./productcart.css";
 
 const BASE_URL = "http://localhost:3000/products/uploads/variants";
+
+const getPrice = (product) => {
+  if (product.sale_percentage)
+    return product.price - (product.price * product.sale_percentage) / 100;
+  return Number(product.price);
+};
 
 const Productcart = () => {
   const { id } = useParams();
   const { getProductById } = useProductContext();
-  const { addToCart, cart, updateQuantity, removeFromCart } = useCartContext();
-  const { addFavorite, removeFavorite, favorites } = useFavorites();
+  const { cart, addToCart, updateQuantity, removeFromCart } = useCartContext();
+  const { favorites, addFavorite, removeFavorite } = useFavorites();
 
   const [product, setProduct] = useState(null);
   const [qty, setQty] = useState(1);
@@ -22,84 +27,45 @@ const Productcart = () => {
   const [favLoading, setFavLoading] = useState(false);
 
   useEffect(() => {
-    const load = async () => {
-      const data = await getProductById(id);
+    getProductById(id).then(data => {
       setProduct(data);
-      setSelectedImage(data?.variants?.find((v) => v.image)?.image || null);
-    };
-    load();
+      setSelectedImage(data?.variants?.find(v => v.image)?.image || null);
+    });
   }, [id]);
 
   useEffect(() => {
     if (!product || !cart?.items) return;
-    const cartItem = cart.items.find((item) => item.product_id === product.id);
-    if (cartItem) {
-      setQty(cartItem.quantity);
-    } else {
-      setQty(1);
-    }
+    const item = cart.items.find(i => i.product_id === product.id);
+    setQty(item ? item.quantity : 1);
   }, [product, cart]);
 
-  const cartItem = product && cart?.items
-    ? cart.items.find((item) => item.product_id === product.id)
-    : null;
+  if (!product) return <p className="text-center mt-5">Loading...</p>;
 
-  const isFavorite = product
-    ? favorites.some((fav) => fav.product_id === product.id)
-    : false;
+  const cartItem = cart?.items?.find(i => i.product_id === product.id) ?? null;
+  const isFavorite = favorites.some(f => f.product_id === product.id);
+  const finalPrice = getPrice(product);
 
-  const handleToggleFavorite = async () => {
+  const handleFavorite = async () => {
     if (favLoading) return;
     setFavLoading(true);
     try {
-      if (isFavorite) {
-        await removeFavorite(product.id);
-      } else {
-        await addFavorite(product.id);
-      }
-    } catch (err) {
-      console.error("Failed to toggle favorite:", err);
+      isFavorite ? await removeFavorite(product.id) : await addFavorite(product.id);
     } finally {
       setFavLoading(false);
     }
   };
 
-  const changeQty = async (delta) => {
+  const handleChangeQty = async (delta) => {
     const newQty = qty + delta;
-
     if (newQty < 1) {
       if (cartItem) await removeFromCart(cartItem.id);
       setQty(1);
       return;
     }
-    if (newQty > product.stock) {
-      return;
-    }
+    if (newQty > product.stock) return;
     setQty(newQty);
-    if (cartItem) {
-      await updateQuantity(cartItem.id, newQty);
-    }
+    if (cartItem) await updateQuantity(cartItem.id, newQty);
   };
-
-  const getPrice = () => {
-    if (product.sale_price) return Number(product.sale_price);
-    if (product.sale_percentage)
-      return product.price - (product.price * product.sale_percentage) / 100;
-    return Number(product.price);
-  };
-
-  const handleAddToCart = async () => {
-    await addToCart(product.id, qty);
-  };
-
-  const handleRemoveFromCart = async () => {
-    await removeFromCart(cartItem.id);
-  };
-
-  if (!product) return <p className="text-center mt-5">Loading...</p>;
-
-  const finalPrice = getPrice();
-  const hasDiscount = finalPrice < Number(product.price);
 
   return (
     <Container fluid className="product-cart-container">
@@ -113,52 +79,46 @@ const Productcart = () => {
       </Breadcrumb>
 
       <Row className="gx-0">
+
+        {/* IMAGES */}
         <Col md={6} className="d-flex justify-content-center ps-3 py-2">
           <Row>
             <Col xs={2} className="d-flex flex-column gap-4 px-3">
-              {product.variants?.map((variant) => (
+              {product.variants?.map(v => (
                 <Image
-                  key={variant.id}
-                  src={`${BASE_URL}/${variant.image}`}
+                  key={v.id}
+                  src={`${BASE_URL}/${v.image}`}
                   roundedCircle
                   className="border product-thumb"
-                  onClick={() => setSelectedImage(variant.image)}
+                  onClick={() => setSelectedImage(v.image)}
                 />
               ))}
             </Col>
             <Col xs={9}>
               <Image
                 src={`${BASE_URL}/${selectedImage}`}
-                fluid
-                rounded
+                fluid rounded
                 className="main-product-image"
               />
             </Col>
           </Row>
         </Col>
 
+        {/* INFO */}
         <Col md={6} className="product-info d-flex flex-column gap-3">
+
           <div className="d-flex justify-content-between align-items-center mb-3">
             <h3 className="mb-0 text-title">{product.title}</h3>
             <span
               className="wishlist-icon"
-              onClick={handleToggleFavorite}
-              style={{
-                cursor: favLoading ? "wait" : "pointer",
-                opacity: favLoading ? 0.6 : 1,
-                transition: "opacity 0.2s",
-              }}
+              onClick={handleFavorite}
+              style={{ cursor: favLoading ? "wait" : "pointer", opacity: favLoading ? 0.6 : 1 }}
             >
               {isFavorite ? <SuitHeartFill color="red" /> : <SuitHeart />}
             </span>
           </div>
 
-          <div className="d-flex align-items-center gap-3 mb-3">
-            {hasDiscount && (
-              <span className="old-price">€{Number(product.price).toFixed(2)}</span>
-            )}
-            <h4 className="text-price">€{finalPrice.toFixed(2)}</h4>
-          </div>
+          <h4 className="text-price mb-3">€{finalPrice.toFixed(2)}</h4>
 
           {product.size && (
             <div className="mb-4">
@@ -168,27 +128,17 @@ const Productcart = () => {
           )}
 
           <div className="d-flex align-items-center gap-3 mb-4 mt-3">
-            <Button className="quantity" onClick={() => changeQty(-1)}>-</Button>
+            <Button className="quantity" onClick={() => handleChangeQty(-1)}>-</Button>
             <span>{qty}</span>
-            <Button className="quantity" onClick={() => changeQty(1)}>+</Button>
+            <Button className="quantity" onClick={() => handleChangeQty(1)}>+</Button>
           </div>
 
           {cartItem ? (
-            <Button
-              size="lg"
-              variant="danger"
-              className="botton-cart mt-2"
-              onClick={handleRemoveFromCart}
-            >
+            <Button size="lg" variant="danger" className="botton-cart mt-2" onClick={() => removeFromCart(cartItem.id)}>
               Remove from Cart
             </Button>
           ) : (
-            <Button
-              size="lg"
-              className="botton-cart mt-2"
-              disabled={product.stock <= 0}
-              onClick={handleAddToCart}
-            >
+            <Button size="lg" className="botton-cart mt-2" disabled={product.stock <= 0} onClick={() => addToCart(product.id, qty)}>
               Add To Cart
             </Button>
           )}

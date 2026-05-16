@@ -5,6 +5,7 @@ import {
     update_order_status_service,
 } from "../Services/OrderService";
 
+
 const OrderContext = createContext();
 
 const OrderProvider = ({ children }) => {
@@ -14,6 +15,7 @@ const OrderProvider = ({ children }) => {
     useEffect(() => {
         getOrders();
         getAllOrders();
+
     }, []);
 
     const getOrders = async () => {
