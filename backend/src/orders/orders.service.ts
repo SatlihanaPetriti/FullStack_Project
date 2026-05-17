@@ -19,11 +19,10 @@ export class OrdersService {
     
     public async getAllOrders(): Promise<Order[]> {
         return this.orderRepo.find({
-            relations: ['items'],
+            relations: ['items', 'user'], 
             order: { created_at: 'DESC' },
         });
     }
-
 
     public async getOrderById(userId: number, orderId: number): Promise<Order> {
         const order = await this.orderRepo.findOne({

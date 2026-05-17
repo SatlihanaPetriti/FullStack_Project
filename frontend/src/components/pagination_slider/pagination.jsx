@@ -117,6 +117,7 @@ const ProductCard = ({ product }) => {
 
 const NewArrivalsSlider = () => {
   const { products, loading } = useProductContext();
+  // if (loading || !Array.isArray(products)) return null;
   const newArrivals = products.filter(isNewArrival);
 
   if (loading) return null;

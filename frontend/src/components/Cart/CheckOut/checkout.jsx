@@ -6,9 +6,7 @@ import { useCategoryContext } from "../../../Context/Category";
 import { useOrderContext } from '../../../Context/OrderContext';
 import CheckoutModal from './CheckoutModal';
 import "./checkout.css";
-
 const BASE_URL = "http://localhost:3000/products/uploads/variants";
-
 const CheckOut = () => {
     const navigate = useNavigate();
     const { cart, updateQuantity, removeFromCart, clearCart } = useCartContext();

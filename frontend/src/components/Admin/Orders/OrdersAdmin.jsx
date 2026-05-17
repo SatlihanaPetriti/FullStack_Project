@@ -67,7 +67,7 @@ const AdminOrders = () => {
                             <>
                                 <tr key={order.id} className={expanded === order.id ? "ao-row ao-row--expanded" : "ao-row"}>
                                     <td className="ao-id">#{order.id}</td>
-                                    <td className="ao-user">User {order.user_id}</td>
+                                    <td className="ao-user">{`${order.user?.name} #${order.user_id}`}</td>
                                     <td className="ao-date">
                                         {new Date(order.created_at).toLocaleDateString({
                                             day: "2-digit",
