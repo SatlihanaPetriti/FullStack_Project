@@ -19,6 +19,7 @@ export class AuthService {
 
     public async register(data: UserDto) {
         const isUser = await this.userService.findByEmail(data.email);
+        console.log('User exists:', isUser ? 'Yes':'No')
         if (isUser) {
             throw new ErrorHandler('User already exists', HttpStatus.CONFLICT); // 409
         }

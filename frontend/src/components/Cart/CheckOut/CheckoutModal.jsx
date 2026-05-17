@@ -31,7 +31,7 @@ const PaymentForm = ({ onSuccess, onClose, clientSecret }) => {
             elements,
             clientSecret,
             confirmParams: {
-                return_url: window.location.href,
+                return_url: `${window.location.origin}/dashboard`,
             },
             redirect: 'if_required',
         });

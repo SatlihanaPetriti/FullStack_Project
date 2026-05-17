@@ -1,5 +1,5 @@
 import {
-    Controller, Get, Post, Put, Delete, Param, Body, UseInterceptors, UploadedFiles, Res, UseGuards
+    Controller, Get, Post, Put, Delete, Param, Body, UseInterceptors, UploadedFiles, Res, UseGuards,
 } from '@nestjs/common';
 import { AnyFilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';

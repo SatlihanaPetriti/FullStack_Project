@@ -10,20 +10,14 @@ export class AuthController {
     constructor(private readonly authService: AuthService) { }
 
     @Post('register')
-    public async register(
-        @Body() param: UserDto,
-        @Res({ passthrough: true }) response: Response
-    ): Promise<UserEntity> {
+    public async register(@Body() param: UserDto,@Res({ passthrough: true }) response: Response): Promise<UserEntity> {
         const { user, token } = await this.authService.register(param);
         response.cookie('jwt', token, { httpOnly: true });
         return user;
     }
 
     @Post('login')
-    public async login(
-        @Body() param: LoginDto,
-        @Res({ passthrough: true }) response: Response
-    ): Promise<UserEntity> {
+    public async login(@Body() param: LoginDto,@Res({ passthrough: true }) response: Response): Promise<UserEntity> {
         const { user, token } = await this.authService.login(param);
         response.cookie('jwt', token, { httpOnly: true });
         return user;

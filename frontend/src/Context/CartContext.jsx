@@ -101,10 +101,10 @@ const CartProvider = (props) => {
     const clearCart = async () => {
         try {
             await clear_cart_service();
-            setCart(null);
         } catch (error) {
-            setError("Failed to clear cart");
+            setError('Clear cart')
         }
+        setCart(null); 
     };
 
     return (

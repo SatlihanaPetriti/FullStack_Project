@@ -21,7 +21,7 @@ export class UserController {
     }
 
     @Get(':id')
-    @Roles('admin', 'user')
+    @Roles('admin')
     public async findOne(@Param('id', ParseIntPipe) id: number) {
         return this.usersService.findById(id);
     }

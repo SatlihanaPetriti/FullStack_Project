@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useCartContext } from "../../../Context/CartContext";
 import { useProductContext } from "../../../Context/Product";
 import { useCategoryContext } from "../../../Context/Category";
+import { useOrderContext } from '../../../Context/OrderContext';
 import CheckoutModal from './CheckoutModal';
 import "./checkout.css";
 
@@ -11,6 +12,7 @@ const BASE_URL = "http://localhost:3000/products/uploads/variants";
 const CheckOut = () => {
     const navigate = useNavigate();
     const { cart, updateQuantity, removeFromCart, clearCart } = useCartContext();
+    const { getOrders } = useOrderContext();
     const { products } = useProductContext();
     const { categories } = useCategoryContext();
     const [modalOpen, setModalOpen] = useState(false);
@@ -54,7 +56,10 @@ const CheckOut = () => {
                     <p className="co-confirmed__sub">
                         Thank you for your purchase. Your plants are on their way.
                     </p>
-                    <button className="co-btn-primary" onClick={() => navigate("/")}>
+                    <button className="co-btn-primary"
+                        onClick={() =>
+
+                            navigate("/")}>
                         Continue Shopping
                     </button>
                 </div>
@@ -178,8 +183,9 @@ const CheckOut = () => {
             <CheckoutModal
                 isOpen={modalOpen}
                 onClose={() => setModalOpen(false)}
-                onSuccess={() => {
-                    clearCart();
+                onSuccess={async () => {
+                    await getOrders();
+                    await clearCart();
                     setModalOpen(false);
                     setOrdered(true);
                 }}

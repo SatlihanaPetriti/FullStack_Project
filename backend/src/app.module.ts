@@ -1,4 +1,4 @@
-import { Module, MiddlewareConsumer, NestModule } from '@nestjs/common';
+import { Module, MiddlewareConsumer, NestModule, RequestMethod } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProductsModule } from './products/products.module';
 import { Product } from './products/Entity/product.entity';
@@ -35,7 +35,7 @@ import { AuthMiddleware } from './Middleware/auth.middleware';
                 username: configService.get<string>('DB_USERNAME'),
                 password: configService.get<string>('DB_PASSWORD'),
                 database: configService.get<string>('DB_NAME'),
-                entities: [Product, CategoryEntity, ProductVariant, UserEntity, Favorite, CartItem, Cart,Order,OrderItem,Subscriber],
+                entities: [Product, CategoryEntity, ProductVariant, UserEntity, Favorite, CartItem, Cart, Order, OrderItem, Subscriber],
                 synchronize: true,
             }),
         }),
@@ -54,6 +54,29 @@ export class AppModule implements NestModule {
     configure(consumer: MiddlewareConsumer) {
         consumer
             .apply(AuthMiddleware)
-            .forRoutes('users', 'orders', 'favorites', 'cart', 'checkout');
+            .forRoutes(
+                // auth — vetem checkUser kerkon token
+                { path: 'auth/checkUser', method: RequestMethod.GET },
+                { path: 'auth/logout', method: RequestMethod.POST },
+
+                // users 
+                { path: 'users', method: RequestMethod.ALL },
+                { path: 'users/*', method: RequestMethod.ALL },
+
+                // products 
+                { path: 'products', method: RequestMethod.POST },
+                { path: 'products/*', method: RequestMethod.PUT },
+                { path: 'products/*', method: RequestMethod.DELETE },
+
+
+                // kerkojne login
+                { path: 'orders', method: RequestMethod.ALL },
+                { path: 'orders/*', method: RequestMethod.ALL },
+                { path: 'favorites', method: RequestMethod.ALL },
+                { path: 'favorites/*', method: RequestMethod.ALL },
+                { path: 'cart', method: RequestMethod.ALL },
+                { path: 'cart/*', method: RequestMethod.ALL },
+                { path: 'checkout/*', method: RequestMethod.ALL },
+            );
     }
 }

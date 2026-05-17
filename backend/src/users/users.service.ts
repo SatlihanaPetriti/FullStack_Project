@@ -22,7 +22,7 @@ export class UsersService {
 
     public async findByEmail(email: string): Promise<UserEntity | null> {
         try {
-            return await this.userRepository.findOne({ where: { email } }) ?? null;
+            return await this.userRepository.findOne({ where: { email } });
         } catch (error) {
             throw new ErrorHandler('Failed to find user by email', HttpStatus.BAD_REQUEST);
         }
@@ -30,6 +30,9 @@ export class UsersService {
 
     public async registerUser(user: UserDto): Promise<UserEntity> {
         try {
+            // const saved =await this.userRepository.save(user)
+            // console.log('Saved :', saved.id, 'role:', saved.role)
+            // return saved;
             return await this.userRepository.save(user);
         } catch (error) {
             throw new ErrorHandler('Failed to create user', HttpStatus.BAD_REQUEST);
@@ -45,13 +48,14 @@ export class UsersService {
     }
 
     public async updateUser(id: number, data: Partial<UserEntity>): Promise<UserEntity> {
+        const existing = await this.userRepository.findOne({ where: { id } });
+        if (!existing) {
+            throw new ErrorHandler('User not found', HttpStatus.NOT_FOUND);
+        }
+
         try {
             await this.userRepository.update(id, data);
-            const updatedUser = await this.userRepository.findOne({ where: { id } });
-            if (!updatedUser) {
-                throw new ErrorHandler('User not found', HttpStatus.NOT_FOUND);
-            }
-            return updatedUser;
+            return await this.userRepository.findOne({ where: { id } });
         } catch (error) {
             throw new ErrorHandler('Failed to update user', HttpStatus.BAD_REQUEST);
         }

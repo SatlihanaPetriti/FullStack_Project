@@ -15,9 +15,11 @@ const OrderProvider = ({ children }) => {
     const { user } = useUserContext();
 
     useEffect(() => {
+        if (!user) return;
         getOrders();
-        getAllOrders();
-
+        if (user.role === 'admin') {
+            getAllOrders();
+        }
     }, [user]);
 
     const getOrders = async () => {

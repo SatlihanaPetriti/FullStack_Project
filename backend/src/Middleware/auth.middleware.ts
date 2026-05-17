@@ -12,7 +12,11 @@ export class AuthMiddleware implements NestMiddleware {
     ) { }
 
     async use(req: Request, res: Response, next: NextFunction) {
+        console.log('Route:', req.method, req.url)
+        
         const token = req.cookies?.jwt;
+        console.log('Token:', token)
+
         if (!token) {
             throw new ErrorHandler('No token provided', HttpStatus.UNAUTHORIZED);
         }
@@ -20,16 +24,18 @@ export class AuthMiddleware implements NestMiddleware {
         let payload: { id: number };
         try {
             payload = this.jwtService.verify(token);
+            console.log('Token valid:', payload)
         } catch (err) {
             throw new ErrorHandler('Invalid or expired token', HttpStatus.UNAUTHORIZED);
         }
 
         const user = await this.userService.findById(payload.id);
+        console.log('User from DB:', `id:${user.id}`)
         if (!user) {
             throw new ErrorHandler('User not found', HttpStatus.NOT_FOUND);
         }
-
         req.user = user;
+        console.log(req.user)
         next();
     }
 }

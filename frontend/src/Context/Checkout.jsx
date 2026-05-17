@@ -3,12 +3,14 @@ import {
     create_payment_intent_service,
     confirm_order_service,
 } from '../Services/Checkout';
+import { useUserContext } from "./Auth";
 
 const CheckoutContext = createContext({});
 
 const CheckoutProvider = (props) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+
 
     const createPaymentIntent = async () => {
         setLoading(true);
