@@ -1,68 +1,68 @@
-/* NAVBAR */
-.navbar.dropdown-container {
-  background-color: rgba(255, 255, 255, 0.55);
+/* ── BASE ─────────────────────────────────────── */
+.site-header {
+  background: rgba(255, 255, 255, 0.55);
   backdrop-filter: blur(6px);
   position: sticky;
-  top:0;
+  top: 0;
   width: 100%;
-  z-index: 6;
+  z-index: 100;
   border-bottom: 1px solid rgba(23, 46, 34, 0.08);
-
 }
-/* CENTER MENU */
-.center-menu {
-  font-family: "Poppins", sans-serif;
-  font-weight: 600;
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 60px;
+}
+
+/* ── LOGO ─────────────────────────────────────── */
+.header-logo img {
+  height: 25px;
+}
+
+/* ── DESKTOP NAV ──────────────────────────────── */
+.desktop-nav {
   display: flex;
   gap: 30px;
-  font-weight: bold;
+}
+
+.desktop-nav a {
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
   font-size: 16px;
   letter-spacing: 1.5px;
-}
-
-.center-menu .nav-link {
-  position: relative;
-  display: inline-block;
-  padding: 0;
-  /* remove extra width from Bootstrap */
-  margin: 0;
-  color: #2d6a4f !important;
+  color: #2d6a4f;
   text-decoration: none;
-  padding-bottom: 10px;
-  /* space between text and underline */
+  position: relative;
+  padding-bottom: 4px;
 }
 
-/* custom underline */
-.center-menu .nav-link::after {
+.desktop-nav a::after {
   content: "";
   position: absolute;
   left: 0;
   bottom: 0;
   width: 100%;
-  /* same width as text */
   height: 3px;
-  background-color: #2d6a4f;
+  background: #2d6a4f;
   transform: scaleX(0);
-  /* hidden by default */
   transform-origin: center;
   transition: transform 0.3s ease;
 }
 
-/* hover effect */
-.center-menu .nav-link:hover::after {
+.desktop-nav a:hover::after {
   transform: scaleX(1);
 }
 
-/* RIGHT ICONS */
-.right-icons {
+/* ── ICONS ────────────────────────────────────── */
+.header-icons {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 10px;
   color: #214332;
-  margin-right: 50px;
 }
 
-/* ICON BOX */
 .icon-box {
   width: 33px;
   height: 33px;
@@ -72,10 +72,13 @@
   justify-content: center;
   border-radius: 8px;
   cursor: pointer;
-  transition: all 0.3s ease;
-}
-.icon-box {
   position: relative;
+  transition: all 0.2s ease;
+}
+
+.icon-box:hover {
+  background: #214332;
+  color: #fff;
 }
 
 .bag-count {
@@ -93,38 +96,296 @@
   justify-content: center;
 }
 
+/* ── HAMBURGER ────────────────────────────────── */
+.hamburger {
+  width: 33px;
+  height: 33px;
+  border: 1px solid #214332;
+  border-radius: 8px;
+  background: transparent;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.2s ease;
+}
 
-/* HOVER EFFECT */
-.icon-box:hover {
-  background-color: #214332;
+.hamburger span {
+  display: block;
+  width: 14px;
+  height: 1.5px;
+  background: #214332;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+.hamburger.open {
+  background: #2d6a4f;
+  border-color: #2d6a4f;
+}
+
+.hamburger.open span {
+  background: #fff;
+}
+
+.hamburger.open span:nth-child(1) {
+  transform: translateY(5.5px) rotate(45deg);
+}
+
+.hamburger.open span:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger.open span:nth-child(3) {
+  transform: translateY(-5.5px) rotate(-45deg);
+}
+
+/* ── MOBILE MENU ──────────────────────────────── */
+.mobile-menu {
+  background: rgba(255, 255, 255, 0.97);
+  border-top: 1px solid rgba(23, 46, 34, 0.08);
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease;
+}
+
+.mobile-menu.open {
+  max-height: 600px;
+}
+
+/* ── MOBILE NAV LINKS ─────────────────────────── */
+.mobile-nav {
+  display: flex;
+  flex-direction: column;
+  padding: 8px 0;
+}
+
+.mobile-nav a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: "Poppins", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1b4332;
+  text-decoration: none;
+  letter-spacing: 0.3px;
+  padding: 13px 24px;
+  border-bottom: 1px solid rgba(23, 46, 34, 0.06);
+  transition: background 0.15s ease;
+}
+
+.mobile-nav a:last-child {
+  border-bottom: none;
+}
+
+.mobile-nav a svg,
+.mobile-nav a .nav-icon {
+  font-size: 16px;
+  color: #2d6a4f;
+  width: 20px;
+  flex-shrink: 0;
+}
+
+.mobile-nav a .nav-arrow {
+  margin-left: auto;
+  opacity: 0.35;
+  font-size: 13px;
+}
+
+.mobile-nav a:hover,
+.mobile-nav a.active {
+  background: #f0faf5;
+  color: #2d6a4f;
+}
+
+.mobile-nav a.active .nav-arrow {
+  opacity: 0.6;
+}
+
+/* ── MOBILE MENU FOOTER ───────────────────────── */
+.mobile-menu-footer {
+  padding: 16px 24px 20px;
+  border-top: 1px solid rgba(23, 46, 34, 0.08);
+  background: #f8fdf9;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mobile-menu-footer-label {
+  font-family: "Poppins", sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  color: #95a5a6;
+  letter-spacing: 1px;
+  margin-bottom: 2px;
+}
+
+/* Login button — solid full width */
+.mm-btn {
+  width: 100%;
+  padding: 11px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  font-family: "Poppins", sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.mm-btn--solid {
+  background: #2d6a4f;
+  border: 1px solid #2d6a4f;
   color: #fff;
 }
 
-/* USER DROPDOWN FIX */
+.mm-btn--solid:hover {
+  background: #1b4332;
+  border-color: #1b4332;
+}
+
+.mm-btn--outline {
+  background: transparent;
+  border: 1px solid #2d6a4f;
+  color: #2d6a4f;
+}
+
+.mm-btn--outline:hover {
+  background: #f0faf5;
+}
+
+/* Divider row */
+.mm-divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.mm-divider-line {
+  flex: 1;
+  height: 1px;
+  background: rgba(23, 46, 34, 0.1);
+}
+
+.mm-divider-text {
+  font-family: "Poppins", sans-serif;
+  font-size: 11px;
+  color: #95a5a6;
+  white-space: nowrap;
+}
+
+/* Register box */
+.mm-register-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid rgba(23, 46, 34, 0.12);
+  border-radius: 10px;
+  background: #fff;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease;
+  text-decoration: none;
+}
+
+.mm-register-box:hover {
+  border-color: #2d6a4f;
+  background: #f0faf5;
+}
+
+.mm-register-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: #e8f5ee;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #2d6a4f;
+  font-size: 16px;
+}
+
+.mm-register-text {
+  flex: 1;
+}
+
+.mm-register-title {
+  font-family: "Poppins", sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1b4332;
+  margin-bottom: 2px;
+}
+
+.mm-register-sub {
+  font-family: "Poppins", sans-serif;
+  font-size: 11px;
+  color: #95a5a6;
+}
+
+.mm-register-arrow {
+  color: #95a5a6;
+  font-size: 15px;
+}
+
+/* ── DROPDOWN FIX ─────────────────────────────── */
 .user-box .dropdown-toggle {
   background: none !important;
   border: none !important;
   padding: 0 !important;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
-.user-box .dropdown-menu {
-  right: 0;
-  left: auto;
-}
-
-/* REMOVE DEFAULT BOOTSTRAP ARROW */
 .dropdown-toggle::after {
   display: none !important;
 }
 
-/* LOGO SPACING */
-.navbar .navbar-brand {
-  margin-left: 50px;
+/* ── RESPONSIVE ───────────────────────────────── */
+.desktop-only {
+  display: flex;
 }
 
-.navbar .navbar-brand img {
-  height: 25px;
+.mobile-only {
+  display: none;
+}
+
+@media (max-width: 991px) {
+  .header-inner {
+    padding: 14px 24px;
+  }
+
+  .desktop-nav {
+    display: none;
+  }
+
+  .desktop-only {
+    display: none;
+  }
+
+  .mobile-only {
+    display: flex;
+  }
+
+  .hamburger {
+    display: flex;
+  }
+}
+
+@media (max-width: 575px) {
+  .header-inner {
+    padding: 12px 16px;
+  }
+
+  .header-logo img {
+    height: 20px;
+  }
 }

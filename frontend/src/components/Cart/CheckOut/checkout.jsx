@@ -179,6 +179,7 @@ const CheckOut = () => {
                 isOpen={modalOpen}
                 onClose={() => setModalOpen(false)}
                 onSuccess={() => {
+                    clearCart();
                     setModalOpen(false);
                     setOrdered(true);
                 }}

@@ -6,7 +6,7 @@ import './CheckoutModal.css';
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 
-// ── Payment Form ────────────────────────────────────────────────
+// Payment Form 
 const PaymentForm = ({ onSuccess, onClose, clientSecret }) => {
     const stripe = useStripe();
     const elements = useElements();

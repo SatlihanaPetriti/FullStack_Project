@@ -1,0 +1,77 @@
+<svg width="800" height="800" viewBox="0 0 800 800" xmlns="http://www.w3.org/2000/svg">
+  <rect width="100%" height="100%" fill="#fffef5"></rect>
+
+  <g transform="translate(400 420)">
+
+    <!-- gradient for natural green look -->
+    <defs>
+      <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#b7f0a3"></stop>
+        <stop offset="100%" stop-color="#3f9b2f"></stop>
+      </linearGradient>
+
+      <linearGradient id="g2" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#a6e890"></stop>
+        <stop offset="100%" stop-color="#2f7f25"></stop>
+      </linearGradient>
+
+      <linearGradient id="g3" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#c8f5b8"></stop>
+        <stop offset="100%" stop-color="#4aa337"></stop>
+      </linearGradient>
+    </defs>
+
+    <!-- base petal shape -->
+    <g opacity="0.65">
+      <path d="M0,-260
+               C55,-200 75,-120 60,-40
+               C40,40 20,120 0,180
+               C-20,120 -40,40 -60,-40
+               C-75,-120 -55,-200 0,-260Z" fill="url(#g1)"></path>
+    </g>
+
+    <g opacity="0.55">
+      <path d="M0,-250
+               C60,-190 80,-110 65,-30
+               C45,50 25,120 0,170
+               C-25,120 -45,50 -65,-30
+               C-80,-110 -60,-190 0,-250Z" fill="url(#g2)" transform="rotate(60)"></path>
+    </g>
+
+    <g opacity="0.6">
+      <path d="M0,-250
+               C60,-190 80,-110 65,-30
+               C45,50 25,120 0,170
+               C-25,120 -45,50 -65,-30
+               C-80,-110 -60,-190 0,-250Z" fill="url(#g3)" transform="rotate(120)"></path>
+    </g>
+
+    <g opacity="0.55">
+      <path d="M0,-250
+               C60,-190 80,-110 65,-30
+               C45,50 25,120 0,170
+               C-25,120 -45,50 -65,-30
+               C-80,-110 -60,-190 0,-250Z" fill="url(#g1)" transform="rotate(180)"></path>
+    </g>
+
+    <g opacity="0.6">
+      <path d="M0,-250
+               C60,-190 80,-110 65,-30
+               C45,50 25,120 0,170
+               C-25,120 -45,50 -65,-30
+               C-80,-110 -60,-190 0,-250Z" fill="url(#g2)" transform="rotate(240)"></path>
+    </g>
+
+    <g opacity="0.55">
+      <path d="M0,-250
+               C60,-190 80,-110 65,-30
+               C45,50 25,120 0,170
+               C-25,120 -45,50 -65,-30
+               C-80,-110 -60,-190 0,-250Z" fill="url(#g3)" transform="rotate(300)"></path>
+    </g>
+
+    <!-- center overlap -->
+    <circle r="28" fill="#1f6f1f" opacity="0.45"></circle>
+
+  </g>
+</svg>

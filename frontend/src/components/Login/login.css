@@ -1,9 +1,16 @@
-.login-fullscreen .modal-content{
-  border-radius:0;
-  height:100%;
+.login-fullscreen .modal-content {
+  border-radius: 0;
+  height: 100%;
+  overflow: hidden;
 }
 
-.login-image{
+.login-fullscreen .modal-body {
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+
+/* ── IMAGE SIDE ───────────────────────────────── */
+.login-image {
   background-image: url("../../assets/images/Home/try4.png");
   background-size: cover;
   background-position: center;
@@ -11,169 +18,260 @@
   height: 100%;
 }
 
-/* Form side */
-.login-panel{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  position:relative;
+/* ── FORM SIDE ────────────────────────────────── */
+.login-panel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
 }
 
-.login-container{
-  width:100%;
-  max-width:380px;
+.login-container {
+  width: 100%;
+  max-width: 380px;
+  position: relative;
 }
 
-/* close button */
-.close-btn{
-  position:absolute;
-  top:20px;
-  right:20px;
-  border:none;
-  background:none;
-  font-size:22px;
-  cursor:pointer;
-  color:#444;
+/* ── CLOSE BUTTON ─────────────────────────────── */
+.close-btn {
+  display: block;
+  margin-left: auto;
+  margin-bottom: 16px;
+  border: none;
+  background: none;
+  font-size: 26px;
+  cursor: pointer;
+  color: #888;
+  line-height: 1;
+  padding: 0;
 }
 
-/* inputs */
-.login-input{
-  border-radius:10px;
-  padding:12px 15px;
-  border:1px solid #dcdcdc;
-  transition:all 0.3s ease;
-  border-color: #2d6a4f;
+.close-btn:hover {
+  color: #111;
 }
 
-.login-input:focus{
-  outline:none;
+/* ── INPUTS ───────────────────────────────────── */
+.login-input {
+  border-radius: 10px;
+  padding: 12px 15px;
+  padding-right: 40px;
+  border: 1px solid #2d6a4f;
+  transition: all 0.3s ease;
+}
+
+.login-input:focus {
+  outline: none;
   border-color: #2d6a4f !important;
-  box-shadow: 0 0 0 3px rgba(45, 106, 79, 0.7);
+  box-shadow: 0 0 0 3px rgba(45, 106, 79, 0.2);
 }
 
-.login-btn{
-  background:#2d6a4f;
-  border:none;
-  padding:12px;
-  font-weight:600;
-  border-radius:10px;
-  transition:all 0.3s ease;
-  color:white;
+/* ── SUBMIT BUTTON ────────────────────────────── */
+.login-btn {
+  background: #2d6a4f;
+  border: none;
+  padding: 12px;
+  font-weight: 600;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+  color: white;
 }
 
-.login-btn:hover{
-  background:#285f46!important;
+.login-btn:hover {
+  background: #285f46 !important;
 }
 
-.login-btn:focus:active{
-  background:#1a4131 !important;
-  color:#fff !important;
+.login-btn:active {
+  background: #1a4131 !important;
+  color: #fff !important;
 }
 
-.login-options{
-  display:flex;
-  justify-content:space-between;
-  font-size:14px;
-  margin-bottom:15px;
+/* ── LOGIN OPTIONS ────────────────────────────── */
+.login-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  margin-bottom: 15px;
 }
-.from-check-input {
-  border-color:#2d6a4f;
-  outline:none;
-  box-shadow:none;
+
+.login-options a {
+  color: #2d6a4f;
+  text-decoration: none;
+  font-weight: 500;
 }
+
+.login-options a:hover {
+  text-decoration: underline;
+}
+
+/* ── CHECKBOX ─────────────────────────────────── */
 .form-check-input:focus {
-  border-color: #2d6a4f;      
-  box-shadow: 0 0 0 0.25rem rgba(45, 106, 79, 0.25); 
+  border-color: #2d6a4f;
+  box-shadow: 0 0 0 0.25rem rgba(45, 106, 79, 0.25);
 }
 
 .form-check-input:checked {
-  background-color: #2d6a4f; 
+  background-color: #2d6a4f;
   border-color: #2d6a4f;
 }
 
-.divider{
-  text-align:center;
-  margin:20px 0;
-  position:relative;
+/* ── DIVIDER ──────────────────────────────────── */
+.divider {
+  text-align: center;
+  margin: 20px 0;
+  position: relative;
 }
 
 .divider::before,
-.divider::after{
-  content:"";
-  position:absolute;
-  top:50%;
-  width:40%;
-  height:1px;
-  background:#ddd;
+.divider::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 40%;
+  height: 1px;
+  background: #ddd;
 }
 
-.divider::before{ left:0; }
-.divider::after{ right:0; }
-
-
-.signup-link{
-  text-align:center;
-  margin-top:15px;
-  font-size:14px;
-}
-.social-btn{
-  border-radius:10px;
-  padding:12px;
-  font-weight:500;
-  transition:all 0.3s ease;
-  color:#000; 
-  font-weight:bold;                
-  background:#e0e0e0;        
-  border:none;
-  position:relative;
-  display: flex;              
-  align-items: center;        
-  justify-content: center;    
-  
+.divider::before {
+  left: 0;
 }
 
-.social-btn:hover{
-  background:#c9c9c9;        
-  color:#000;               
+.divider::after {
+  right: 0;
 }
 
-.social-btn:focus:active{
-  background:#b5b5b5 !important;
-  color:#000 !important;
-}
-.social-icon {
-  position:absolute;
-  left: 12px;
-}
-.social-text{
-flex:1;
-text-align:center;
+/* ── SIGNUP LINK ──────────────────────────────── */
+.signup-link {
+  text-align: center;
+  margin-top: 15px;
+  font-size: 14px;
 }
 
-.password-toggle{
-  position:absolute;
-  right:15px;
-  top:50%;
-  transform:translateY(-50%);
-  cursor:pointer;
-  font-size:20px;
-  color:#777;
-  z-index:5;
+.toggle-auth {
+  color: #2d6a4f;
+  cursor: pointer;
+  font-weight: 600;
+  margin-left: 4px;
 }
 
-.password-toggle:hover{
-  color:#000;
+.toggle-auth:hover {
+  text-decoration: underline;
 }
 
-.login-input{
-  padding-right:40px;
-}
-.toggle-auth{
-  color:#2d6a4f;
-  cursor:pointer;
-  font-weight:600;
+/* ── PASSWORD TOGGLE ──────────────────────────── */
+.password-toggle {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 20px;
+  color: #777;
+  z-index: 5;
 }
 
-.toggle-auth:hover{
-  text-decoration:underline;
+.password-toggle:hover {
+  color: #000;
+}
+
+
+/* ══════════════════════════════════════════════
+   MOBILE  (< 768px)
+   ══════════════════════════════════════════════ */
+@media (max-width: 767px) {
+
+  /* Fsheh kolonën e imazhit */
+  .login-image {
+    display: none;
+  }
+
+  /* Paneli merr të gjithë gjerësinë dhe lartësinë */
+  .login-panel {
+    flex: 0 0 100%;
+    max-width: 100%;
+    min-height: 100vh;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 20px;
+
+    background-image: url("../../assets/images/Home/try4.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Overlay i errët + blur mbi imazh */
+  .login-panel::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(10, 30, 20, 0.45);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+
+  /* Karta e bardhë e centruar mbi overlay */
+  .login-container {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 360px;
+    background: rgba(255, 255, 255, 0.97);
+    border-radius: 20px;
+    padding: 32px 24px 28px;
+    box-shadow:
+      0 24px 64px rgba(0, 0, 0, 0.35),
+      0 0 0 1px rgba(255, 255, 255, 0.1);
+    max-height: 90vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  /* Close button — brenda kartës në mobile */
+  .close-btn {
+    display: block;
+    margin-left: auto;
+    margin-bottom: 12px;
+    background: none;
+    border: none;
+    font-size: 26px;
+    color: #888;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+  }
+
+  .close-btn:hover {
+    color: #111;
+  }
+
+  .login-container h2 {
+    font-size: 22px;
+  }
+
+  .login-container .login-subtitle {
+    font-size: 13px;
+    margin-bottom: 18px;
+  }
+
+  .login-options {
+    font-size: 13px;
+  }
+
+  .signup-link {
+    font-size: 13px;
+  }
+}
+
+
+/* ══════════════════════════════════════════════
+   TABLET  (768px – 991px)
+   ══════════════════════════════════════════════ */
+@media (min-width: 768px) and (max-width: 991px) {
+  .login-container {
+    max-width: 340px;
+    padding: 0 16px;
+  }
 }
