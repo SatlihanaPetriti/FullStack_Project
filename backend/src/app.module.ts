@@ -61,22 +61,22 @@ export class AppModule implements NestModule {
 
                 // users 
                 { path: 'users', method: RequestMethod.ALL },
-                { path: 'users/*', method: RequestMethod.ALL },
+                { path: 'users/*path', method: RequestMethod.ALL },
 
                 // products 
                 { path: 'products', method: RequestMethod.POST },
-                { path: 'products/*', method: RequestMethod.PUT },
-                { path: 'products/*', method: RequestMethod.DELETE },
+                { path: 'products/*path', method: RequestMethod.PUT },
+                { path: 'products/*path', method: RequestMethod.DELETE },
 
 
                 // kerkojne login
                 { path: 'orders', method: RequestMethod.ALL },
-                { path: 'orders/*', method: RequestMethod.ALL },
+                { path: 'orders/*path', method: RequestMethod.ALL },
                 { path: 'favorites', method: RequestMethod.ALL },
-                { path: 'favorites/*', method: RequestMethod.ALL },
+                { path: 'favorites/*path', method: RequestMethod.ALL },
                 { path: 'cart', method: RequestMethod.ALL },
-                { path: 'cart/*', method: RequestMethod.ALL },
-                { path: 'checkout/*', method: RequestMethod.ALL },
+                { path: 'cart/*path', method: RequestMethod.ALL },
+                { path: 'checkout/*path', method: RequestMethod.ALL },
             );
     }
 }

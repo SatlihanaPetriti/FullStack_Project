@@ -30,12 +30,12 @@ export class AuthMiddleware implements NestMiddleware {
         }
 
         const user = await this.userService.findById(payload.id);
-        console.log('User from DB:', `id:${user.id}`)
+        console.log('User from DB:', user.id)
         if (!user) {
             throw new ErrorHandler('User not found', HttpStatus.NOT_FOUND);
         }
         req.user = user;
-        console.log(req.user)
+        console.log('---Req:',req.user)
         next();
     }
 }
