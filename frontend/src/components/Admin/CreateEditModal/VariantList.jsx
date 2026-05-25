@@ -1,12 +1,34 @@
-import { Table, Button, Alert, Form } from "react-bootstrap";
 import { useRef } from "react";
+import { Table, Button, Alert } from "react-bootstrap";
+
+const titleStyle = {
+    textTransform: "uppercase",
+    letterSpacing: "1px",
+    fontSize: 13,
+    fontWeight: 600,
+};
+
+const imageStyle = {
+    width: 36,
+    height: 36,
+    objectFit: "cover",
+    borderRadius: 6,
+    border: "1px solid #ddd",
+};
+
+const getVariantKey = (variant, index) => {
+    return variant.id ? `existing-${variant.id}` : `new-${index}`;
+};
 
 const VariantRow = ({ variant, index, onReplaceImage, onRemove }) => {
-    const fileRef = useRef();
+    const fileRef = useRef(null);
+
+    const openFileInput = () => {
+        fileRef.current.click();
+    };
 
     return (
         <tr style={{ verticalAlign: "middle" }}>
-
             <td style={{ width: 80 }}>
                 {variant.id || <span className="text-muted">—</span>}
             </td>
@@ -17,17 +39,7 @@ const VariantRow = ({ variant, index, onReplaceImage, onRemove }) => {
 
             <td style={{ width: 70 }}>
                 {variant.previewUrl ? (
-                    <img
-                        src={variant.previewUrl}
-                        alt={variant.type}
-                        style={{
-                            width: 36,
-                            height: 36,
-                            objectFit: "cover",
-                            borderRadius: 6,
-                            border: "1px solid #ddd"
-                        }}
-                    />
+                    <img src={variant.previewUrl} alt={variant.type} style={imageStyle} />
                 ) : (
                     <small className="text-muted">—</small>
                 )}
@@ -42,21 +54,13 @@ const VariantRow = ({ variant, index, onReplaceImage, onRemove }) => {
                     onChange={(e) => onReplaceImage(index, e)}
                 />
 
-                <Button
-                    size="sm"
-                    variant="outline-secondary"
-                    onClick={() => fileRef.current.click()}
-                >
+                <Button size="sm" variant="outline-secondary" onClick={openFileInput}>
                     Upload
                 </Button>
             </td>
 
             <td style={{ width: 100 }}>
-                <Button
-                    variant="outline-danger"
-                    size="sm"
-                    onClick={() => onRemove(index)}
-                >
+                <Button variant="outline-danger" size="sm" onClick={() => onRemove(index)}>
                     Remove
                 </Button>
             </td>
@@ -75,15 +79,7 @@ const VariantList = ({ variants, onReplaceImage, onRemove }) => {
 
     return (
         <>
-            <h6
-                className="mt-4 mb-2"
-                style={{
-                    textTransform: "uppercase",
-                    letterSpacing: "1px",
-                    fontSize: 13,
-                    fontWeight: 600
-                }}
-            >
+            <h6 className="mt-4 mb-2" style={titleStyle}>
                 Variants List
             </h6>
 
@@ -102,7 +98,7 @@ const VariantList = ({ variants, onReplaceImage, onRemove }) => {
                 <tbody>
                     {variants.map((variant, index) => (
                         <VariantRow
-                            key={variant.id ? `existing-${variant.id}` : `new-${index}`}
+                            key={getVariantKey(variant, index)}
                             variant={variant}
                             index={index}
                             onReplaceImage={onReplaceImage}

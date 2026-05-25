@@ -1,108 +1,170 @@
-import { useState } from 'react';
+import { useState } from "react";
 import { GrFormEdit, GrFormTrash } from "react-icons/gr";
 import { Search, Plus, Warehouse } from "lucide-react";
+
 import ImageModal from "./ImageModal";
 import AddStock from "./AddStock";
-import './Products.css';
+
+import "./Products.css";
 
 const Products = ({ products, onEdit, onDelete, onAdd, onAddStock }) => {
-
-    const [searchTerm, setSearchTerm] = useState('');
-    const [selectedProductId, setSelectedProductId] = useState(null);
-    const [showImageModal, setShowImageModal] = useState(false);
-
-    const [showAddStock, setShowAddStock] = useState(false);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [selectedProduct, setSelectedProduct] = useState(null);
     const [stockProduct, setStockProduct] = useState(null);
 
-    const selectedProduct = products.find(p => p.id === selectedProductId) ?? null;
+    const filteredProducts = products.filter((product) => {
+        const search = searchTerm.toLowerCase();
 
-    const getPriceAfterDiscount = (product) => {
-        if (product.sale_percentage) {
-            const discounted = product.price - (product.price * product.sale_percentage) / 100;
-            return `$${discounted.toFixed(2)}`;
+        return (
+            product.title.toLowerCase().includes(search) ||
+            product.id.toString().includes(search)
+        );
+    });
+
+    const totalUnits = products.reduce(
+        (total, product) => total + (product.stock || 0),
+        0
+    );
+
+    const outOfStock = products.filter(
+        (product) => (product.stock || 0) === 0
+    ).length;
+
+    const onSale = products.filter(
+        (product) => product.sale_percentage
+    ).length;
+
+    const getDiscountedPrice = (product) => {
+        if (!product.sale_percentage) {
+            return Number(product.price);
         }
-        return `$${parseFloat(product.price).toFixed(2)}`;
+
+        return product.price - (product.price * product.sale_percentage) / 100;
+    };
+
+    const getStockStatus = (stock) => {
+        if (stock === 0) return "out";
+        if (stock <= 5) return "low";
+
+        return "ok";
+    };
+
+    const getStockText = (stockStatus, stock) => {
+        if (stockStatus === "out") {
+            return (
+                <>
+                    <span>&#10005;</span> Out
+                </>
+            );
+        }
+
+        if (stockStatus === "low") {
+            return (
+                <>
+                    <span>&#9888;</span> {stock} left
+                </>
+            );
+        }
+
+        return (
+            <>
+                <span>&#10003;</span> {stock}
+            </>
+        );
+    };
+
+    const getProductImages = (product) => {
+        return product.variants?.filter((variant) => variant.image) ?? [];
+    };
+
+    const formatDate = (date) => {
+        return new Date(date).toLocaleDateString("en-GB", {
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+        });
+    };
+
+    const openImageModal = (product) => {
+        setSelectedProduct(product);
+    };
+
+    const closeImageModal = () => {
+        setSelectedProduct(null);
+    };
+
+    const openStockModal = (product) => {
+        setStockProduct(product);
+    };
+
+    const closeStockModal = () => {
+        setStockProduct(null);
     };
 
     const handleDelete = async (id) => {
-        if (!window.confirm("Are you sure you want to delete this product?")) return;
+        const confirmed = window.confirm(
+            "Are you sure you want to delete this product?"
+        );
+
+        if (!confirmed) return;
+
         try {
             await onDelete(id);
-        } catch (err) {
+        } catch {
             alert("Failed to delete product.");
         }
     };
 
-    const handleViewImages = (product) => {
-        setSelectedProductId(product.id);
-        setShowImageModal(true);
-    };
-
-    const handleCloseModal = () => {
-        setShowImageModal(false);
-        setSelectedProductId(null);
-    };
-
-    const handleOpenStock = (product) => {
-        setStockProduct(product);
-        setShowAddStock(true);
-    };
-
-    const handleCloseStock = () => {
-        setShowAddStock(false);
-        setStockProduct(null);
-    };
-
-    const filteredProducts = products.filter(product => {
-        const lower = searchTerm.toLowerCase();
-        return (
-            product.title.toLowerCase().includes(lower) ||
-            product.id.toString().includes(lower)
-        );
-    });
-
-    const totalUnits = products.reduce((s, p) => s + (p.stock || 0), 0);
-    const outOfStock = products.filter(p => (p.stock || 0) === 0).length;
-    const onSale = products.filter(p => p.sale_percentage).length;
-
     return (
         <div className="plant-table-wrap">
-
-            {/* Top Bar */}
             <div className="plant-table-topbar">
-                <span className="plant-table-title">Product Catalogue</span>
+                <span className="plant-table-title">
+                    Product Catalogue
+                </span>
 
                 <div className="plant-table-topbar-stats">
                     <span className="plant-stat">
-                        <span className="plant-stat-num">{products.length}</span> products
+                        <span className="plant-stat-num">
+                            {products.length}
+                        </span>{" "}
+                        products
                     </span>
 
                     <span className="plant-stat">
-                        <span className="plant-stat-num">{totalUnits}</span> units
+                        <span className="plant-stat-num">
+                            {totalUnits}
+                        </span>{" "}
+                        units
                     </span>
 
                     <span className="plant-stat plant-stat--sale">
-                        <span className="plant-stat-num">{onSale}</span> on sale
+                        <span className="plant-stat-num">
+                            {onSale}
+                        </span>{" "}
+                        on sale
                     </span>
 
                     {outOfStock > 0 && (
                         <span className="plant-stat plant-stat--warn">
-                            <span className="plant-stat-num">{outOfStock}</span> out of stock
+                            <span className="plant-stat-num">
+                                {outOfStock}
+                            </span>{" "}
+                            out of stock
                         </span>
                     )}
                 </div>
             </div>
 
-            {/* Toolbar */}
             <div className="plant-toolbar">
                 <div className="plant-search-wrap">
                     <Search size={15} className="plant-search-icon" />
+
                     <input
                         className="plant-search-input"
                         type="text"
                         placeholder="Search products..."
                         value={searchTerm}
-                        onChange={e => setSearchTerm(e.target.value)}
+                        onChange={(e) => setSearchTerm(e.target.value)}
                     />
                 </div>
 
@@ -112,10 +174,8 @@ const Products = ({ products, onEdit, onDelete, onAdd, onAddStock }) => {
                 </button>
             </div>
 
-            {/* Table */}
             <div className="plant-table-container">
                 <table className="plant-table">
-
                     <thead>
                         <tr>
                             <th></th>
@@ -132,35 +192,39 @@ const Products = ({ products, onEdit, onDelete, onAdd, onAddStock }) => {
 
                     <tbody>
                         {filteredProducts.map((product) => {
-
                             const stock = product.stock || 0;
-                            const isOut = stock === 0;
-                            const isLow = stock > 0 && stock <= 5;
+                            const stockStatus = getStockStatus(stock);
+                            const images = getProductImages(product);
+                            const discountedPrice = getDiscountedPrice(product);
 
                             return (
                                 <tr
                                     key={product.id}
-                                    className={`plant-row ${isOut ? 'plant-row--out' : isLow ? 'plant-row--low' : ''}`}
+                                    className={`plant-row ${stockStatus === "out"
+                                        ? "plant-row--out"
+                                        : stockStatus === "low"
+                                            ? "plant-row--low"
+                                            : ""
+                                        }`}
                                 >
-
                                     <td></td>
 
-                                    {/* PRODUCT */}
                                     <td className="plant-cell-product">
-                                        <div className="plant-product-title">{product.title}</div>
-                                        <div className="plant-product-id"># {product.id}</div>
+                                        <div className="plant-product-title">
+                                            {product.title}
+                                        </div>
+
+                                        <div className="plant-product-id">
+                                            # {product.id}
+                                        </div>
+
                                         {product.date_added && (
                                             <div className="plant-product-date">
-                                                Added {new Date(product.date_added).toLocaleDateString('en-GB', {
-                                                    day: 'numeric',
-                                                    month: 'short',
-                                                    year: 'numeric'
-                                                })}
+                                                Added {formatDate(product.date_added)}
                                             </div>
                                         )}
                                     </td>
 
-                                    {/* LABELS */}
                                     <td>
                                         <div className="plant-badges">
                                             {product.label && (
@@ -168,6 +232,7 @@ const Products = ({ products, onEdit, onDelete, onAdd, onAddStock }) => {
                                                     {product.label}
                                                 </span>
                                             )}
+
                                             {product.sale_percentage && (
                                                 <span className="plant-badge plant-badge--sale">
                                                     {product.sale_percentage}% OFF
@@ -176,126 +241,127 @@ const Products = ({ products, onEdit, onDelete, onAdd, onAddStock }) => {
                                         </div>
                                     </td>
 
-                                    {/* CATEGORY */}
                                     <td>
                                         <span className="plant-category">
-                                            {product.category?.name ?? product.category_id}
+                                            {product.category?.name ??
+                                                product.category_id}
                                         </span>
                                     </td>
 
-                                    {/* SIZE */}
                                     <td>
-                                        <span className="plant-size">{product.size}</span>
+                                        <span className="plant-size">
+                                            {product.size}
+                                        </span>
                                     </td>
 
-                                    {/* PRICE */}
                                     <td className="plant-cell-price">
                                         <div className="plant-price-final">
-                                            {getPriceAfterDiscount(product)}
+                                            ${discountedPrice.toFixed(2)}
                                         </div>
 
-                                        {product.sale_percentage && (
+                                        {product.sale_percentage ? (
                                             <div className="plant-price-meta">
                                                 <span className="plant-price-original--struck">
-                                                    ${parseFloat(product.price).toFixed(2)}
+                                                    ${Number(product.price).toFixed(2)}
                                                 </span>
+
                                                 <span className="plant-price-tag plant-price-tag--pct">
                                                     {product.sale_percentage}% off
                                                 </span>
                                             </div>
-                                        )}
-
-                                        {!product.sale_percentage && (
+                                        ) : (
                                             <div className="plant-price-meta">
-                                                <span className="plant-price-base">Base price</span>
+                                                <span className="plant-price-base">
+                                                    Base price
+                                                </span>
                                             </div>
                                         )}
                                     </td>
 
-                                    {/* STOCK */}
                                     <td>
-                                        <div className={`plant-stock-badge plant-stock-badge--${isOut ? 'out' : isLow ? 'low' : 'ok'}`}>
-                                            {isOut
-                                                ? <><span>&#10005;</span> Out</>
-                                                : isLow
-                                                    ? <><span>&#9888;</span> {stock} left</>
-                                                    : <><span>&#10003;</span> {stock}</>
-                                            }
+                                        <div
+                                            className={`plant-stock-badge plant-stock-badge--${stockStatus}`}
+                                        >
+                                            {getStockText(stockStatus, stock)}
                                         </div>
                                     </td>
 
-                                    {/* IMAGES */}
                                     <td>
-                                        {product.variants?.some(v => v.image) ? (
+                                        {images.length > 0 ? (
                                             <button
                                                 className="plant-btn-images"
-                                                onClick={() => handleViewImages(product)}
+                                                onClick={() => openImageModal(product)}
                                             >
-                                                {product.variants.filter(v => v.image).length} images
+                                                {images.length} images
                                             </button>
                                         ) : (
-                                            <span className="text-muted">No images</span>
+                                            <span className="text-muted">
+                                                No images
+                                            </span>
                                         )}
                                     </td>
 
-                                    {/* ACTIONS */}
                                     <td>
                                         <div className="plant-actions">
                                             <button
                                                 className="plant-btn plant-btn--edit"
                                                 onClick={() => onEdit(product)}
                                             >
-                                                <GrFormEdit size={15} /> Edit
+                                                <GrFormEdit size={15} />
+                                                Edit
                                             </button>
+
                                             <button
                                                 className="plant-btn plant-btn--edit"
-                                                onClick={() => handleOpenStock(product)}
+                                                onClick={() => openStockModal(product)}
                                             >
-                                                <Warehouse size={15} /> Update Stock
+                                                <Warehouse size={15} />
+                                                Update Stock
                                             </button>
+
                                             <button
                                                 className="plant-btn plant-btn--delete"
                                                 onClick={() => handleDelete(product.id)}
                                             >
-                                                <GrFormTrash size={15} /> Delete
+                                                <GrFormTrash size={15} />
+                                                Delete
                                             </button>
                                         </div>
                                     </td>
-
                                 </tr>
                             );
                         })}
 
                         {filteredProducts.length === 0 && (
                             <tr>
-                                <td colSpan={9} className="text-center text-muted py-4">
+                                <td
+                                    colSpan={9}
+                                    className="text-center text-muted py-4"
+                                >
                                     No products found.
                                 </td>
                             </tr>
                         )}
                     </tbody>
-
                 </table>
             </div>
 
-            {/* IMAGE MODAL */}
-            {showImageModal && selectedProduct && (
+            {selectedProduct && (
                 <ImageModal
-                    show={showImageModal}
-                    onClose={handleCloseModal}
+                    show={true}
                     product={selectedProduct}
+                    onClose={closeImageModal}
                 />
             )}
 
-            {showAddStock && stockProduct && (
+            {stockProduct && (
                 <AddStock
-                    show={showAddStock}
+                    show={true}
                     product={stockProduct}
-                    onClose={handleCloseStock}
+                    onClose={closeStockModal}
                     onAddStock={onAddStock}
                 />
             )}
-
         </div>
     );
 };

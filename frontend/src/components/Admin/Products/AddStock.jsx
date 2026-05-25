@@ -1,35 +1,47 @@
-import { useState } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
+import { useState } from "react";
 
 const AddStock = ({ show, product, onClose, onAddStock }) => {
     const [stockToAdd, setStockToAdd] = useState("");
     const [error, setError] = useState("");
 
+    const resetForm = () => {
+        setStockToAdd("");
+        setError("");
+    };
+
+    const closeModal = () => {
+        resetForm();
+        onClose();
+    };
+
+    const handleChange = (e) => {
+        setStockToAdd(e.target.value);
+        if (error) {
+            setError("");
+        }
+    };
+
     const handleSubmit = async () => {
         const amount = Number(stockToAdd);
-        if (!stockToAdd || amount <= 0) {
+
+        if (!amount || amount <= 0) {
             setError("Please enter a number bigger than 0.");
             return;
         }
+
         await onAddStock({
             id: product.id,
             stock: amount,
         });
-        setStockToAdd("");
-        setError("");
-        onClose();
-    };
 
-    const handleClose = () => {
-        setStockToAdd("");
-        setError("");
-        onClose();
+        closeModal();
     };
 
     return (
         <Modal
             show={show}
-            onHide={handleClose}
+            onHide={closeModal}
             centered size="sm">
             <Modal.Header closeButton>
                 <Modal.Title style={{ fontSize: "15px" }}>
@@ -76,7 +88,7 @@ const AddStock = ({ show, product, onClose, onAddStock }) => {
                 <Button
                     variant="secondary"
                     size="sm"
-                    onClick={handleClose}
+                    onClick={closeModal}
                 >
                     Cancel
                 </Button>

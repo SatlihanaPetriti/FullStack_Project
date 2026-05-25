@@ -1,24 +1,48 @@
 import { useState } from "react";
 import { Send, UserCheck, X } from "lucide-react";
+
 import "./newsletter.css";
 
 const NewsletterModal = ({ selectedCount, onClose, onSend }) => {
-    const [form, setForm] = useState({ subject: "", message: "" });
+    const [form, setForm] = useState({
+        subject: "",
+        message: "",
+    });
+
     const [sending, setSending] = useState(false);
     const [sent, setSent] = useState(false);
 
-    const handleSend = async () => {
-        if (!form.subject.trim() || !form.message.trim() || sending) return;
-        setSending(true);
-        await onSend(form);
-        setSending(false);
-        setSent(true);
-        setTimeout(() => { setSent(false); onClose(); }, 1500);
+    const subject = form.subject.trim();
+    const message = form.message.trim();
+
+    const isValid = subject && message;
+    const buttonClass = isValid ? "active" : "disabled";
+
+    const updateField = (e) => {
+        const { name, value } = e.target;
+
+        setForm((prev) => ({
+            ...prev,
+            [name]: value,
+        }));
     };
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setForm((prev) => ({ ...prev, [name]: value }));
+    const handleSend = async () => {
+        if (!isValid || sending) return;
+
+        setSending(true);
+
+        await onSend({
+            subject,
+            message,
+        });
+
+        setSending(false);
+        setSent(true);
+
+        setTimeout(() => {
+            onClose();
+        }, 1500);
     };
 
     return (
@@ -27,7 +51,6 @@ const NewsletterModal = ({ selectedCount, onClose, onSend }) => {
                 className="newsletter-modal"
                 onClick={(e) => e.stopPropagation()}
             >
-                {/* Header */}
                 <div className="newsletter-header">
                     <div className="newsletter-header-left">
                         <div className="newsletter-icon-box">
@@ -54,19 +77,17 @@ const NewsletterModal = ({ selectedCount, onClose, onSend }) => {
                     </button>
                 </div>
 
-                {/* Body */}
                 <div className="newsletter-body">
-
                     <div className="newsletter-field">
                         <label>Subject</label>
 
                         <input
                             type="text"
+                            name="subject"
                             value={form.subject}
-                            onChange={handleChange}
+                            onChange={updateField}
                             placeholder="e.g. Weekly Update — May 2025"
                             className="newsletter-input"
-                            name="subject"
                         />
                     </div>
 
@@ -74,12 +95,12 @@ const NewsletterModal = ({ selectedCount, onClose, onSend }) => {
                         <label>Message</label>
 
                         <textarea
+                            name="message"
                             value={form.message}
-                            onChange={handleChange}
+                            onChange={updateField}
                             placeholder="Write your newsletter content here..."
                             rows={6}
                             className="newsletter-textarea"
-                            name="message"
                         />
 
                         <p className="newsletter-char-count">
@@ -88,7 +109,6 @@ const NewsletterModal = ({ selectedCount, onClose, onSend }) => {
                     </div>
                 </div>
 
-                {/* Footer */}
                 <div className="newsletter-footer">
                     <button
                         onClick={onClose}
@@ -99,11 +119,8 @@ const NewsletterModal = ({ selectedCount, onClose, onSend }) => {
 
                     <button
                         onClick={handleSend}
-                        disabled={!form.subject.trim() || !form.message.trim() || sending}
-                        className={`newsletter-send-btn ${form.subject.trim() && form.message.trim()
-                            ? "active"
-                            : "disabled"
-                            }`}
+                        disabled={!isValid || sending}
+                        className={`newsletter-send-btn ${buttonClass}`}
                     >
                         {sent ? (
                             <>

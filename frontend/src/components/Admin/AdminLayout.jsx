@@ -1,16 +1,56 @@
-import { NavLink, useNavigate } from 'react-router-dom';
-import './AdminLayout.css';
-import { UserRoundCog, LayoutDashboard, Package, Layers, ShoppingCart, Warehouse, LogOut, ExternalLink } from 'lucide-react';
-import { useUserContext } from '../../Context/Auth';
-import { Mail } from 'lucide-react';
+import { NavLink, useNavigate } from "react-router-dom";
+import {
+    UserRoundCog,
+    LayoutDashboard,
+    Package,
+    Layers,
+    ShoppingCart,
+    LogOut,
+    ExternalLink,
+    Mail,
+} from "lucide-react";
+
+import { useUserContext } from "../../Context/Auth";
+
+import "./AdminLayout.css";
+
+const adminLinks = [
+    {
+        path: "/admin/overview",
+        label: "Overview",
+        icon: LayoutDashboard,
+    },
+    {
+        path: "/admin/products",
+        label: "All Products",
+        icon: Package,
+    },
+    {
+        path: "/admin/categories",
+        label: "Categories",
+        icon: Layers,
+    },
+    {
+        path: "/admin/orders",
+        label: "Orders",
+        icon: ShoppingCart,
+    },
+    {
+        path: "/admin/subscribers",
+        label: "Subscribers",
+        icon: Mail,
+    },
+];
 
 const AdminLayout = ({ children }) => {
-    const { user, logout } = useUserContext();
     const navigate = useNavigate();
+    const { user, logout } = useUserContext();
+
+    const userInitial = user?.name?.charAt(0).toUpperCase() ?? "";
 
     const handleLogout = () => {
         logout();
-        navigate('/');
+        navigate("/");
     };
 
     return (
@@ -19,47 +59,61 @@ const AdminLayout = ({ children }) => {
 
                 <div className="admin-logo">
                     <UserRoundCog size={30} />
+
                     <span className="admin-logo-text">
-                        PlantShop<br />
+                        PlantShop
+                        <br />
                         <small>Admin Dashboard</small>
                     </span>
                 </div>
 
                 <nav className="flex-column admin-nav">
-                    <NavLink to="/admin/overview" className="admin-nav-link">
-                        <LayoutDashboard size={16} /> Overview
-                    </NavLink>
-                    <NavLink to="/admin/products" className="admin-nav-link">
-                        <Package size={16} /> All Products
-                    </NavLink>
-                    <NavLink to="/admin/categories" className="admin-nav-link">
-                        <Layers size={16} /> Categories
-                    </NavLink>
-                    <NavLink to="/admin/orders" className="admin-nav-link">
-                        <ShoppingCart size={16} /> Orders
-                    </NavLink>
-                    <NavLink to="/admin/subscribers" className="admin-nav-link">
-                        <Mail size={16} /> Subscribers
-                    </NavLink>
+                    {adminLinks.map(({ path, label, icon: Icon }) => (
+                        <NavLink
+                            key={path}
+                            to={path}
+                            className="admin-nav-link"
+                        >
+                            <Icon size={16} />
+                            {label}
+                        </NavLink>
+                    ))}
+
                     <hr className="admin-nav-divider" />
-                    <a href="/" target="_blank" rel="noopener noreferrer" className="admin-nav-link admin-visit-link">
-                        <ExternalLink size={16} /> Visit Shop
+
+                    <a
+                        href="/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="admin-nav-link admin-visit-link"
+                    >
+                        <ExternalLink size={16} />
+                        Visit Shop
                     </a>
                 </nav>
 
                 <div className="admin-sidebar-footer">
                     <div className="admin-user-info">
                         <div className="admin-avatar">
-                            {user?.name?.charAt(0).toUpperCase()}
+                            {userInitial}
                         </div>
+
                         <div className="admin-user-details">
                             <span className="admin-user-name">
                                 {user?.name} {user?.lastname}
                             </span>
-                            <span className="admin-user-role">Administrator</span>
+
+                            <span className="admin-user-role">
+                                Administrator
+                            </span>
                         </div>
                     </div>
-                    <button className="admin-logout-btn" onClick={handleLogout} title="Log Out">
+
+                    <button
+                        className="admin-logout-btn"
+                        onClick={handleLogout}
+                        title="Log Out"
+                    >
                         <LogOut size={18} />
                     </button>
                 </div>

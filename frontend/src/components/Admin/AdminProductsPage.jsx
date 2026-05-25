@@ -1,65 +1,86 @@
-import { useState } from 'react';
-import { Container, Alert } from 'react-bootstrap';
-import { useProductContext } from '../../Context/Product';
-import ProductForm from './CreateEditModal/ProductForm';
-import Products from './Products';
+import { useState } from "react";
+import { Container, Alert } from "react-bootstrap";
+
+import { useProductContext } from "../../Context/Product";
+
+import ProductForm from "./CreateEditModal/ProductForm";
+import Products from "./Products";
 
 const AdminProductsPage = () => {
-    const { products, loading, error, createProduct, updateProduct, deleteProduct, onAddStock } = useProductContext();
+    const {
+        products,
+        loading,
+        error,
+        createProduct,
+        updateProduct,
+        deleteProduct,
+        onAddStock,
+    } = useProductContext();
 
-    const [selectedProductId, setSelectedProductId] = useState(null);
     const [showForm, setShowForm] = useState(false);
+    const [selectedProduct, setSelectedProduct] = useState(null);
 
-    const selectedProduct = products.find(p => p.id === selectedProductId) ?? null;
-
-    const handleEdit = (product) => {
-        setSelectedProductId(product.id);
+    const openAddForm = () => {
+        setSelectedProduct(null);
         setShowForm(true);
     };
 
-    const handleAdd = () => {
-        setSelectedProductId(null);
+    const openEditForm = (product) => {
+        setSelectedProduct(product);
         setShowForm(true);
     };
 
-    const handleCloseForm = () => {
+    const closeForm = () => {
+        setSelectedProduct(null);
         setShowForm(false);
-        setSelectedProductId(null);
     };
 
-    const handleSave = async (productData, images) => {
+    const saveProduct = async (productData, images) => {
         try {
-            if (selectedProductId) {
-                await updateProduct(selectedProductId, productData, images);
+            if (selectedProduct) {
+                await updateProduct(selectedProduct.id, productData, images);
             } else {
                 await createProduct(productData, images);
             }
-            setShowForm(false);
-            setSelectedProductId(null);
+
+            closeForm();
         } catch (err) {
             alert(`Failed to save: ${err.message}`);
         }
     };
 
-    if (loading) return <Container className="py-4"><Alert variant="info">Loading products...</Alert></Container>;
-    if (error) return <Container className="py-4"><Alert variant="danger">Error: {error}</Alert></Container>;
+    if (loading) {
+        return (
+            <Container className="py-4">
+                <Alert variant="info">Loading products...</Alert>
+            </Container>
+        );
+    }
+
+    if (error) {
+        return (
+            <Container className="py-4">
+                <Alert variant="danger">Error: {error}</Alert>
+            </Container>
+        );
+    }
 
     return (
         <Container fluid className="p-4">
             <Products
                 products={products}
-                onEdit={handleEdit}
+                onAdd={openAddForm}
+                onEdit={openEditForm}
                 onDelete={deleteProduct}
-                onAdd={handleAdd}
-                onAddStock={onAddStock} 
+                onAddStock={onAddStock}
             />
 
             {showForm && (
                 <ProductForm
                     show={showForm}
                     product={selectedProduct}
-                    onClose={handleCloseForm}
-                    onSave={handleSave}
+                    onClose={closeForm}
+                    onSave={saveProduct}
                     allProducts={products}
                 />
             )}

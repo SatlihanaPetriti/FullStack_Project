@@ -1,33 +1,39 @@
 import { Form, Row, Col, Button } from "react-bootstrap";
 
+const titleStyle = {
+    textTransform: "uppercase",
+    letterSpacing: "1px",
+    fontWeight: 600,
+    fontSize: 13,
+};
+
+const previewStyle = {
+    width: 36,
+    height: 36,
+    objectFit: "cover",
+    borderRadius: 6,
+    border: "1px solid #ddd",
+};
+
 const VariantInput = ({
     variantInput,
     previewUrl,
     onFieldChange,
     fileInputRef,
     onImageChange,
-    onAdd
+    onAdd,
 }) => {
     return (
         <>
-            <h6
-                className="mb-3"
-                style={{
-                    textTransform: "uppercase",
-                    letterSpacing: "1px",
-                    fontWeight: 600,
-                    fontSize: 13
-                }}
-            >
+            <h6 className="mb-3" style={titleStyle}>
                 Add Variants with Images
             </h6>
 
             <Row className="mb-3 align-items-end text-start g-3">
-
-                {/* TYPE */}
                 <Col md={3}>
                     <Form.Group>
                         <Form.Label>Type *</Form.Label>
+
                         <Form.Control
                             type="text"
                             name="type"
@@ -38,10 +44,10 @@ const VariantInput = ({
                     </Form.Group>
                 </Col>
 
-                {/* STOCK */}
                 <Col style={{ maxWidth: 90 }}>
                     <Form.Group>
                         <Form.Label>Stock</Form.Label>
+
                         <Form.Control
                             type="number"
                             name="stock"
@@ -52,7 +58,6 @@ const VariantInput = ({
                     </Form.Group>
                 </Col>
 
-                {/* IMAGE */}
                 <Col md={4}>
                     <Form.Group>
                         <Form.Label>Image</Form.Label>
@@ -68,20 +73,13 @@ const VariantInput = ({
                                 <img
                                     src={previewUrl}
                                     alt="preview"
-                                    style={{
-                                        width: 36,
-                                        height: 36,
-                                        objectFit: "cover",
-                                        borderRadius: 6,
-                                        border: "1px solid #ddd"
-                                    }}
+                                    style={previewStyle}
                                 />
                             )}
                         </div>
                     </Form.Group>
                 </Col>
 
-                {/* BUTTON */}
                 <Col md={2}>
                     <Button
                         variant="success"
@@ -92,7 +90,6 @@ const VariantInput = ({
                         Add
                     </Button>
                 </Col>
-
             </Row>
         </>
     );

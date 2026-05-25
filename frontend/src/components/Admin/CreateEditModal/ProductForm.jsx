@@ -1,10 +1,13 @@
 import { useState, useEffect, useRef } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
+
 import ProductInfo from "./ProductInfo";
 import VariantInput from "./VariantInput";
 import VariantList from "./VariantList";
 
 const IMAGE_BASE_URL = "http://localhost:3000/products/uploads/variants";
+
+const getToday = () => new Date().toISOString().split("T")[0];
 
 const EMPTY_FORM = {
     title: "",
@@ -14,7 +17,7 @@ const EMPTY_FORM = {
     stock: "",
     price: "",
     sale_percentage: "",
-    date_added: new Date().toISOString().split("T")[0],
+    date_added: getToday(),
     variants: [],
 };
 
@@ -25,87 +28,138 @@ const EMPTY_VARIANT_INPUT = {
     imageFile: null,
 };
 
-const toFormVariant = (v) => ({
-    id: v.id || "",
-    type: v.type || "",
-    stock: v.stock || 0,
-    imageName: v.image || "",
+const createPreviewUrl = (file) => URL.createObjectURL(file);
+
+const toFormVariant = (variant) => ({
+    id: variant.id || "",
+    type: variant.type || "",
+    stock: variant.stock || 0,
+    imageName: variant.image || "",
     imageFile: null,
-    previewUrl: v.image ? `${IMAGE_BASE_URL}/${v.image}` : null,
+    previewUrl: variant.image ? `${IMAGE_BASE_URL}/${variant.image}` : null,
 });
 
-const ProductForm = ({ show, onClose, product, onSave, allProducts = [] }) => {
+const buildNewVariant = (variantInput, previewUrl) => ({
+    id: "",
+    type: variantInput.type,
+    stock: Number(variantInput.stock) || 0,
+    imageName: null,
+    imageFile: variantInput.imageFile,
+    previewUrl,
+});
+
+const ProductForm = ({
+    show,
+    onClose,
+    product,
+    onSave,
+    allProducts = [],
+}) => {
     const [formData, setFormData] = useState(EMPTY_FORM);
     const [variantInput, setVariantInput] = useState(EMPTY_VARIANT_INPUT);
     const [variantPreview, setVariantPreview] = useState(null);
-    const [errors, setErrors] = useState({ id: "", title: "" });
+    const [errors, setErrors] = useState({ title: "" });
+
     const fileInputRef = useRef(null);
+
+    const isEditMode = Boolean(product);
+
+    const canSubmit =
+        formData.variants.length > 0 &&
+        !errors.title;
+
+    const isUnique = (field, value) => {
+        if (!value) return true;
+
+        return !allProducts.some((item) => {
+            return (
+                item[field]?.toString().toLowerCase() ===
+                value.toString().toLowerCase() &&
+                item.id !== product?.id
+            );
+        });
+    };
 
     const resetVariantInput = () => {
         setVariantInput(EMPTY_VARIANT_INPUT);
         setVariantPreview(null);
-        if (fileInputRef.current) fileInputRef.current.value = "";
+
+        if (fileInputRef.current) {
+            fileInputRef.current.value = "";
+        }
     };
 
-    const isUnique = (field, value) => {
-        if (!value) return true;
-        return !allProducts.some(p =>
-            p[field].toLowerCase() === value.toLowerCase() && p.id !== product?.id
-        );
+    const resetErrors = () => {
+        setErrors({ title: "" });
+    };
+
+    const loadProductData = () => {
+        if (!product) {
+            setFormData(EMPTY_FORM);
+            return;
+        }
+
+        setFormData({
+            title: product.title || "",
+            label: product.label || "",
+            category_id: product.category_id || "",
+            size: product.size || "SM",
+            stock: product.stock ?? "",
+            price: product.price ?? "",
+            sale_percentage: product.sale_percentage ?? "",
+            date_added: product.date_added?.split("T")[0] || getToday(),
+            variants: product.variants?.map(toFormVariant) || [],
+        });
     };
 
     useEffect(() => {
-        if (product) {
-            setFormData({
-                title: product.title || "",
-                label: product.label || "",
-                category_id: product.category_id || "",
-                size: product.size || "SM",
-                stock: product.stock ?? "",
-                price: product.price ?? "",
-                sale_percentage: product.sale_percentage ?? "",
-                date_added: product.date_added?.split("T")[0] || new Date().toISOString().split("T")[0],
-                variants: product.variants?.map(toFormVariant) || [],
-            });
-        } else {
-            setFormData(EMPTY_FORM);
-        }
+        loadProductData();
         resetVariantInput();
-        setErrors({ title: "" });
+        resetErrors();
     }, [product, show]);
 
-    const handleProductChange = (e) => {
-        const { name, value, type, checked } = e.target;
+    const validateProductField = (name, value) => {
+        if (name !== "title") return;
 
-        if (name === "id") {
-            setErrors(prev => ({
-                ...prev,
-                id: isUnique("id", value) ? "" : "A product with this ID already exists!"
-            }));
-        }
-        if (name === "title") {
-            setErrors(prev => ({
-                ...prev,
-                title: isUnique("title", value) ? "" : "A product with this title already exists!"
-            }));
-        }
-
-        setFormData(prev => ({
+        setErrors((prev) => ({
             ...prev,
-            [name]: type === "checkbox" ? checked : value
+            title: isUnique("title", value)
+                ? ""
+                : "A product with this title already exists!",
         }));
     };
 
-    const handleVariantFieldChange = (e) => {
-        const { name, value } = e.target;
-        setVariantInput(prev => ({ ...prev, [name]: value }));
+    const updateProductField = (e) => {
+        const { name, value, type, checked } = e.target;
+
+        validateProductField(name, value);
+
+        setFormData((prev) => ({
+            ...prev,
+            [name]: type === "checkbox" ? checked : value,
+        }));
     };
 
-    const handleVariantImageChange = (e) => {
-        const file = e.target.files[0];
+    const updateVariantField = (e) => {
+        const { name, value } = e.target;
+
+        setVariantInput((prev) => ({
+            ...prev,
+            [name]: value,
+        }));
+    };
+
+    const updateVariantImage = (e) => {
+        const file = e.target.files?.[0];
+
         if (!file) return;
-        setVariantInput(prev => ({ ...prev, imageFile: file }));
-        setVariantPreview(URL.createObjectURL(file));
+
+        setVariantInput((prev) => ({
+            ...prev,
+            imageFile: file,
+        }));
+
+        setVariantPreview(createPreviewUrl(file));
     };
 
     const addVariant = () => {
@@ -113,80 +167,90 @@ const ProductForm = ({ show, onClose, product, onSave, allProducts = [] }) => {
             alert("Variant Type is required");
             return;
         }
+
         if (!variantInput.imageFile) {
             alert("Variant image is required");
             return;
         }
 
-        setFormData(prev => ({
+        setFormData((prev) => ({
             ...prev,
-            variants: [...prev.variants, {
-                id: "", 
-                type: variantInput.type,
-                stock: Number(variantInput.stock) || 0,
-                imageName: null,
-                imageFile: variantInput.imageFile,
-                previewUrl: variantPreview,
-            }]
+            variants: [
+                ...prev.variants,
+                buildNewVariant(variantInput, variantPreview),
+            ],
         }));
 
         resetVariantInput();
     };
 
     const replaceVariantImage = (index, e) => {
-        const file = e.target.files[0];
+        const file = e.target.files?.[0];
+
         if (!file) return;
 
-        setFormData(prev => {
-            const updated = [...prev.variants];
-            updated[index] = {
-                ...updated[index],
+        setFormData((prev) => {
+            const variants = [...prev.variants];
+
+            variants[index] = {
+                ...variants[index],
                 imageFile: file,
                 imageName: null,
-                previewUrl: URL.createObjectURL(file),
+                previewUrl: createPreviewUrl(file),
             };
-            return { ...prev, variants: updated };
+
+            return {
+                ...prev,
+                variants,
+            };
         });
     };
 
     const removeVariant = (index) => {
-        setFormData(prev => ({
+        setFormData((prev) => ({
             ...prev,
-            variants: prev.variants.filter((_, i) => i !== index)
+            variants: prev.variants.filter((_, i) => i !== index),
         }));
+    };
+
+    const buildSubmitData = () => ({
+        title: formData.title,
+        label: formData.label,
+        category_id: formData.category_id,
+        size: formData.size,
+        stock: Number(formData.stock),
+        price: Number(formData.price),
+        sale_percentage:
+            formData.sale_percentage === ""
+                ? null
+                : Number(formData.sale_percentage),
+        date_added: formData.date_added,
+        variants: formData.variants.map((variant) => ({
+            ...(variant.id ? { id: variant.id } : {}),
+            type: variant.type,
+            stock: Number(variant.stock),
+            image: variant.imageFile ? null : variant.imageName || null,
+        })),
+    });
+
+    const getVariantImageFiles = () => {
+        return formData.variants.map((variant) => variant.imageFile || null);
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        const cleanedData = {
-            title: formData.title,
-            label: formData.label,
-            category_id: formData.category_id,
-            size: formData.size,
-            stock: Number(formData.stock),
-            price: Number(formData.price),
-            sale_percentage: formData.sale_percentage === "" ? null : Number(formData.sale_percentage),
-            date_added: formData.date_added,
-            variants: formData.variants.map(v => ({
-                ...(v.id ? { id: v.id } : {}),
-                type: v.type,
-                stock: Number(v.stock),
-                image: v.imageFile ? null : (v.imageName || null),
-            })),
-        };
+        const productData = buildSubmitData();
+        const imageFiles = getVariantImageFiles();
 
-        const imageFiles = formData.variants.map(v => v.imageFile || null);
-        onSave(cleanedData, imageFiles);
+        onSave(productData, imageFiles);
     };
-
-    const canSubmit = formData.variants.length > 0 && !errors.id && !errors.title;
 
     return (
         <Modal show={show} onHide={onClose} size="lg">
             <Modal.Header closeButton>
                 <Modal.Title>
-                    {product ? "Edit Product" : "Add New Product"}
+                    {isEditMode ? "Edit Product" : "Add New Product"}
                 </Modal.Title>
             </Modal.Header>
 
@@ -195,7 +259,7 @@ const ProductForm = ({ show, onClose, product, onSave, allProducts = [] }) => {
                     <ProductInfo
                         formData={formData}
                         errors={errors}
-                        onChange={handleProductChange}
+                        onChange={updateProductField}
                     />
 
                     <hr className="my-4" />
@@ -203,8 +267,8 @@ const ProductForm = ({ show, onClose, product, onSave, allProducts = [] }) => {
                     <VariantInput
                         variantInput={variantInput}
                         previewUrl={variantPreview}
-                        onFieldChange={handleVariantFieldChange}
-                        onImageChange={handleVariantImageChange}
+                        onFieldChange={updateVariantField}
+                        onImageChange={updateVariantImage}
                         onAdd={addVariant}
                         fileInputRef={fileInputRef}
                     />
@@ -220,8 +284,13 @@ const ProductForm = ({ show, onClose, product, onSave, allProducts = [] }) => {
                     <Button variant="secondary" onClick={onClose}>
                         Close
                     </Button>
-                    <Button variant="primary" type="submit" disabled={!canSubmit}>
-                        {product ? "Save Changes" : "Create Product"}
+
+                    <Button
+                        variant="primary"
+                        type="submit"
+                        disabled={!canSubmit}
+                    >
+                        {isEditMode ? "Save Changes" : "Create Product"}
                     </Button>
                 </Modal.Footer>
             </Form>

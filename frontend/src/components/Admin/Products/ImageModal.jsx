@@ -5,11 +5,13 @@ const IMAGE_BASE_URL = "http://localhost:3000/products/uploads/variants";
 const ImageModal = ({ show, onClose, product }) => {
     if (!show) return null;
 
-    const getImageUrl = (image) => `${IMAGE_BASE_URL}/${image}`;
-
-
     const variantsWithImages =
-        product?.variants?.filter(v => v.image) || [];
+        product?.variants?.filter(
+            (variant) => variant.image
+        ) ?? [];
+
+    const imageUrl = (image) =>
+        `${IMAGE_BASE_URL}/${image}`;
 
     return (
         <div className="plant-modal-overlay" onClick={onClose}>
@@ -38,7 +40,7 @@ const ImageModal = ({ show, onClose, product }) => {
                                         {variant.type}
                                     </div>
                                     <img
-                                        src={getImageUrl(variant.image)}
+                                        src={imageUrl(variant.image)}
                                         alt={variant.type}
                                     />
                                 </div>

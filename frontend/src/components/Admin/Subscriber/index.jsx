@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { UserCheck, UserX, Send } from "lucide-react";
+
 import { useNewsletter } from "../../../Context/NewsletterContext";
 import NewsletterModal from "./NewsletterModal ";
+
 import "./styles.css";
 
 const SubscribersPage = () => {
@@ -10,39 +12,51 @@ const SubscribersPage = () => {
 
     const { subscribers, getSubscribers, sendNewsletter } = useNewsletter();
 
-
     useEffect(() => {
         getSubscribers();
     }, []);
 
-    const toggleSelect = (id) => {
-        if (selected.includes(id)) {
-            setSelected(selected.filter((x) => x !== id));
-        } else {
-            setSelected([...selected, id]);
-        }
+    const allSelected =
+        subscribers.length > 0 &&
+        subscribers.every((subscriber) =>
+            selected.includes(subscriber.id)
+        );
+
+    const selectedCount = selected.length;
+
+    const isSelected = (id) => {
+        return selected.includes(id);
     };
 
-
-    let allSelected = false;
-
-    if (subscribers.length > 0) {
-        allSelected = subscribers.every(s => selected.includes(s.id)
+    const toggleSelect = (id) => {
+        setSelected((prev) =>
+            prev.includes(id)
+                ? prev.filter((selectedId) => selectedId !== id)
+                : [...prev, id]
         );
-    }
+    };
 
     const toggleAll = () => {
-
-        const allSelected = subscribers.every((s) => {
-            return selected.includes(s.id);
-        });
-
         if (allSelected) {
             setSelected([]);
-        } else {
-            const allIds = subscribers.map((s) => s.id);
-            setSelected(allIds);
+            return;
         }
+
+        const allSubscriberIds = subscribers.map((subscriber) => subscriber.id);
+        setSelected(allSubscriberIds);
+    };
+
+    const clearSelection = () => {
+        setSelected([]);
+    };
+
+    const openModal = () => {
+        if (selectedCount === 0) return;
+        setModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setModalOpen(false);
     };
 
     const handleSend = async ({ subject, message }) => {
@@ -51,50 +65,56 @@ const SubscribersPage = () => {
             subject,
             message,
         });
-        setSelected([]);
+
+        clearSelection();
     };
-
-
 
     return (
         <div className="sp-root">
-
-            {/* HEADER */}
             <div className="sp-header">
                 <div className="sp-header-left">
                     <div className="sp-header-icon">
                         <UserCheck size={18} />
                     </div>
+
                     <div>
                         <h2 className="sp-title">Subscribers</h2>
-                        <p className="sp-subtitle">Manage newsletter audience</p>
+                        <p className="sp-subtitle">
+                            Manage newsletter audience
+                        </p>
                     </div>
                 </div>
 
                 <button
-                    onClick={() => selected.length && setModalOpen(true)}
-                    disabled={!selected.length}
+                    onClick={openModal}
+                    disabled={selectedCount === 0}
                     className="send-btn"
                 >
                     <Send size={14} />
-                    Send Newsletter{selected.length > 0 && ` (${selected.length})`}
+                    Send Newsletter
+                    {selectedCount > 0 && ` (${selectedCount})`}
                 </button>
             </div>
 
-            {/* TABLE */}
             <div className="sp-body">
                 <div className="sp-table-wrap">
                     <table className="sp-table">
                         <thead>
-                            <tr >
+                            <tr>
                                 <th className="sp-th">
                                     <input
                                         type="checkbox"
                                         checked={allSelected}
                                         onChange={toggleAll}
-                                        style={{ width: 16, height: 16, accentColor: "#16a34a", cursor: "pointer" }}
+                                        style={{
+                                            width: 16,
+                                            height: 16,
+                                            accentColor: "#16a34a",
+                                            cursor: "pointer",
+                                        }}
                                     />
                                 </th>
+
                                 <th className="sp-th">ID</th>
                                 <th className="sp-th">Email</th>
                                 <th className="sp-th">Status</th>
@@ -105,63 +125,114 @@ const SubscribersPage = () => {
                         <tbody>
                             {subscribers.length === 0 ? (
                                 <tr>
-                                    <td colSpan={5} className="sp-td" style={{ textAlign: "center", color: "#9ca3af", padding: "2.5rem" }}>
+                                    <td
+                                        colSpan={5}
+                                        className="sp-td"
+                                        style={{
+                                            textAlign: "center",
+                                            color: "#9ca3af",
+                                            padding: "2.5rem",
+                                        }}
+                                    >
                                         No subscribers yet
                                     </td>
                                 </tr>
-                            ) : subscribers.map((s) => (
-                                <tr
-                                    key={s.id}
-                                    className={`sp-row ${selected.includes(s.id) ? "sp-row-selected" : ""}`}
-                                    onClick={() => toggleSelect(s.id)}
-                                    style={{ cursor: "pointer" }}
-                                >
-                                    <td className="sp-td">
-                                        <input
-                                            type="checkbox"
-                                            checked={selected.includes(s.id)}
-                                            onChange={() => toggleSelect(s.id)}
-                                            onClick={(e) => e.stopPropagation()}
-                                        />
-                                    </td>
-                                    <td className="sp-td">
-                                        <span className="sp-id">#{s.id}</span>
-                                    </td>
-                                    <td className="sp-td">
-                                        <span className="sp-email">{s.email}</span>
-                                    </td>
-                                    <td className="sp-td">
-                                        <span className={`sp-badge ${s.isActive ? "sp-badge--active" : "sp-badge--inactive"}`}>
-                                            {s.isActive
-                                                ? <><UserCheck size={12} /> Active</>
-                                                : <><UserX size={12} /> Inactive</>
-                                            }
-                                        </span>
-                                    </td>
-                                    <td className="sp-td">
-                                        <span className="sp-date">
-                                            {new Date(s.createdAt).toLocaleDateString("en-GB", {
-                                                day: "2-digit",
-                                                month: "short",
-                                                year: "numeric",
-                                            })}
-                                        </span>
-                                    </td>
-                                </tr>
-                            ))}
+                            ) : (
+                                subscribers.map((subscriber) => (
+                                    <tr
+                                        key={subscriber.id}
+                                        className={`sp-row ${isSelected(subscriber.id)
+                                            ? "sp-row-selected"
+                                            : ""
+                                            }`}
+                                        onClick={() =>
+                                            toggleSelect(subscriber.id)
+                                        }
+                                        style={{ cursor: "pointer" }}
+                                    >
+                                        <td className="sp-td">
+                                            <input
+                                                type="checkbox"
+                                                checked={isSelected(
+                                                    subscriber.id
+                                                )}
+                                                onChange={() =>
+                                                    toggleSelect(subscriber.id)
+                                                }
+                                                onClick={(e) =>
+                                                    e.stopPropagation()
+                                                }
+                                            />
+                                        </td>
+
+                                        <td className="sp-td">
+                                            <span className="sp-id">
+                                                #{subscriber.id}
+                                            </span>
+                                        </td>
+
+                                        <td className="sp-td">
+                                            <span className="sp-email">
+                                                {subscriber.email}
+                                            </span>
+                                        </td>
+
+                                        <td className="sp-td">
+                                            <span
+                                                className={`sp-badge ${subscriber.isActive
+                                                    ? "sp-badge--active"
+                                                    : "sp-badge--inactive"
+                                                    }`}
+                                            >
+                                                {subscriber.isActive ? (
+                                                    <>
+                                                        <UserCheck size={12} />
+                                                        Active
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <UserX size={12} />
+                                                        Inactive
+                                                    </>
+                                                )}
+                                            </span>
+                                        </td>
+
+                                        <td className="sp-td">
+                                            <span className="sp-date">
+                                                {new Date(
+                                                    subscriber.createdAt
+                                                ).toLocaleDateString("en-GB", {
+                                                    day: "2-digit",
+                                                    month: "short",
+                                                    year: "numeric",
+                                                })}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                ))
+                            )}
                         </tbody>
                     </table>
                 </div>
             </div>
 
-            {/* FOOTER */}
-            {selected.length > 0 && (
+            {selectedCount > 0 && (
                 <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                    <span style={{ fontSize: "0.78rem", color: "#6b7280" }}>
-                        {selected.length} selected —{" "}
+                    <span
+                        style={{
+                            fontSize: "0.78rem",
+                            color: "#6b7280",
+                        }}
+                    >
+                        {selectedCount} selected —{" "}
                         <span
-                            onClick={() => setSelected([])}
-                            style={{ cursor: "pointer", textDecoration: "underline", color: "#9ca3af" }}
+                            onClick={clearSelection}
+                            style={{
+                                cursor: "pointer",
+                                textDecoration: "underline",
+                                color: "#9ca3af",
+                            }}
                         >
                             clear
                         </span>
@@ -171,8 +242,8 @@ const SubscribersPage = () => {
 
             {modalOpen && (
                 <NewsletterModal
-                    selectedCount={selected.length}
-                    onClose={() => setModalOpen(false)}
+                    selectedCount={selectedCount}
+                    onClose={closeModal}
                     onSend={handleSend}
                 />
             )}
