@@ -1,30 +1,45 @@
-import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import PlantCard from '../IndoorPlants/plantcard';
-import { Container, Row, Col } from 'react-bootstrap';
-import { useCategoryContext } from '../../Context/Category';
-import './ProductsByCategory.css';
+import { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { Container, Row, Col } from "react-bootstrap";
 
+import PlantCard from "../IndoorPlants/plantcard";
+import { useCategoryContext } from "../../Context/Category";
+
+import "./ProductsByCategory.css";
 
 const CategoryProducts = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-
     const { getAllProductsByCategory, getCategoryById, categories } = useCategoryContext();
 
     const [products, setProducts] = useState([]);
     const [category, setCategory] = useState(null);
 
-    useEffect(() => {
-        const getData = async () => {
-            const cat = await getCategoryById(id);
-            const prod = await getAllProductsByCategory(id);
-            setCategory(cat);
-            setProducts(prod || []);
-        };
+    const productsCount = products.length;
+    const hasProducts = productsCount > 0;
+    const showCategoriesBar = categories.length > 1;
 
-        getData();
+    useEffect(() => {
+        const loadCategoryData = async () => {
+            const categoryData = await getCategoryById(id);
+            const categoryProducts = await getAllProductsByCategory(id);
+            setCategory(categoryData);
+            setProducts(categoryProducts || []);
+        };
+        loadCategoryData();
     }, [id]);
+
+    const goHome = () => {
+        navigate("/");
+    };
+
+    const goToCategory = (categoryId) => {
+        navigate(`/category/${categoryId}`);
+    };
+
+    const isActiveCategory = (categoryId) => {
+        return String(categoryId) === String(id);
+    };
 
     return (
         <div className="cp-page">
@@ -33,7 +48,7 @@ const CategoryProducts = () => {
                 style={{
                     backgroundImage: category?.image_url
                         ? `url(${category.image_url})`
-                        : undefined
+                        : undefined,
                 }}
             >
                 <div className="cp-hero__overlay" />
@@ -46,12 +61,12 @@ const CategoryProducts = () => {
                     </h1>
 
                     <p className="cp-hero__count">
-                        {products.length}{' '}
-                        {products.length === 1 ? 'plant' : 'plants'} available
+                        {productsCount} {productsCount === 1 ? "plant" : "plants"} available
                     </p>
                 </div>
             </div>
-            {categories.length > 1 && (
+
+            {showCategoriesBar && (
                 <div className="cp-cats-bar">
                     <Container fluid="lg">
                         <div className="cp-cats-bar__inner">
@@ -59,29 +74,30 @@ const CategoryProducts = () => {
                                 Browse:
                             </span>
 
-                            {categories.map((cat) => (
+                            {categories.map((categoryItem) => (
                                 <button
-                                    key={cat.id}
-                                    className={`cp-cats-bar__chip ${String(cat.id) === String(id) ? 'active' : ''
+                                    key={categoryItem.id}
+                                    className={`cp-cats-bar__chip ${isActiveCategory(categoryItem.id)
+                                        ? "active"
+                                        : ""
                                         }`}
-                                    onClick={() => navigate(`/category/${cat.id}`)}
+                                    onClick={() => goToCategory(categoryItem.id)}
                                 >
-                                    {cat.name}
+                                    {categoryItem.name}
                                 </button>
                             ))}
                         </div>
                     </Container>
                 </div>
             )}
+
             <Container fluid="lg" className="cp-grid-section">
-                {products.length === 0 ? (
+                {!hasProducts ? (
                     <div className="cp-empty">
                         <h3>No plants here yet</h3>
                         <p>Check back soon — more greenery is on the way.</p>
-                        <button
-                            className="cp-empty__btn"
-                            onClick={() => navigate('/')}
-                        >
+
+                        <button className="cp-empty__btn" onClick={goHome}>
                             Back to Home
                         </button>
                     </div>
@@ -94,9 +110,7 @@ const CategoryProducts = () => {
                         ))}
                     </Row>
                 )}
-
             </Container>
-
         </div>
     );
 };

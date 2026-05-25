@@ -15,12 +15,17 @@ function SubscribeModal() {
 
   useEffect(() => {
     if (status === "success") {
-      const timer = setTimeout(() => { setShow(false); reset(); }, 3000);
-      return () => clearTimeout(timer);
+      const timer = setTimeout(() => { 
+        setShow(false); 
+        reset(); }, 3000);
+      return () => 
+        clearTimeout(timer);
     }
   }, [status]);
 
-  const handleClose = () => { reset(); setShow(false); };
+  const handleClose = () => { 
+    reset(); 
+    setShow(false); };
 
   const handleSubmit = () => {
     subscribe(email);

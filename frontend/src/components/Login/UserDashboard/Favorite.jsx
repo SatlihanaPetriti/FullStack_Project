@@ -1,47 +1,59 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useFavorites } from "../../../Context/Favorite";
 import { Heart } from "lucide-react";
+
+import { useFavorites } from "../../../Context/Favorite";
+
 import "./Favorite.css";
 
 const BASE_URL = "http://localhost:3000/products/uploads/variants";
 
 const DashboardFavorites = () => {
     const { favorites, removeFavorite } = useFavorites();
-    const [removingId, setRemovingId] = useState(null);
     const navigate = useNavigate();
 
-    const handleRemove = async (e, id) => {
+    const [removingId, setRemovingId] = useState(null);
+
+    const favoritesCount = favorites.length;
+
+    const getImage = (product) => {
+        const image = product?.variants?.[0]?.image;
+        return image ? `${BASE_URL}/${image}` : null;
+    };
+
+    const getPrice = (product) =>
+        product.sale_percentage
+            ? product.price - (product.price * product.sale_percentage) / 100
+            : Number(product.price);
+
+    const getDiscount = (product) =>
+        product.sale_percentage
+            ? Math.round(product.sale_percentage)
+            : null;
+
+    const handleRemove = async (e, productId) => {
         e.stopPropagation();
-        setRemovingId(id);
+
+        setRemovingId(productId);
+
         try {
-            await removeFavorite(id);
+            await removeFavorite(productId);
         } finally {
             setRemovingId(null);
         }
     };
 
-    const getPrice = (product) => {
-        if (product.sale_percentage)
-            return product.price - (product.price * product.sale_percentage) / 100;
-        return Number(product.price);
+    const goToProduct = (productId) => {
+        navigate(`/product/${productId}`);
     };
 
-    const getDiscount = (product) => {
-        if (product.sale_percentage)
-            return Math.round(product.sale_percentage);
-        return null;
-    };
-
-    const getImage = (product) => {
-        const img = product?.variants?.[0]?.image;
-        return img ? `${BASE_URL}/${img}` : null;
-    };
-
-    if (!favorites.length) {
+    if (!favoritesCount) {
         return (
             <div className="fav-empty">
-                <p className="fav-empty-title">No favorites yet</p>
+                <p className="fav-empty-title">
+                    No favorites yet
+                </p>
+
                 <span className="fav-empty-sub">
                     Start saving products you like
                 </span>
@@ -57,41 +69,46 @@ const DashboardFavorites = () => {
 
                     const image = getImage(product);
                     const price = getPrice(product);
-                    const hasDiscount = !!product.sale_percentage;
                     const discount = getDiscount(product);
-
-                    const isFavorite = favorites.some(
-                        (f) => f.product_id === product_id
-                    );
 
                     return (
                         <li
                             key={id}
-                            className={`fav-item ${removingId === product_id ? "fav-item--removing" : ""}`}
-                            onClick={() => navigate(`/product/${product.id}`)}
+                            className={`fav-item ${removingId === product_id
+                                    ? "fav-item--removing"
+                                    : ""
+                                }`}
+                            onClick={() => goToProduct(product.id)}
                         >
-                            {/* IMAGE */}
                             <div className="fav-img">
                                 {image ? (
-                                    <img src={image} alt={product.title} />
+                                    <img
+                                        src={image}
+                                        alt={product.title}
+                                    />
                                 ) : (
                                     <div className="fav-img-placeholder" />
                                 )}
                             </div>
 
-                            {/* INFO */}
                             <div className="fav-info">
-                                <p className="fav-name">{product.title}</p>
+                                <p className="fav-name">
+                                    {product.title}
+                                </p>
+
                                 <span className="fav-cat">
-                                    {product?.category?.name || "No category"}
+                                    {product?.category?.name ||
+                                        "No category"}
                                 </span>
                             </div>
 
-                            {/* PRICE */}
                             <div className="fav-price-wrap">
-                                {hasDiscount && (
+                                {product.sale_percentage && (
                                     <span className="fav-price-old">
-                                        €{Number(product.price).toFixed(2)}
+                                        €
+                                        {Number(
+                                            product.price
+                                        ).toFixed(2)}
                                     </span>
                                 )}
 
@@ -106,15 +123,16 @@ const DashboardFavorites = () => {
                                 )}
                             </div>
 
-                            {/* HEART REMOVE */}
                             <button
                                 className="fav-remove"
-                                onClick={(e) => handleRemove(e, product_id)}
+                                onClick={(e) =>
+                                    handleRemove(e, product_id)
+                                }
                                 aria-label="Remove from favorites"
                             >
                                 <Heart
                                     size={16}
-                                    fill={isFavorite ? "#c0392b" : "none"}
+                                    fill="#c0392b"
                                     stroke="#c0392b"
                                 />
                             </button>
@@ -123,11 +141,10 @@ const DashboardFavorites = () => {
                 })}
             </ul>
 
-            {/* FOOTER */}
             <div className="fav-footer">
                 <span>
-                    {favorites.length} saved item
-                    {favorites.length !== 1 ? "s" : ""}
+                    {favoritesCount} saved item
+                    {favoritesCount !== 1 ? "s" : ""}
                 </span>
             </div>
         </div>
