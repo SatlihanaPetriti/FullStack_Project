@@ -7,21 +7,31 @@ import {
     clear_cart_service,
 } from "../Services/CartService";
 import { useUserContext } from "./Auth";
+import Login from "../components/Login/login";
 
 const CartContext = createContext({});
 
 const CartProvider = (props) => {
     const [cart, setCart] = useState(null);
     const [error, setError] = useState(null);
+    const [showLogin, setShowLogin] = useState(false);
     const { user } = useUserContext();
 
     useEffect(() => {
-        if(user){
+        if (user) {
             getCart();
-        }else{
+        } else {
             setCart(null);
         }
     }, [user]);
+
+    const checkUser = () => {
+        if (!user) {
+            setShowLogin(true);
+            return false;
+        }
+        return true;
+    };
 
     // GET CART
     const getCart = async () => {
@@ -36,6 +46,10 @@ const CartProvider = (props) => {
 
     // ADD TO CART
     const addToCart = async (productId, quantity) => {
+        
+        console.log("CartContext received:",{productId,quantity});
+        
+        if (!checkUser()) return;
         try {
             const result = await add_to_cart_service([
                 {
@@ -64,13 +78,11 @@ const CartProvider = (props) => {
                 );
 
                 const total_quantity = updatedItems.reduce(
-                    (sum, i) => sum + i.quantity,
-                    0
+                    (sum, i) => sum + i.quantity,0
                 );
 
                 const total_price = updatedItems.reduce(
-                    (sum, i) => sum + i.quantity * Number(i.price),
-                    0
+                    (sum, i) => sum + i.quantity * Number(i.price),0
                 );
 
                 return {
@@ -104,7 +116,7 @@ const CartProvider = (props) => {
         } catch (error) {
             setError('Clear cart')
         }
-        setCart(null); 
+        setCart(null);
     };
 
     return (
@@ -121,6 +133,10 @@ const CartProvider = (props) => {
             }}
         >
             {props.children}
+            <Login
+                show={showLogin}
+                handleClose={() => setShowLogin(false)}
+            />
         </CartContext.Provider>
     );
 };

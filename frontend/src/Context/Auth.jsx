@@ -25,7 +25,9 @@ const UserProvider = (props) => {
         }
     };
 
-    useEffect(() => { checkAuthUser(); }, [trigger]);
+    useEffect(() => { 
+        checkAuthUser(); 
+    }, [trigger]);
 
     const register = async (data) => {
         try {
@@ -42,7 +44,10 @@ const UserProvider = (props) => {
 
     const login = async (data) => {
         try {
+            console.log("Data from Login component:", data);
             const result = await login_user(data);
+            console.log("Response received from backend:");
+            console.log(result);
             if (result.status === 201) {
                 setUser(result.data);
                 setError(null);
@@ -72,6 +77,6 @@ const UserProvider = (props) => {
         </UserContext.Provider>
     );
 };
-
+//custom hook
 const useUserContext = () => useContext(UserContext);
 export { useUserContext, UserProvider };

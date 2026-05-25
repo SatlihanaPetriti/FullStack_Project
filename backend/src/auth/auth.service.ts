@@ -27,7 +27,9 @@ export class AuthService {
         const user = await this.userService.registerUser({
             ...data, password: hashedPassword,
         });
+        console.log("User saved in database:", user);
         const token = await this.jwtService.signAsync({ id: user.id });
+        console.log("JWT payload:", { id: user.id });
         return { user, token };
     }
 

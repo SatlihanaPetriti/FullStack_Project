@@ -55,20 +55,16 @@ export class AppModule implements NestModule {
         consumer
             .apply(AuthMiddleware)
             .forRoutes(
-                // auth — vetem checkUser kerkon token
+                // auth
                 { path: 'auth/checkUser', method: RequestMethod.GET },
                 { path: 'auth/logout', method: RequestMethod.POST },
-
-                // users 
+                // users
                 { path: 'users', method: RequestMethod.ALL },
                 { path: 'users/*path', method: RequestMethod.ALL },
-
                 // products 
                 { path: 'products', method: RequestMethod.POST },
                 { path: 'products/*path', method: RequestMethod.PUT },
                 { path: 'products/*path', method: RequestMethod.DELETE },
-
-
                 // kerkojne login
                 { path: 'orders', method: RequestMethod.ALL },
                 { path: 'orders/*path', method: RequestMethod.ALL },

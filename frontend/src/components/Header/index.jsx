@@ -25,6 +25,8 @@ const Header = () => {
   const navigate = useNavigate();
 
   const [showLogin, setShowLogin] = useState(false);
+
+  //mobile
   const [loginAsSignup, setLoginAsSignup] = useState(false);
   const [showCart, setShowCart] = useState(false);
   const [showFavorites, setShowFavorites] = useState(false);
@@ -52,18 +54,35 @@ const Header = () => {
   }, [navigate]);
 
   const handlePersonClick = () => {
-    if (!user) { setLoginAsSignup(false); setShowLogin(true); return; }
+    if (!user) {
+      setLoginAsSignup(false);
+      setShowLogin(true);
+      return;
+    }
     if (personIconRef.current) {
       const rect = personIconRef.current.getBoundingClientRect();
       setAccountPosition({ top: rect.bottom + 8, left: rect.left - 100 });
     }
     setShowAccount(prev => !prev);
   };
-
-  const openLogin = () => { setLoginAsSignup(false); setShowLogin(true); setMenuOpen(false); };
-  const openSignup = () => { setLoginAsSignup(true); setShowLogin(true); setMenuOpen(false); };
-  const closeLogin = () => { setShowLogin(false); setLoginAsSignup(false); };
-  const closeMenu = () => setMenuOpen(false);
+// mobile
+  const openLogin = () => {
+    setLoginAsSignup(false);
+    setShowLogin(true);
+    setMenuOpen(false);
+  };
+  //mobile
+  const openSignup = () => {
+    setLoginAsSignup(true);
+    setShowLogin(true);
+    setMenuOpen(false);
+  };
+  const closeLogin = () => {
+    setShowLogin(false);
+    setLoginAsSignup(false);
+  };
+  const closeMenu = () =>
+    setMenuOpen(false);
 
   return (
     <>
@@ -148,7 +167,9 @@ const Header = () => {
                   <Person size={15} aria-hidden="true" />
                   My Account
                 </button>
-                <button className="mm-btn mm-btn--solid" onClick={() => { logout(); closeMenu(); }}>
+                <button className="mm-btn mm-btn--solid" 
+                onClick={() => 
+                { logout(); closeMenu(); }}>
                   <BoxArrowInRight size={15} aria-hidden="true" />
                   Log Out
                 </button>
@@ -176,7 +197,9 @@ const Header = () => {
         </div>
       </header>
 
-      <CartDrawer show={showCart} onClose={() => setShowCart(false)} />
+      <CartDrawer 
+      show={showCart} 
+      onClose={() => setShowCart(false)} />
 
       {!user && (
         <Login

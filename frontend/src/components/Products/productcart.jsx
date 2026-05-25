@@ -21,6 +21,7 @@ const Productcart = () => {
   const { cart, addToCart, updateQuantity, removeFromCart } = useCartContext();
   const { favorites, addFavorite, removeFavorite } = useFavorites();
 
+  
   const [product, setProduct] = useState(null);
   const [qty, setQty] = useState(1);
   const [selectedImage, setSelectedImage] = useState(null);
@@ -134,13 +135,17 @@ const Productcart = () => {
           </div>
 
           {cartItem ? (
-            <Button size="lg" variant="danger" className="botton-cart mt-2" onClick={() => removeFromCart(cartItem.id)}>
+            <Button size="lg" variant="danger" className="botton-cart mt-2"
+              onClick={() => removeFromCart(cartItem.id)}>
               Remove from Cart
             </Button>
           ) : (
-            <Button size="lg" className="botton-cart mt-2" disabled={product.stock <= 0} onClick={() => addToCart(product.id, qty)}>
+            <Button size="lg" className="botton-cart mt-2"
+              disabled={product.stock <= 0}
+              onClick={() => addToCart(product.id, qty)}>
               Add To Cart
             </Button>
+
           )}
 
           <p className="text-note">

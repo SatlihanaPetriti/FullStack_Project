@@ -29,7 +29,7 @@ const FavoritesProvider = (props) => {
             const result = await get_favorites_service();
             setFavorites(result.data);
         } catch (err) {
-            console.error("GET favorites error:", err);
+            console.error("Get favorites error:", err);
         }
     };
 

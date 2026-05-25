@@ -108,7 +108,23 @@ const CartDrawer = ({ show, onClose }) => {
                                         </span>
                                         <div className="item-name-row">
                                             <p className="item-name">{getFullProduct(item)?.title}</p>
-                                            <p className="item-price">$ {Number(item.price).toFixed(2)}</p>
+
+                                            <div className="item-price-box">
+                                                {item.quantity > 1 ? (
+                                                    <>
+                                                        <p className="item-price-total">
+                                                            ${(Number(item.price) * item.quantity).toFixed(2)}
+                                                        </p>
+                                                        <p className="item-price-single">
+                                                            {item.quantity} × ${Number(item.price).toFixed(2)}
+                                                        </p>
+                                                    </>
+                                                ) : (
+                                                    <p className="item-price-total">
+                                                        ${Number(item.price).toFixed(2)}
+                                                    </p>
+                                                )}
+                                            </div>
                                         </div>
                                         <div className="qty-row">
                                             <button className="qb" onClick={() => handleMinus(item)}>−</button>

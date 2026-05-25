@@ -62,12 +62,13 @@ const ProductCard = ({ product }) => {
   };
 
   const handleCart = async () => {
-    try {
-      inCart ? await removeFromCart(cartItem.id) : await addToCart(product.id, 1);
-    } catch (err) {
-      console.error(err);
+    if (inCart) {
+      await removeFromCart(cartItem.id);
+    } else {
+      await addToCart(product.id, 1);
     }
   };
+
 
   return (
     <div className="collection-card">

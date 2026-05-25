@@ -44,7 +44,7 @@ const CheckOut = () => {
         else updateQuantity(item.id, item.quantity - 1);
     };
 
-    // ── ORDER CONFIRMED ──────────────────────────────────────────────
+    // ORDER CONFIRMED
     if (ordered) {
         return (
             <div className="co-page">
@@ -65,7 +65,7 @@ const CheckOut = () => {
         );
     }
 
-    // ── MAIN CHECKOUT ────────────────────────────────────────────────
+    // MAIN CHECKOUT
     return (
         <div className="co-page">
             <div className="co-container">

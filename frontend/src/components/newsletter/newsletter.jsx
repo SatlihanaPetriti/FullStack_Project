@@ -10,7 +10,8 @@ function SubscribeModal() {
   const [email, setEmail] = useState("");
   const { status, errorMsg, subscribe, reset } = useNewsletter();
 
-  useEffect(() => { setShow(true); }, []);
+  useEffect(() => { 
+    setShow(true); }, []);
 
   useEffect(() => {
     if (status === "success") {

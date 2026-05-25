@@ -24,14 +24,20 @@ const Login = ({ show, handleClose, initialSignup = false }) => {
     if (show) setIsSignup(initialSignup);
   }, [show, initialSignup]);
 
-  // Mbyll modal automatikisht kur useri kyçet
+  // Mbyll modal automatikisht kur useri kycet
   useEffect(() => {
     if (user) handleClose();
   }, [user]);
 
   const handleChange = (e) => {
+    console.log("Input name:", e.target.name);
+    console.log("Input value:", e.target.value);
     setData({ ...data, [e.target.name]: e.target.value });
   };
+
+  // useEffect(() => {
+  //   console.log("Form data updated:", data);
+  // }, [data]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -49,7 +55,7 @@ const Login = ({ show, handleClose, initialSignup = false }) => {
       });
     }
   };
-
+ 
   return (
     <>
       <Modal
@@ -155,17 +161,6 @@ const Login = ({ show, handleClose, initialSignup = false }) => {
                   </Button>
 
                   <div className="divider"><span>or</span></div>
-
-                  {/* <Button className="social-btn w-100">
-                    <Google size={24} className="social-icon" />
-                    <span className="social-text">Continue with Google</span>
-                  </Button>
-
-                  <Button className="social-btn w-100 mt-3">
-                    <Apple size={24} className="social-icon" />
-                    <span className="social-text">Continue with Apple</span>
-                  </Button> */}
-
                   <p className="signup-link">
                     {isSignup ? "Already have an account?" : "Don't have an account?"}
                     <span

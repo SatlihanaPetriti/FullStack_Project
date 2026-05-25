@@ -1,13 +1,16 @@
 import axios from "axios";
 const URL = "http://localhost:3000/auth";
-axios.defaults.withCredentials = true;
 
 const register_user = async (data) => {
     return axios.post(`${URL}/register/`, data)
 }
 
 const login_user = async (data) => {
-    return axios.post(`${URL}/login`, data)
+    console.log("Login payload:", data);
+    const response = await axios.post(`${URL}/login`, data);
+    console.log("response from backend:", response);
+    console.log("User from backend:", response.data);
+    return response;
 }
 
 const logout_user = async () => {
