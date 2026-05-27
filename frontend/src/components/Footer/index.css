@@ -90,3 +90,47 @@
   padding: 12px;
   color: white;
 }
+
+/* ─── Responsive ─── */
+
+@media (max-width: 991px) {
+  .site-map {
+    padding-top: 32px;
+    padding-left: 80px;
+  }
+
+  .legal {
+    padding-top: 32px;
+    padding-left: 80px;
+  }
+}
+
+@media (max-width: 767px) {
+  .footer-content {
+    padding: 40px 24px;
+  }
+
+  .footer-description {
+    padding-left: 0;
+  }
+
+  .site-map,
+  .legal {
+    padding-top: 24px;
+    padding-left: 15px;
+  }
+
+  .social-icons a:first-child {
+    padding-left: 0;
+  }
+}
+
+@media (max-width: 575px) {
+  .footer-content {
+    padding: 32px 16px;
+  }
+
+  .footer-logo {
+    max-width: 160px;
+  }
+}

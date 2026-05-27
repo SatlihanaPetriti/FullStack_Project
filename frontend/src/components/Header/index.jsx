@@ -1,16 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
-  Person,
-  Heart,
-  Bag,
-  ChevronRight,
-  House,
-  Shop,
-  InfoCircle,
-  ChatDots,
-  BoxArrowInRight,
-  PersonPlus,
+  Person, Heart, Bag, ChevronRight, House,
+  Shop, InfoCircle, ChatDots, BoxArrowInRight, PersonPlus,
 } from "react-bootstrap-icons";
 
 import logo from "../../assets/images/Home/logo-green.png";
@@ -54,40 +46,21 @@ const Header = () => {
 
   useEffect(() => {
     if (!showFavorites) return;
-
     const handleOutside = (e) => {
-      if (
-        heartWrapperRef.current &&
-        !heartWrapperRef.current.contains(e.target)
-      ) {
+      if (heartWrapperRef.current && !heartWrapperRef.current.contains(e.target)) {
         setShowFavorites(false);
       }
     };
-
     document.addEventListener("mousedown", handleOutside);
-
-    return () => {
-      document.removeEventListener(
-        "mousedown",
-        handleOutside
-      );
-    };
+    return () => document.removeEventListener("mousedown", handleOutside);
   }, [showFavorites]);
 
-  useEffect(() => {
-    setMenuOpen(false);
-  }, [navigate]);
+  useEffect(() => { setMenuOpen(false); }, [navigate]);
 
   const getAccountPosition = () => {
     if (!personIconRef.current) return {};
-
-    const rect =
-      personIconRef.current.getBoundingClientRect();
-
-    return {
-      top: rect.bottom + 8,
-      left: rect.left - 100,
-    };
+    const rect = personIconRef.current.getBoundingClientRect();
+    return { top: rect.bottom + 8, left: rect.left - 100 };
   };
 
   const openAuth = (signup = false) => {
@@ -102,11 +75,7 @@ const Header = () => {
   };
 
   const handlePersonClick = () => {
-    if (!user) {
-      openAuth(false);
-      return;
-    }
-
+    if (!user) { openAuth(false); return; }
     setShowAccount((prev) => !prev);
   };
 
@@ -114,192 +83,79 @@ const Header = () => {
     <>
       <header className="site-header">
         <div className="header-inner">
-
           <Link to="/" className="header-logo">
             <img src={logo} alt="logo" />
           </Link>
 
           <nav className="desktop-nav">
             {NAV_LINKS.map(({ to, label }) => (
-              <Link key={to} to={to}>
-                {label}
-              </Link>
+              <Link key={to} to={to}>{label}</Link>
             ))}
           </nav>
 
           <div className="header-icons">
-
-            <div
-              className="icon-box user-box desktop-only"
-              ref={personIconRef}
-              onClick={handlePersonClick}
-            >
-              <Person
-                size={16}
-                style={{ cursor: "pointer" }}
-              />
+            <div className="icon-box user-box desktop-only" ref={personIconRef} onClick={handlePersonClick}>
+              <Person size={16} style={{ cursor: "pointer" }} />
             </div>
 
-            <div
-              className="icon-box"
-              ref={heartWrapperRef}
-              style={{ position: "relative" }}
-            >
-              <Heart
-                size={16}
-                style={{ cursor: "pointer" }}
-                onClick={() => setShowFavorites((prev) => !prev)}
-              />
-
-              {favoritesCount > 0 && (
-                <span className="bag-count">
-                  {favoritesCount}
-                </span>
-              )}
-
-              {showFavorites && (
-                <FavoritesDropdown
-                  onClose={() => setShowFavorites(false)}
-                />
-              )}
+            <div className="icon-box" ref={heartWrapperRef} style={{ position: "relative" }}>
+              <Heart size={16} style={{ cursor: "pointer" }}
+                onClick={() => setShowFavorites((prev) => !prev)} />
+              {favoritesCount > 0 && <span className="bag-count">{favoritesCount}</span>}
+              {showFavorites && <FavoritesDropdown
+                onClose={() => setShowFavorites(false)} />}
             </div>
 
-            <div
-              className="icon-box"
-              onClick={() =>
-                setShowCart(true)
-              }
-            >
+            <div className="icon-box" onClick={() => setShowCart(true)}>
               <Bag size={16} />
-
-              {cartCount > 0 && (
-                <span className="bag-count">
-                  {cartCount}
-                </span>
-              )}
+              {cartCount > 0 && <span className="bag-count">{cartCount}</span>}
             </div>
 
             <button
-              className={`hamburger mobile-only ${menuOpen ? "open" : ""
-                }`}
-              onClick={() =>
-                setMenuOpen((prev) => !prev)}
+              className={`hamburger mobile-only ${menuOpen ? "open" : ""}`}
+              onClick={() => setMenuOpen((prev) => !prev)}
               aria-label="Toggle menu"
             >
-              <span />
-              <span />
-              <span />
+              <span /><span /><span />
             </button>
           </div>
         </div>
 
-        <div
-          className={`mobile-menu ${menuOpen ? "open" : ""
-            }`}
-        >
+        <div className={`mobile-menu ${menuOpen ? "open" : ""}`}>
           <nav className="mobile-nav">
-            {NAV_LINKS.map(
-              ({
-                to,
-                label,
-                Icon,
-              }) => (
-                <Link
-                  key={to}
-                  to={to}
-                  onClick={() =>
-                    setMenuOpen(false)
-                  }
-                >
-                  <Icon
-                    size={16}
-                    className="nav-icon"
-                    aria-hidden="true"
-                  />
-
-                  {label}
-
-                  <ChevronRight
-                    size={13}
-                    className="nav-arrow"
-                    aria-hidden="true"
-                  />
-                </Link>
-              )
-            )}
+            {NAV_LINKS.map(({ to, label, Icon }) => (
+              <Link key={to} to={to} onClick={() => setMenuOpen(false)}>
+                <Icon size={16} className="nav-icon" aria-hidden="true" />
+                {label}
+                <ChevronRight size={13} className="nav-arrow" aria-hidden="true" />
+              </Link>
+            ))}
           </nav>
 
           <div className="mobile-menu-footer">
-            <div className="mobile-menu-footer-label">
-              ACCOUNT
-            </div>
+            <div className="mobile-menu-footer-label">ACCOUNT</div>
 
             {user ? (
               <>
-                <button
-                  className="mm-btn mm-btn--outline"
-                  onClick={() => {
-                    navigate("/account");
-                    setMenuOpen(false);
-                  }}
-                >
-                  <Person
-                    size={15}
-                    aria-hidden="true"
-                  />
-                  My Account
+                <button className="mm-btn mm-btn--outline" onClick={() => { navigate("/account"); setMenuOpen(false); }}>
+                  <Person size={15} aria-hidden="true" /> My Account
                 </button>
-
-                <button
-                  className="mm-btn mm-btn--solid"
-                  onClick={() => {
-                    logout();
-                    setMenuOpen(false);
-                  }}
-                >
-                  <BoxArrowInRight
-                    size={15}
-                    aria-hidden="true"
-                  />
-                  Log Out
+                <button className="mm-btn mm-btn--solid" onClick={() => { logout(); setMenuOpen(false); }}>
+                  <BoxArrowInRight size={15} aria-hidden="true" /> Log Out
                 </button>
               </>
             ) : (
               <>
-                <button
-                  className="mm-btn mm-btn--solid"
-                  onClick={() =>
-                    openAuth(false)
-                  }
-                >
-                  <BoxArrowInRight
-                    size={15}
-                    aria-hidden="true"
-                  />
-                  Log in
+                <button className="mm-btn mm-btn--solid" onClick={() => openAuth(false)}>
+                  <BoxArrowInRight size={15} aria-hidden="true" /> Log in
                 </button>
-
                 <div className="mm-divider">
                   <div className="mm-divider-line" />
-
-                  <span className="mm-divider-text">
-                    Don't have an account?
-                  </span>
-
+                  <span className="mm-divider-text">Don't have an account?</span>
                   <div className="mm-divider-line" />
                 </div>
-
-                <button
-                  className="mm-btn mm-btn--outline"
-                  onClick={() =>
-                    openAuth(true)
-                  }
-                >
-                  <PersonPlus
-                    size={15}
-                    aria-hidden="true"
-                  />
-                  Sign up
+                <button className="mm-btn mm-btn--outline" onClick={() => openAuth(true)}>
+                  <PersonPlus size={15} aria-hidden="true" /> Sign up
                 </button>
               </>
             )}
@@ -307,32 +163,18 @@ const Header = () => {
         </div>
       </header>
 
-      <CartDrawer
-        show={showCart}
-        onClose={() => setShowCart(false)}
-      />
+      <CartDrawer show={showCart} onClose={() => setShowCart(false)} />
 
-      {!user && (
-        <Login
-          show={showLogin}
-          handleClose={closeLogin}
-          initialSignup={loginAsSignup}
-        />
-      )}
+      {!user && <Login show={showLogin} handleClose={closeLogin} initialSignup={loginAsSignup} />}
 
       {user && (
         <AccountDropdown
           show={showAccount}
-          handleClose={() =>
-            setShowAccount(false)
-          }
+          handleClose={() => setShowAccount(false)}
           user={user}
           position={getAccountPosition()}
           logout={logout}
-          onNavigate={(tab) => {
-            setShowAccount(false);
-            navigate(`/account?tab=${tab}`);
-          }}
+          onNavigate={(tab) => { setShowAccount(false); navigate(`/account?tab=${tab}`); }}
         />
       )}
     </>

@@ -6,9 +6,9 @@
 
 /* Container */
 .announcement-container {
-    height: 25px;
+    height: 20px;
     position: relative;
-
+    align-items: center;
 }
 
 /* Scroll */
@@ -48,6 +48,19 @@
     margin: 0 2rem;
     vertical-align: middle;
     opacity: 0.9;
+}
+
+.close-btn {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: none;
+    background: transparent;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    z-index: 10;
 }
 
 @keyframes marquee {

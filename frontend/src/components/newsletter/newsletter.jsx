@@ -10,22 +10,25 @@ function SubscribeModal() {
   const [email, setEmail] = useState("");
   const { status, errorMsg, subscribe, reset } = useNewsletter();
 
-  useEffect(() => { 
-    setShow(true); }, []);
+  useEffect(() => {
+    setShow(true);
+  }, []);
 
   useEffect(() => {
     if (status === "success") {
-      const timer = setTimeout(() => { 
-        setShow(false); 
-        reset(); }, 3000);
-      return () => 
+      const timer = setTimeout(() => {
+        setShow(false);
+        reset();
+      }, 3000);
+      return () =>
         clearTimeout(timer);
     }
   }, [status]);
 
-  const handleClose = () => { 
-    reset(); 
-    setShow(false); };
+  const handleClose = () => {
+    reset();
+    setShow(false);
+  };
 
   const handleSubmit = () => {
     subscribe(email);
@@ -34,12 +37,18 @@ function SubscribeModal() {
 
   return (
     <>
-      <Button variant="primary" className="subscribe-button" onClick={() => setShow(true)}>
+      <Button
+        variant="primary"
+        className="subscribe-button"
+        onClick={() => setShow(true)}>
         Subscribe
       </Button>
 
       <Modal
-        show={show} onHide={handleClose} backdrop="static" keyboard={false} centered
+        show={show}
+        onHide={handleClose}
+        backdrop="static"
+        keyboard={false} centered
         className="modal-newsletter">
         <div className="modal-content">
           <Modal.Header closeButton className="modal-header" />
@@ -77,12 +86,15 @@ function SubscribeModal() {
             </Button>
 
             {status === "success" && (
-              <p className="modal-sub">Thank you for subscribing! 🌿</p>
+              <p className="modal-sub">Thank you for subscribing!</p>
             )}
 
             <p className="modal-consent">
               By signing up, you agree to receive marketing emails.
-              <Button variant="light" className="modal-nothanks" onClick={handleClose}>
+              <Button
+                variant="light"
+                className="modal-nothanks"
+                onClick={handleClose}>
                 No, thanks
               </Button>
             </p>

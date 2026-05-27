@@ -1,6 +1,6 @@
 import axios from 'axios';
 const URL = "http://localhost:3000/products";
-axios.defaults.withCredentials = true;
+// axios.defaults.withCredentials = true;
 
 export async function get_products_service() {
     return await axios.get(`${URL}`);

@@ -72,7 +72,7 @@ const Login = ({ show, handleClose, initialSignup = false }) => {
 
             <Col md={6} className="login-panel">
               <div className="login-container">
-                <button className="close-btn" onClick={handleClose} aria-label="Close">&times;</button>
+                <button className="close-btn1" onClick={handleClose} aria-label="Close">&times;</button>
                 <h2>{isSignup ? "Create an Account" : "Welcome Back!"}</h2>
                 <p className="login-subtitle">
                   {isSignup

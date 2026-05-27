@@ -39,17 +39,29 @@
   border-width: 2px !important;
 }
 
+/* Mobile thumbnail row — fshehur në desktop */
+.thumb-row-mobile {
+  display: none;
+}
+
 .main-product-image {
   padding-left: 10px;
   max-width: 500px;
   height: auto;
 }
 
+.product-image-col {
+  display: flex;
+  justify-content: center;
+  padding-left: 12px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
 .product-info {
   padding: 0px 45px;
 }
 
-/* Scroll area — emri u rregullua për t'u përputhur me JSX */
 .product-scroll {
   max-height: 55vh;
   overflow-y: auto;
@@ -71,23 +83,19 @@
   font-size: 35px;
 }
 
-/* Çmimi — majtas */
 .text-price {
   color: #256628;
   font-size: 30px;
   font-weight: bolder;
   text-align: left;
-  /* u ndryshua nga default center */
 }
 
-/* Përshkrimi — majtas */
 .text-desc {
   color: black;
   font-size: 17px;
   text-align: left;
 }
 
-/* Pot Color dhe Size labels — majtas */
 .text-pot,
 .text-size {
   color: #214332;
@@ -95,7 +103,6 @@
   font-weight: bold;
   text-align: left;
   margin-bottom: 8px;
-
 }
 
 /* Color picker */
@@ -261,4 +268,113 @@
   color: #214332;
   line-height: 1.6;
   font-size: 20px;
+}
+
+
+/* ══════════════════════════════════════════════
+   TABLET (768px – 991px)
+   ══════════════════════════════════════════════ */
+@media (min-width: 768px) and (max-width: 991px) {
+  .product-info {
+    padding: 0 20px;
+  }
+
+  .text-title {
+    font-size: 26px;
+  }
+
+  .text-price {
+    font-size: 24px;
+  }
+
+  .main-product-image {
+    max-width: 100%;
+  }
+
+  .product-tabs-nav .nav-link {
+    font-size: 16px;
+  }
+
+  .tab-text {
+    font-size: 16px;
+  }
+}
+
+
+/* ══════════════════════════════════════════════
+   MOBILE (< 768px)
+   ══════════════════════════════════════════════ */
+@media (max-width: 767px) {
+  .product-cart-container {
+    padding-top: 12px;
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .product-breadcrumb {
+    font-size: 13px;
+    padding-left: 0;
+  }
+
+  .product-main-row {
+    flex-direction: column;
+  }
+
+  .product-image-col {
+    padding-left: 0;
+    justify-content: center;
+  }
+
+  .main-product-image {
+    padding-left: 0;
+    max-width: 100%;
+    width: 100%;
+  }
+
+  /* Thumbnails shfaqen horizontalisht POSHTË fotos */
+  .thumb-row-mobile {
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 14px;
+    flex-wrap: wrap;
+  }
+
+  .thumb-row-mobile .product-thumb {
+    width: 48px;
+    height: 48px;
+  }
+
+  .product-info {
+    padding: 20px 8px 0 8px;
+  }
+
+  .text-title {
+    font-size: 22px;
+  }
+
+  .text-price {
+    font-size: 22px;
+  }
+
+  .botton-cart {
+    width: 100%;
+    padding: 14px;
+    font-size: 16px;
+  }
+
+  .product-tabs-nav .nav-link {
+    font-size: 14px;
+    padding: 8px 6px;
+  }
+
+  .tab-text {
+    font-size: 15px;
+    margin: 12px;
+  }
+
+  .wishlist-icon {
+    font-size: 24px;
+  }
 }

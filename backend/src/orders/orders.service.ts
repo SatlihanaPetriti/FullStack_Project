@@ -14,6 +14,8 @@ export class OrdersService {
         return this.orderRepo.find({
             where: { user_id: userId },
             relations: ['items'],
+            order: { created_at: 'DESC' },
+            
         });
     }
     
@@ -28,6 +30,7 @@ export class OrdersService {
         const order = await this.orderRepo.findOne({
             where: { id: orderId, user_id: userId },
             relations: ['items'],
+            order: { created_at: 'DESC' },
         });
 
         if (!order) {

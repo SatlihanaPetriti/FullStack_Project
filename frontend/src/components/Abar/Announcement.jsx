@@ -31,11 +31,12 @@ const Announcement = () => {
           </div>
         </div>
 
-        <CloseButton
-          variant='white'
+        <button
           className='close-btn'
           onClick={() => setShow(false)}
-        />
+        >
+          ×
+        </button>
       </Container>
     </Navbar>
   );

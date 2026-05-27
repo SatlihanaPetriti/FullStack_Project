@@ -132,25 +132,25 @@ const ProductInfo = ({ formData, errors, onChange }) => {
 
             <p style={sectionTitleStyle}>Pricing</p>
 
-            <Form.Group className="mb-3">
-                <Form.Label>Stock</Form.Label>
-
-                <Form.Control
-                    type="number"
-                    name="stock"
-                    value={formData.stock}
-                    onChange={onChange}
-                    min={0}
-                />
-            </Form.Group>
-
             <Row className="mb-3 text-start g-3">
+                <Col md={4}>
+                    <Form.Group>
+                        <Form.Label style={labelStyle}>Stock</Form.Label>
+                        <Form.Control
+                            type="number"
+                            name="stock"
+                            value={formData.stock}
+                            onChange={onChange}
+                            min={0}
+                        />
+                    </Form.Group>
+                </Col>
+
                 <Col md={4}>
                     <Form.Group>
                         <Form.Label style={labelStyle}>
                             Price <span className="text-danger">*</span>
                         </Form.Label>
-
                         <Form.Control
                             type="number"
                             name="price"
@@ -166,7 +166,6 @@ const ProductInfo = ({ formData, errors, onChange }) => {
                 <Col md={4}>
                     <Form.Group>
                         <Form.Label style={labelStyle}>Sale %</Form.Label>
-
                         <Form.Control
                             type="number"
                             name="sale_percentage"

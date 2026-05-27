@@ -34,10 +34,8 @@ export function NewsletterProvider({ children }) {
             setStatus("error");
             return;
         }
-
         setStatus("loading");
         setErrorMsg("");
-
         try {
             await subscribe_service(email);
             setStatus("success");

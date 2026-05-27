@@ -63,6 +63,7 @@ export class AppModule implements NestModule {
                 { path: 'users/*path', method: RequestMethod.ALL },
                 // products 
                 { path: 'products', method: RequestMethod.POST },
+                { path: 'products/create', method: RequestMethod.POST },
                 { path: 'products/*path', method: RequestMethod.PUT },
                 { path: 'products/*path', method: RequestMethod.DELETE },
                 // kerkojne login

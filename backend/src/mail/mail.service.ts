@@ -81,7 +81,7 @@ export class MailService {
         const allSubscribers = await this.subscriberRepository.find({
             where: { isActive: true },
         });
-        // filtrojme cetem ata qe zgjidhen nga admin
+        // filtrojme vetem ata qe zgjidhen nga admin
         const selectedSubscribers = allSubscribers.filter(subscriber =>
             subscriberIds.includes(subscriber.id),
         );
