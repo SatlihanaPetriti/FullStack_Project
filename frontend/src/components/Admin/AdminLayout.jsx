@@ -61,7 +61,7 @@ const AdminLayout = ({ children }) => {
                     <UserRoundCog size={30} />
 
                     <span className="admin-logo-text">
-                        PlantShop
+                        ECOMUS
                         <br />
                         <small>Admin Dashboard</small>
                     </span>
