@@ -1,7 +1,7 @@
 import { NavLink, Outlet } from 'react-router-dom';
 import { User, LayoutDashboard, LogOut } from 'lucide-react';
 import { useUserContext } from '../../../Context/Auth';
-import './UserLayout.css';
+import './userLayout.css';
 
 const UserLayout = () => {
     const { user, logout } = useUserContext();
