@@ -6,7 +6,7 @@ import { useFavorites } from "../../../Context/Favorite";
 
 import "./Favorite.css";
 
-const BASE_URL = `${process.env.REACT_APP_BACKEND_URL}/products/uploads/variants`;
+const BASE_URL = `${import.meta.env.REACT_APP_BACKEND_URL}/products/uploads/variants`;
 
 const DashboardFavorites = () => {
     const { favorites, removeFavorite } = useFavorites();
@@ -75,8 +75,8 @@ const DashboardFavorites = () => {
                         <li
                             key={id}
                             className={`fav-item ${removingId === product_id
-                                    ? "fav-item--removing"
-                                    : ""
+                                ? "fav-item--removing"
+                                : ""
                                 }`}
                             onClick={() => goToProduct(product.id)}
                         >

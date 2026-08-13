@@ -38,7 +38,7 @@ export class CategoryService {
     public async create(body: any, image: any) {
         const category = {
             name: body.name,
-            image_url: image ? `${process.env.BACKEND_URL}/categories/uploads/${image}` : undefined,
+            image_url: image ? `${import.meta.env.BACKEND_URL}/categories/uploads/${image}` : undefined,
         }
         return await this.categoryRepo.save(category);
     }
@@ -60,7 +60,7 @@ export class CategoryService {
                     const oldFilename = category.image_url.split('/').pop();
                     this.fileService.deleteFile(oldFilename);
                 }
-                category.image_url = `${process.env.BACKEND_URL}/categories/uploads/${image}`;
+                category.image_url = `${import.meta.env.BACKEND_URL}/categories/uploads/${image}`;
             }
 
             return await this.categoryRepo.save(category);

@@ -1,6 +1,6 @@
 import axios from "axios";
 axios.defaults.withCredentials = true;
-const API_URL = `${process.env.REACT_APP_BACKEND_URL}/orders`;
+const API_URL = `${import.meta.env.REACT_APP_BACKEND_URL}/orders`;
 
 export const get_my_orders_service = () =>
     axios.get(API_URL);

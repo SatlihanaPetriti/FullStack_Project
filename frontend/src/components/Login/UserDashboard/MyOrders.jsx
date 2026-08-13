@@ -4,7 +4,7 @@ import { useProductContext } from "../../../Context/Product";
 import { useCategoryContext } from "../../../Context/Category";
 import "./MyOrders.css";
 
-const BASE_URL = `${process.env.REACT_APP_BACKEND_URL}/products/uploads/variants`;
+const BASE_URL = `${import.meta.env.REACT_APP_BACKEND_URL}/products/uploads/variants`;
 
 const STATUS_COLOR = {
     pending: "#e07b39",

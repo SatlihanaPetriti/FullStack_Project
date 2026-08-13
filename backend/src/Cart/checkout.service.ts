@@ -10,7 +10,7 @@ import Stripe from 'stripe';
 
 @Injectable()
 export class CheckoutService {
-    private stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
+    private stripe = new Stripe(import.meta.env.STRIPE_SECRET_KEY as string);
 
     constructor(
         @InjectRepository(Cart) private cartRepo: Repository<Cart>,

@@ -1,6 +1,6 @@
 import axios from "axios";
 axios.defaults.withCredentials = true;
-const API_URL = `${process.env.REACT_APP_BACKEND_URL}/mail`;
+const API_URL = `${import.meta.env.REACT_APP_BACKEND_URL}/mail`;
 
 
 export const get_subscribers_service = () =>

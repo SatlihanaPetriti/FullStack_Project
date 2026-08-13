@@ -9,7 +9,7 @@ import { useOrderContext } from "../../../Context/OrderContext";
 import CheckoutModal from "./CheckoutModal";
 import "./checkout.css";
 
-const BASE_URL = `${process.env.REACT_APP_BACKEND_URL}/products/uploads/variants`;
+const BASE_URL = `${import.meta.env.REACT_APP_BACKEND_URL}/products/uploads/variants`;
 
 const CheckOut = () => {
     const navigate = useNavigate();

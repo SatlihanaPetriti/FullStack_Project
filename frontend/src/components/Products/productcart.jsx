@@ -9,7 +9,7 @@ import { useFavorites } from "../../Context/Favorite";
 
 import "./productcart.css";
 
-const BASE_URL = `${process.env.REACT_APP_BACKEND_URL}/products/uploads/variants`;
+const BASE_URL = `${import.meta.env.REACT_APP_BACKEND_URL}/products/uploads/variants`;
 
 const getPrice = (product) =>
   product.sale_percentage
