@@ -6,7 +6,7 @@ import { useFavorites } from "../../../Context/Favorite";
 
 import "./Favorite.css";
 
-const BASE_URL = "http://localhost:3000/products/uploads/variants";
+const BASE_URL = `${process.env.REACT_APP_BACKEND_URL}/products/uploads/variants`;
 
 const DashboardFavorites = () => {
     const { favorites, removeFavorite } = useFavorites();

@@ -1,5 +1,5 @@
 import './Products.css';
-const IMAGE_BASE_URL = "http://localhost:3000/products/uploads/variants";
+const IMAGE_BASE_URL = `${process.env.REACT_APP_BACKEND_URL}/products/uploads/variants`;
 
 
 const ImageModal = ({ show, onClose, product }) => {

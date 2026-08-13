@@ -1,5 +1,5 @@
 import axios from 'axios';
-const URL = "http://localhost:3000/products";
+const URL = `${process.env.REACT_APP_BACKEND_URL}/products`;
 // axios.defaults.withCredentials = true;
 
 export async function get_products_service() {

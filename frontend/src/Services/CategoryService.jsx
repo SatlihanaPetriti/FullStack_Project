@@ -1,6 +1,6 @@
 import axios from "axios";
 axios.defaults.withCredentials = true;
-const API_URL = "http://localhost:3000/categories";
+const API_URL = `${process.env.REACT_APP_BACKEND_URL}/categories`;
 
 // GET ALL
 export const get_categories_service = () => axios.get(API_URL);

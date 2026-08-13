@@ -4,7 +4,7 @@ import { HeartFill } from "react-bootstrap-icons";
 import { useFavorites } from "../../Context/Favorite";
 import "./favorite.css";
 
-const BASE_URL = "http://localhost:3000/products/uploads/variants";
+const BASE_URL = `${process.env.REACT_APP_BACKEND_URL}/products/uploads/variants`;
 
 const FavoritesList = () => {
     const { favorites, removeFavorite } = useFavorites();

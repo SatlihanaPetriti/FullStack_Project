@@ -7,7 +7,7 @@ import { useCategoryContext } from "../../Context/Category";
 
 const ITEM_HEIGHT = 88;
 const MAX_VISIBLE = 4;
-const BASE_URL = "http://localhost:3000/products/uploads/variants";
+const BASE_URL = `${process.env.REACT_APP_BACKEND_URL}/products/uploads/variants`;
 
 const CartDrawer = ({ show, onClose }) => {
     const navigate = useNavigate();

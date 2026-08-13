@@ -1,7 +1,7 @@
 import axios from "axios";
 axios.defaults.withCredentials = true;
 
-const API_URL = "http://localhost:3000/cart";
+const API_URL = `${process.env.REACT_APP_BACKEND_URL}/cart`;
 
 // GET CART
 export const get_cart_service = () => axios.get(API_URL);

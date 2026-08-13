@@ -104,7 +104,7 @@ export class MailService {
     }
 
     public async sendWelcome(subscriberEmail: string) {
-        const unsubscribeLink = `http://localhost:3000/mail/unsubscribe?email=${encodeURIComponent(subscriberEmail)}`;
+        const unsubscribeLink = `${process.env.BACKEND_URL}/mail/unsubscribe?email=${encodeURIComponent(subscriberEmail)}`;
         await this.mailerService.sendMail({
             to: subscriberEmail,
             subject: 'Welcome to ecomus!',
