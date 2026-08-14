@@ -51,7 +51,7 @@ export class MailService {
             <html>
                 <body style="font-family:sans-serif; text-align:center; padding:80px; color:#214332;">
                     <h2> Email not found.</h2>
-                    <a href="http://localhost:5173">← Back to Green Scene</a>
+                    <a href="${process.env.FRONTEND_URL}">← Back to Green Scene</a>
                 </body>
             </html>
         `;
@@ -64,7 +64,7 @@ export class MailService {
             <body style="font-family:sans-serif; text-align:center; padding:80px; color:#214332;">
                 <h2> Unsubscribed successfully.</h2>
                 <p>You will no longer receive emails from us.</p>
-                <a href="http://localhost:5173">← Back to Green Scene</a>
+                <a href="${process.env.FRONTEND_URL}">← Back to Green Scene</a>
             </body>
         </html>
     `;
