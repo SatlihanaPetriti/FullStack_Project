@@ -11,7 +11,7 @@ export class SendEmailService {
     try {
       await this.mailerService.sendMail({
         from: `"${data.firstName} ${data.lastName}" <${data.email}>`,
-        to: import.meta.env.EMAIL_RECEIVER,
+        to: process.env.EMAIL_RECEIVER,
         subject: 'New Contact Form Message',
         text:
           `First Name: ${data.firstName}

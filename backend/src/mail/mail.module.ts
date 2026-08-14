@@ -22,13 +22,13 @@ import { Subscriber } from './Entity/subscriber.entity';
                 },
 
                 auth: {
-                    user: import.meta.env.EMAIL_USER,
-                    pass: import.meta.env.EMAIL_PASS,
+                    user: process.env.EMAIL_USER,
+                    pass: process.env.EMAIL_PASS,
                 },
             },
 
             defaults: {
-                from: `"Green Scene" <${import.meta.env.EMAIL_USER}>`,
+                from: `"Green Scene" <${process.env.EMAIL_USER}>`,
             },
         }),
     ],
