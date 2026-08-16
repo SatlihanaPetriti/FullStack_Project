@@ -1,6 +1,6 @@
 import axios from "axios";
 axios.defaults.withCredentials = true;
-const API_URL = `${import.meta.env.REACT_APP_BACKEND_URL}/categories`;
+const API_URL = `${import.meta.env.VITE_BACKEND_URL}/categories`;
 
 // GET ALL
 export const get_categories_service = () => axios.get(API_URL);

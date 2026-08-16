@@ -1,5 +1,5 @@
 import './Products.css';
-const IMAGE_BASE_URL = `${import.meta.env.REACT_APP_BACKEND_URL}/products/uploads/variants`;
+const IMAGE_BASE_URL = `${import.meta.env.VITE_BACKEND_URL}/products/uploads/variants`;
 
 
 const ImageModal = ({ show, onClose, product }) => {

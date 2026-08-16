@@ -1,5 +1,5 @@
 import axios from 'axios';
-const URL = `${import.meta.env.REACT_APP_BACKEND_URL}/products`;
+const URL = `${import.meta.env.VITE_BACKEND_URL}/products`;
 // axios.defaults.withCredentials = true;
 
 export async function get_products_service() {

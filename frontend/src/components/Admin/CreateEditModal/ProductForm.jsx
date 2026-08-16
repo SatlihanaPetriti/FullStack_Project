@@ -5,7 +5,7 @@ import ProductInfo from "./ProductInfo";
 import VariantInput from "./VariantInput";
 import VariantList from "./VariantList";
 
-const IMAGE_BASE_URL = `${import.meta.env.REACT_APP_BACKEND_URL}/products/uploads/variants`;
+const IMAGE_BASE_URL = `${import.meta.env.VITE_BACKEND_URL}/products/uploads/variants`;
 
 const getToday = () => new Date().toISOString().split("T")[0];
 

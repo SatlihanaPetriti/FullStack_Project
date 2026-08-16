@@ -1,5 +1,5 @@
 import axios from "axios";
-const API_URL = `${import.meta.env.REACT_APP_BACKEND_URL}/favorites`;
+const API_URL = `${import.meta.env.VITE_BACKEND_URL}/favorites`;
 
 export const get_favorites_service = () =>
     axios.get(API_URL);
