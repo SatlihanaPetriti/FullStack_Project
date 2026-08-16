@@ -31,7 +31,11 @@ export class AuthController {
 
     @Post('logout')
     public async logout(@Res({ passthrough: true }) response: Response) {
-        response.clearCookie('jwt');
+        response.clearCookie('jwt', {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'none',
+        });
         return { "message": "success", "status": 201 };
     }
 
