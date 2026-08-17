@@ -1,4 +1,5 @@
 import axios from "axios";
+axios.defaults.withCredentials = true;
 const API_URL = `${import.meta.env.VITE_BACKEND_URL}/favorites`;
 
 export const get_favorites_service = () =>

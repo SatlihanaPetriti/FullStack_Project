@@ -1,4 +1,5 @@
 import axios from "axios";
+axios.defaults.withCredentials = true;
 const URL = `${import.meta.env.VITE_BACKEND_URL}/auth`;
 
 const register_user = async (data) => {

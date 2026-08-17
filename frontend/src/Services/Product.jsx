@@ -1,4 +1,5 @@
 import axios from 'axios';
+axios.defaults.withCredentials = true;
 const URL = `${import.meta.env.VITE_BACKEND_URL}/products`;
 // axios.defaults.withCredentials = true;
 
