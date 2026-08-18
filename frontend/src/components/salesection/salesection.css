@@ -29,6 +29,7 @@
     padding: 5px 12px;
     border-radius: 12px;
 }
+
 .sale-description {
     margin: 10px 0;
     font-size: 1rem;
@@ -40,10 +41,111 @@
     padding: 8px 20px;
     font-size: 1rem;
     margin-top: 30px;
-    color:#103118; 
+    color: #103118;
 }
+
 .shop-btn:hover {
     background-color: #0e3818;
     color: white;
     border: none;
+}
+
+/* LARGE TABLET */
+@media (max-width: 1199px) {
+    .sale-section {
+        height: 400px;
+    }
+
+    .sale-title {
+        font-size: 1.6rem;
+    }
+
+    .highlight {
+        font-size: 2rem;
+    }
+}
+
+/* TABLET */
+@media (max-width: 991px) {
+    .sale-section {
+        height: 360px;
+        padding-top: 40px;
+    }
+
+    .sale-content {
+        max-width: 420px;
+    }
+
+    .sale-title {
+        font-size: 1.4rem;
+    }
+
+    .highlight {
+        font-size: 1.7rem;
+        padding: 4px 10px;
+    }
+
+    .sale-description {
+        font-size: 0.9rem;
+    }
+
+    .shop-btn {
+        margin-top: 20px;
+        padding: 7px 18px;
+        font-size: 0.9rem;
+    }
+}
+
+/* MOBILE */
+@media (max-width: 576px) {
+    .sale-section {
+        height: 320px;
+        padding-top: 30px;
+    }
+
+    .sale-content {
+        max-width: 100%;
+        padding: 0 16px;
+    }
+
+    .sale-title {
+        font-size: 1.15rem;
+        line-height: 1.4;
+    }
+
+    .highlight {
+        font-size: 1.4rem;
+        padding: 3px 8px;
+        border-radius: 8px;
+    }
+
+    .sale-description {
+        font-size: 0.85rem;
+        line-height: 1.4;
+    }
+
+    .sale-description br {
+        display: none;
+    }
+
+    .shop-btn {
+        margin-top: 16px;
+        padding: 6px 16px;
+        font-size: 0.85rem;
+    }
+}
+
+/* SMALL MOBILE */
+@media (max-width: 375px) {
+    .sale-section {
+        height: 280px;
+    }
+
+    .sale-title {
+        font-size: 1rem;
+    }
+
+    .highlight {
+        font-size: 1.2rem;
+    }
 }
