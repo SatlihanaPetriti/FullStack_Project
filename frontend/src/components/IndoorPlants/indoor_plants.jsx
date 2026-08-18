@@ -109,9 +109,9 @@ const IndoorPlants = () => {
   const { filtered, sorted } = getDisplayProducts();
 
   return (
-    <div className="indoor-plant py-5">
+    <div className="indoor-plant py-2">
       <Container fluid>
-        <Row className="align-items-center mb-5 mt-5 px-3 px-md-4 gy-3">
+        <Row className="align-items-center mb-5 mt-2 px-3 px-md-4 gy-3">
           <Col xs={12} md={6}>
             <h2 className="title-edit">All Plants</h2>
 
