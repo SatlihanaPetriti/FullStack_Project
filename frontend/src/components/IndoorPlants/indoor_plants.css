@@ -456,3 +456,57 @@
 .fav-icon:hover {
   transform: scale(1.15);
 }
+
+
+.products-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+}
+
+.simple-search {
+  width: 220px;
+}
+
+.custom-sort-select {
+  width: 230px;
+}
+
+.total-products {
+  font-size: 14px;
+}
+
+/* Tablet */
+@media (max-width: 991px) {
+  .products-toolbar {
+    justify-content: flex-start;
+  }
+
+  .simple-search,
+  .custom-sort-select {
+    width: 100%;
+  }
+}
+
+/* Mobile */
+@media (max-width: 767px) {
+  .products-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .simple-search,
+  .custom-sort-select {
+    width: 100%;
+  }
+
+  .title-edit {
+    font-size: 28px;
+  }
+
+  .total-products {
+    font-size: 13px;
+  }
+}

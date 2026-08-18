@@ -111,31 +111,40 @@ const IndoorPlants = () => {
   return (
     <div className="indoor-plant py-5">
       <Container fluid>
-        <Row className="align-items-center ms-4 mb-5 mt-5">
-          <Col md={6}>
+        <Row className="align-items-center mb-5 mt-5 px-3 px-md-4 gy-3">
+          <Col xs={12} md={6}>
             <h2 className="title-edit">All Plants</h2>
-            <p className="text-muted mb-0" style={{ fontSize: 14 }}>
+
+            <p className="text-muted mb-0 total-products">
               {sorted.length} product{sorted.length !== 1 ? 's' : ''}
-              {filtered.length !== products.length && ` (filtered from ${products.length})`}
+              {filtered.length !== products.length &&
+                ` (filtered from ${products.length})`}
             </p>
           </Col>
-          <Col md={6} className="d-flex justify-content-md-end align-items-center gap-2">
-            <input
-              type="text"
-              placeholder="Search by keywords"
-              className="simple-search"
-              value={searchInput}
-              onChange={handleSearch}
-            />
-            <Form.Select
-              onChange={(e) => setSortOption(e.target.value)}
-              value={sortOption}
-              className="custom-sort-select"
-            >
-              {sortOption === 'featured' && <option value="featured">Sort By</option>}
-              <option value="low">Sort by Price: Low to High</option>
-              <option value="high">Sort by Price: High to Low</option>
-            </Form.Select>
+
+          <Col xs={12} md={6}>
+            <div className="products-toolbar">
+              <input
+                type="text"
+                placeholder="Search by keywords"
+                className="simple-search"
+                value={searchInput}
+                onChange={handleSearch}
+              />
+
+              <Form.Select
+                onChange={(e) => setSortOption(e.target.value)}
+                value={sortOption}
+                className="custom-sort-select"
+              >
+                {sortOption === 'featured' && (
+                  <option value="featured">Sort By</option>
+                )}
+
+                <option value="low">Sort by Price: Low to High</option>
+                <option value="high">Sort by Price: High to Low</option>
+              </Form.Select>
+            </div>
           </Col>
         </Row>
 
