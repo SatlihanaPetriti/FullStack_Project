@@ -236,24 +236,9 @@ const IndoorPlants = () => {
                   onChange={handleSearch}
                 />
 
-                {/* FILTER BUTTON */}
-                <Button
-                  variant="outline-dark"
-                  className="filters-btn"
-                  onClick={() =>
-                    setShowFilters(true)
-                  }
-                >
-                  Filters
-                </Button>
-
                 {/* SORT */}
                 <Form.Select
-                  onChange={(e) =>
-                    setSortOption(
-                      e.target.value
-                    )
-                  }
+                  onChange={(e) => setSortOption(e.target.value)}
                   value={sortOption}
                   className="custom-sort-select"
                 >
@@ -269,6 +254,15 @@ const IndoorPlants = () => {
                     Price: High to Low
                   </option>
                 </Form.Select>
+
+                {/* FILTERS */}
+                <Button
+                  variant="outline-dark"
+                  className="filters-btn"
+                  onClick={() => setShowFilters(true)}
+                >
+                  Filters
+                </Button>
 
               </div>
             </Col>
@@ -343,27 +337,19 @@ const IndoorPlants = () => {
           />
 
           <div className="filters-actions">
-
             <Button
-              variant="outline-secondary"
+              className="clear-all-btn"
               onClick={handleClearAll}
             >
               Clear All
             </Button>
 
             <Button
-              variant="dark"
-              onClick={() =>
-                setShowFilters(false)
-              }
+              className="show-products-btn"
+              onClick={() => setShowFilters(false)}
             >
-              Show {sorted.length}{' '}
-              Product
-              {sorted.length !== 1
-                ? 's'
-                : ''}
+              Show {sorted.length} Product{sorted.length !== 1 ? 's' : ''}
             </Button>
-
           </div>
 
         </Offcanvas.Body>

@@ -477,6 +477,42 @@
   font-size: 14px;
 }
 
+.filters-actions {
+  display: flex;
+  gap: 20px;
+  margin-top: 35px;
+}
+
+.filters-actions button {
+  flex: 1;
+  min-height: 45px;
+  border-radius: 4px;
+}
+
+/* CLEAR ALL */
+.clear-all-btn {
+  background-color: transparent !important;
+  color: #2f4f3e !important;
+  border: 1px solid #2f4f3e !important;
+}
+
+.clear-all-btn:hover {
+  background-color: #2f4f3e !important;
+  color: white !important;
+}
+
+/* SHOW PRODUCTS */
+.show-products-btn {
+  background-color: #2f4f3e !important;
+  color: white !important;
+  border: 1px solid #2f4f3e !important;
+}
+
+.show-products-btn:hover {
+  background-color: #243d31 !important;
+  border-color: #243d31 !important;
+}
+
 /* Tablet */
 @media (max-width: 991px) {
   .products-toolbar {
