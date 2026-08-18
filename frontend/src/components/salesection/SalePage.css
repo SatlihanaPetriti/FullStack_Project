@@ -38,18 +38,10 @@
 }
 
 /* GRID */
-.sale-grid {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 24px;
-}
 
 /* LARGE TABLET */
 @media (max-width: 1199px) {
-    .sale-grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-
+   
     .sale-hero__title {
         font-size: 48px;
     }
@@ -57,9 +49,7 @@
 
 /* TABLET */
 @media (max-width: 991px) {
-    .sale-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
+ 
 
     .sale-hero {
         padding: 55px 20px;
@@ -95,8 +85,4 @@
         padding-top: 30px;
     }
 
-    .sale-grid {
-        grid-template-columns: 1fr;
-        gap: 18px;
-    }
 }
