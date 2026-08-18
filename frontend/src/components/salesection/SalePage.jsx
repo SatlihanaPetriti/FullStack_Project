@@ -1,3 +1,4 @@
+import { Container, Row, Col } from 'react-bootstrap';
 import { useProductContext } from '../../Context/Product';
 import PlantCard from '../IndoorPlants/plantcard';
 import './SalePage.css';
@@ -18,30 +19,31 @@ const SalePage = () => {
     return (
         <div className="sale-page">
 
-            {/* HERO */}
             <div className="sale-hero">
-                <div className="sale-hero__content">
-                    <h1 className="sale-hero__title">
-                        Spring <em>Sale</em>
-                    </h1>
+                <h1 className="sale-hero__title">
+                    Spring <em>Sale</em>
+                </h1>
 
-                    <p className="sale-hero__sub">
-                        Fresh greens, unbeatable prices — up to 20% off indoor plants
-                    </p>
-                </div>
+                <p className="sale-hero__sub">
+                    Fresh greens, unbeatable prices — up to 20% off indoor plants
+                </p>
             </div>
 
-            {/* GRID */}
-            <div className="sale-body container">
-                <div className="sale-grid">
+            <Container className="sale-body">
+                <Row className="g-4">
                     {saleProducts.map((product) => (
-                        <PlantCard
+                        <Col
                             key={product.id}
-                            product={product}
-                        />
+                            xs={12}
+                            sm={6}
+                            md={4}
+                            lg={3}
+                        >
+                            <PlantCard product={product} />
+                        </Col>
                     ))}
-                </div>
-            </div>
+                </Row>
+            </Container>
 
         </div>
     );
