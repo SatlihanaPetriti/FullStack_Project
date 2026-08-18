@@ -72,7 +72,7 @@ const SalePage = () => {
                         sm={2}
                         md={3}
                         xl={4}
-                        className="g-4"
+                        className="g-4 product-grid"
                     >
                         {saleProducts.map((product) => (
                             <Col key={product.id}>

@@ -36,3 +36,86 @@
     padding-top: 45px;
     padding-bottom: 60px;
 }
+
+/* GRID */
+
+/* LARGE TABLET */
+@media (max-width: 1199px) {
+
+    .sale-hero__title {
+        font-size: 48px;
+    }
+}
+
+/* TABLET */
+@media (max-width: 991px) {
+
+
+    .sale-hero {
+        padding: 55px 20px;
+    }
+
+    .sale-hero__title {
+        font-size: 42px;
+    }
+
+    .sale-hero__sub {
+        font-size: 16px;
+    }
+}
+
+/* ══════════════════════════════════════════════
+   PRODUCT GRID — explicit responsive control
+   (not relying only on react-bootstrap row-cols)
+   ══════════════════════════════════════════════ */
+
+/* Tablet: force 2 per row */
+@media (min-width: 576px) and (max-width: 991px) {
+    .product-grid {
+        display: flex !important;
+        flex-wrap: wrap !important;
+    }
+
+    .product-grid>* {
+        flex: 0 0 50% !important;
+        max-width: 50% !important;
+    }
+}
+
+/* Mobile: force 1 per row, vertical stack */
+@media (max-width: 575px) {
+    .product-grid {
+        display: flex !important;
+        flex-direction: column !important;
+        flex-wrap: nowrap !important;
+    }
+
+    .product-grid>* {
+        flex: 0 0 100% !important;
+        max-width: 100% !important;
+        width: 100% !important;
+    }
+}
+
+/* MOBILE */
+@media (max-width: 576px) {
+    .sale-hero {
+        padding: 40px 16px;
+    }
+
+    .sale-hero__title {
+        font-size: 34px;
+    }
+
+    .sale-hero__sub {
+        font-size: 14px;
+        line-height: 1.5;
+    }
+
+    .sale-body {
+        padding-left: 16px;
+        padding-right: 16px;
+        padding-top: 30px;
+    }
+
+}
