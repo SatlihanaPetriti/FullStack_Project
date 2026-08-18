@@ -22,10 +22,16 @@ const CategoryProducts = () => {
     useEffect(() => {
         const loadCategoryData = async () => {
             const categoryData = await getCategoryById(id);
+
+            console.log("CATEGORY DATA:", categoryData);
+            console.log("IMAGE URL:", categoryData?.image_url);
+
             const categoryProducts = await getAllProductsByCategory(id);
+
             setCategory(categoryData);
             setProducts(categoryProducts || []);
         };
+
         loadCategoryData();
     }, [id]);
 
