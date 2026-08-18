@@ -11,11 +11,7 @@ import PlantCard from '../IndoorPlants/plantcard';
 import './SalePage.css';
 
 const SalePage = () => {
-    const {
-        products,
-        loading,
-        error
-    } = useProductContext();
+    const { products, loading, error } = useProductContext();
 
     const saleProducts = products.filter(
         (product) => product.sale_percentage
@@ -25,10 +21,7 @@ const SalePage = () => {
         return (
             <Container className="mt-5 text-center">
                 <Spinner animation="border" />
-
-                <p className="mt-3">
-                    Loading sale products...
-                </p>
+                <p className="mt-3">Loading sale products...</p>
             </Container>
         );
     }
@@ -61,7 +54,6 @@ const SalePage = () => {
 
             {/* PRODUCTS */}
             <Container fluid className="sale-body">
-
                 {saleProducts.length === 0 ? (
                     <Alert variant="info">
                         No products are currently on sale.
@@ -72,7 +64,7 @@ const SalePage = () => {
                         sm={2}
                         md={3}
                         xl={4}
-                        className="g-4 product-grid"
+                        className="g-4"
                     >
                         {saleProducts.map((product) => (
                             <Col key={product.id}>
@@ -81,7 +73,6 @@ const SalePage = () => {
                         ))}
                     </Row>
                 )}
-
             </Container>
 
         </div>
