@@ -545,4 +545,44 @@
   .total-products {
     font-size: 14px;
   }
+
+  /* Force plant cards to stack 1 per row, full width, no cropping */
+  .plant-card {
+    max-width: 100%;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  .image-wrapper {
+    height: auto;
+    aspect-ratio: 4 / 5;
+  }
+}
+
+/* Small mobile */
+@media (max-width: 576px) {
+  .plant-card {
+    max-width: 100%;
+  }
+
+  .image-wrapper {
+    aspect-ratio: 1 / 1.1;
+  }
+
+  .title {
+    font-size: 0.9rem;
+  }
+
+  .price {
+    font-size: 0.85rem;
+  }
+
+  .cart-btn {
+    font-size: 13px;
+    padding: 10px;
+  }
+
+  .details {
+    padding: 10px 4px;
+  }
 }
