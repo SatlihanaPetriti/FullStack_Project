@@ -4,13 +4,13 @@
 
 The website provides a complete shopping experience for customers, including product browsing, favorites, shopping cart, online payments, orders, newsletters, and user accounts. It also includes an admin dashboard for managing the store.
 
-## 🌐 Live Website
+## Website
 
 **https://myplantshop.netlify.app/**
 
 ---
 
-## ✨ Features
+## Features
 
 ###  User Authentication
 
