@@ -21,7 +21,7 @@ import { CheckoutProvider } from './Context/Checkout.jsx';
 import About from "./components/AboutUs/AboutUs.jsx";
 import Contact from "./components/Contact/Contact.jsx";
 import UserLayout from "./components/Login/UserDashboard/UserLayout.jsx";
-import SalePage from './components/salesection/SalePage.jsx';
+// import SalePage from './components/salesection/SalePage.jsx';
 import DashboardFavorites from "./components/Login/UserDashboard/Favorite.jsx";
 import MyProfile from "./components/Login/UserDashboard/MyProfile.jsx";
 import { OrderProvider } from "./Context/OrderContext.jsx";
@@ -80,7 +80,7 @@ function App() {
                         <Route path="/sale" element={
                           <><Announcement />
                             <Header />
-                            <SalePage />
+                            {/* <SalePage /> */}
                           </>}
                         />
 
