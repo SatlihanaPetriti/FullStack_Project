@@ -208,7 +208,7 @@ Admins can:
 
 ### Database
 
-* MySQL
+* PostgreSQL
 
 ### Payments
 
