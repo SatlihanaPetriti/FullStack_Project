@@ -190,6 +190,24 @@
 }
 
 /* =========================
+   RESPONSIVE
+========================= */
+.sp-header {
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.sp-table {
+    min-width: 480px;
+}
+
+@media (max-width: 600px) {
+    .sp-root {
+        padding: 1rem;
+    }
+}
+
+/* =========================
    SIMPLE ANIMATION (optional)
 ========================= */
 .sp-row {

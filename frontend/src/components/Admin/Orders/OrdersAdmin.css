@@ -263,14 +263,29 @@
     color: white !important;
 }
 
-@media (max-width: 1100px) {
-    .ao-stats {
-        grid-template-columns: repeat(3, 1fr);
-    }
+/* Responsive */
+.ao-table-wrapper {
+    overflow-x: auto;
+}
+
+.ao-table {
+    min-width: 760px;
+}
+
+.ao-stats {
+    flex-wrap: wrap;
+}
+
+.ao-stat-card {
+    flex: 1 1 120px;
 }
 
 @media (max-width: 600px) {
-    .ao-stats {
-        grid-template-columns: repeat(2, 1fr);
+    .ao-page {
+        padding: 1rem;
+    }
+
+    .ao-stat-card {
+        flex: 1 1 calc(50% - 0.5rem);
     }
 }

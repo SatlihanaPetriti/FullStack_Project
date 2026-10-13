@@ -373,6 +373,45 @@
     color: #b91c1c;
 }
 
+/* ===== RESPONSIVE ===== */
+.plant-table-scroll {
+    overflow-x: auto;
+}
+
+.plant-table-topbar {
+    flex-wrap: wrap;
+    gap: 8px 16px;
+}
+
+.plant-table-topbar-stats {
+    flex-wrap: wrap;
+}
+
+.plant-toolbar {
+    flex-wrap: wrap;
+}
+
+@media (max-width: 600px) {
+    .plant-table-topbar {
+        padding: 14px 16px;
+    }
+
+    .plant-toolbar {
+        padding: 12px;
+    }
+
+    .plant-search-wrap {
+        max-width: none;
+        flex: 1 1 100%;
+    }
+
+    .plant-btn-add {
+        margin-left: 0;
+        width: 100%;
+        justify-content: center;
+    }
+}
+
 /* ===== IMAGE BUTTON ===== */
 .plant-btn-images {
     background: #e8f4fd;

@@ -806,6 +806,10 @@
 }
 
 /* ─── Responsive ───────────────────────────────────────────── */
+.cp-table {
+    min-width: 520px;
+}
+
 @media (max-width: 600px) {
     .cp-root {
         padding: 18px 16px;
@@ -813,7 +817,26 @@
 
     .cp-stats {
         width: 100%;
+        flex-wrap: wrap;
+        gap: 12px;
         justify-content: space-around;
+        padding: 12px;
+    }
+
+    .cp-stat {
+        padding: 0 8px;
+    }
+
+    .cp-stat-divider {
+        display: none;
+    }
+
+    .cp-search {
+        max-width: none;
+    }
+
+    .cp-modal-footer {
+        flex-wrap: wrap;
     }
 
     .cp-name-cell {

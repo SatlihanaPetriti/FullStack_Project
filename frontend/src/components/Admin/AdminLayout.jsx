@@ -1,5 +1,8 @@
-import { NavLink, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import {
+    Menu,
+    X,
     UserRoundCog,
     LayoutDashboard,
     Package,
@@ -44,7 +47,13 @@ const adminLinks = [
 
 const AdminLayout = ({ children }) => {
     const navigate = useNavigate();
+    const { pathname } = useLocation();
     const { user, logout } = useUserContext();
+    const [sidebarOpen, setSidebarOpen] = useState(false);
+
+    useEffect(() => {
+        setSidebarOpen(false);
+    }, [pathname]);
 
     const userInitial = user?.name?.charAt(0).toUpperCase() ?? "";
 
@@ -55,7 +64,35 @@ const AdminLayout = ({ children }) => {
 
     return (
         <div className="admin-wrapper">
-            <aside className="admin-sidebar">
+            <header className="admin-topbar">
+                <button
+                    className="admin-menu-btn"
+                    onClick={() => setSidebarOpen(true)}
+                    aria-label="Open menu"
+                >
+                    <Menu size={22} />
+                </button>
+
+                <span className="admin-topbar-title">ECOMUS Admin</span>
+            </header>
+
+            {sidebarOpen && (
+                <div
+                    className="admin-backdrop"
+                    onClick={() => setSidebarOpen(false)}
+                />
+            )}
+
+            <aside
+                className={`admin-sidebar${sidebarOpen ? " admin-sidebar--open" : ""}`}
+            >
+                <button
+                    className="admin-sidebar-close"
+                    onClick={() => setSidebarOpen(false)}
+                    aria-label="Close menu"
+                >
+                    <X size={20} />
+                </button>
 
                 <div className="admin-logo">
                     <UserRoundCog size={30} />
